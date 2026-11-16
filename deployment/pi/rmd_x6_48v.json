@@ -1,0 +1,69 @@
+{
+  "motor_model": "RMD-X6-P20-60-E",
+  "motor_supply_nominal_vdc": 48,
+  "motor_supply_measured_vdc": null,
+  "motor_supply_reported_vdc": 47.7,
+  "motor_firmware_version": null,
+  "direction_check": {
+    "date_kst": "2026-11-13",
+    "watchdog_setting_acknowledged_ms": 100,
+    "watchdog_cutoff_verified": false,
+    "commanded_current_a": 0.03,
+    "planned_pulse_ms": 80,
+    "reported_voltage_vdc": 47.8,
+    "current_reply_hex": "a11f00000000a0ff",
+    "shutdown_reply_hex": "8000000000000000",
+    "before_deg": -96.28,
+    "after_deg": -96.28,
+    "fault_flags": 0
+  },
+  "last_readback": {
+    "date_kst": "2026-11-13",
+    "status_frame_hex": "9a1e2100dd010000",
+    "firmware_frame_hex": "b20000007a1eb478",
+    "firmware_raw_u32": 2025070202,
+    "angle_frame_hex": "9200000063daffff",
+    "output_angle_deg": -96.29,
+    "fault_flags": 0
+  },
+  "can": {
+    "interface": "can0",
+    "bitrate": 1000000,
+    "request_id": 321,
+    "angle_reply_id": 577,
+    "output_angle_query": 146
+  },
+  "pendulum_sensor": {
+    "model": "AS5600",
+    "i2c_bus": 1,
+    "i2c_address": 54,
+    "upright_count": 4058.5,
+    "sign": 1,
+    "sign_calibration": {
+      "date_kst": "2026-11-13",
+      "positive_direction": "counterclockwise viewed from the motor center toward the pendulum hinge",
+      "tilted_count_median": 129.0,
+      "wrapped_delta_counts": 166.5,
+      "samples": 12,
+      "span_counts": 0
+    }
+  },
+  "arm_home_deg": -209.05,
+  "zero_calibration": {
+    "date_kst": "2026-11-13",
+    "samples": 12,
+    "arm_span_deg": 0.17,
+    "pendulum_span_counts": 2
+  },
+  "arm_sign": -1,
+  "arm_sign_calibration": {
+    "date_kst": "2026-11-13",
+    "positive_direction": "counterclockwise as viewed from above the motor",
+    "before_deg": -96.28,
+    "after_deg": -208.90,
+    "angle_reply_hex": "9200000066aeffff"
+  },
+  "torque_command_conversion": null,
+  "commissioning_torque_limit_nm": null,
+  "drive_enabled": false
+}

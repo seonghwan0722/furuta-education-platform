@@ -1,0 +1,181 @@
+{
+  "purpose": "Integration smoke only; 512 steps/stage, no performance conclusion. Baseline total 512 vs staged total 1536 are not equal-budget comparisons. Evaluation seeds 1000,1001,1002 fixed for all.",
+  "results": [
+    {
+      "training_seed": 42,
+      "stage": "baseline",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.05000000000000001,
+      "mean_rmse_rad": 2.231172910800449,
+      "fault_rate": 1.0,
+      "mean_duration_s": 2.2533333333333334
+    },
+    {
+      "training_seed": 42,
+      "stage": "baseline",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 2.98211122738965,
+      "fault_rate": 1.0,
+      "mean_duration_s": 1.18
+    },
+    {
+      "training_seed": 42,
+      "stage": "balance",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.01,
+      "mean_rmse_rad": 2.8087762620681205,
+      "fault_rate": 1.0,
+      "mean_duration_s": 4.05
+    },
+    {
+      "training_seed": 42,
+      "stage": "balance",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 3.056438129897657,
+      "fault_rate": 1.0,
+      "mean_duration_s": 1.8266666666666669
+    },
+    {
+      "training_seed": 42,
+      "stage": "mixed",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.01,
+      "mean_rmse_rad": 3.0221467433090514,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    },
+    {
+      "training_seed": 42,
+      "stage": "mixed",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 3.127912410563468,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    },
+    {
+      "training_seed": 42,
+      "stage": "swingup",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.01,
+      "mean_rmse_rad": 2.059606625313269,
+      "fault_rate": 1.0,
+      "mean_duration_s": 1.2366666666666666
+    },
+    {
+      "training_seed": 42,
+      "stage": "swingup",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 2.3942834215330824,
+      "fault_rate": 1.0,
+      "mean_duration_s": 1.0966666666666667
+    },
+    {
+      "training_seed": 43,
+      "stage": "baseline",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.05000000000000001,
+      "mean_rmse_rad": 2.496352491730544,
+      "fault_rate": 1.0,
+      "mean_duration_s": 2.41
+    },
+    {
+      "training_seed": 43,
+      "stage": "baseline",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 3.091443682129775,
+      "fault_rate": 1.0,
+      "mean_duration_s": 1.61
+    },
+    {
+      "training_seed": 43,
+      "stage": "balance",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.05333333333333334,
+      "mean_rmse_rad": 3.009767908027824,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    },
+    {
+      "training_seed": 43,
+      "stage": "balance",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 3.138012608453162,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    },
+    {
+      "training_seed": 43,
+      "stage": "mixed",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.043333333333333335,
+      "mean_rmse_rad": 2.9558223275261057,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    },
+    {
+      "training_seed": 43,
+      "stage": "mixed",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 3.116769297802762,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    },
+    {
+      "training_seed": 43,
+      "stage": "swingup",
+      "evaluation_start": "balance",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.05666666666666667,
+      "mean_rmse_rad": 2.9191903007827142,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    },
+    {
+      "training_seed": 43,
+      "stage": "swingup",
+      "evaluation_start": "swingup",
+      "training_steps_this_stage": 512,
+      "success_rate": 0.0,
+      "mean_hold_s": 0.0,
+      "mean_rmse_rad": 3.121536639322993,
+      "fault_rate": 0.0,
+      "mean_duration_s": 10.0
+    }
+  ]
+}

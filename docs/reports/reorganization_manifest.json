@@ -1,0 +1,184 @@
+{
+  "note": "Hashes verified immediately after move, before path edits",
+  "moves": [
+    {
+      "from": "Capstone1/Mujoco/files",
+      "to": "legacy/mujoco_initial",
+      "files": {
+        "env.py": "7565ca8c4ac6f5c329cb6db88b97038db7850e2eb40617c37aeaf2c3346cdd75",
+        "play.py": "b2664ee1533b964c22c4fb053d0121aa3b678385153130a05b5067bfb5bbc660",
+        "README.md": "fb58fa0e533ba127f71449a0c2bc5e05ff0c651eba4b3cf55b463ec3278bf28b",
+        "rotary_pendulum.xml": "8ddf1f47bfab200e2ac862385b602d895244b62ecb3351334aa948bc1ad5863e",
+        "sim_test.png": "a712bf1ea90f5587fded6d46a4dc0dfd621aa932c184b0bb44ed747bb0bd27b9",
+        "sim_test.py": "0fe68a323da1f941918e72ac676d12283b225b5bd0ad5d4f4a956ccfcdeb2e82",
+        "sim_test_cad.png": "7aae5ee41c41cb889fca4ad3b4fb7587248cb84a226a45c3b030f630a254f3d4",
+        "train_ppo.py": "d6a9d08f2968f9f0bfabfc78c0dc034e34be82a89e74f8cabd1fc04716c6ea88",
+        "viewer.py": "d8a1871de1937136e932fa67596415cdcb73c028b208db56bf32f45a32544af5",
+        "checkpoints\\ppo_rotary_100000_steps.zip": "a9a44e099367d5177cdadf7cceeb2aaf0d126305ea8b642f9e66ee1642dede59",
+        "checkpoints\\ppo_rotary_150000_steps.zip": "f9cdfcffebc9f7f5c49f944210e3ef753aa7b262ad958311fff10d978b21d7b0",
+        "checkpoints\\ppo_rotary_200000_steps.zip": "864e602b2b89875b66e3d9190e44bf9587a58ce8efd1293cc01318e91154813a",
+        "checkpoints\\ppo_rotary_250000_steps.zip": "295a77f179cf0994a64944b87af6edd7b67e77cc08b9296442ae9568cd5c9fa0",
+        "checkpoints\\ppo_rotary_300000_steps.zip": "4c9474443ea3b7b6cfba261acf2cdc95b7cb853a036356b0291439d827a85dbd",
+        "checkpoints\\ppo_rotary_350000_steps.zip": "5ee203424d4bde0fb7a6eec7022c0a2b19abafb26e7354df66d2d5fbd880bb17",
+        "checkpoints\\ppo_rotary_400000_steps.zip": "ce354549cfcc3a62c38ef1cf0a1c1fb19ac57d6eedb2f2f5357a23ddd690c032",
+        "checkpoints\\ppo_rotary_450000_steps.zip": "538c73ef22bf07073abce04df935962470cc677b82749af7a9c341bb23ff50b4",
+        "checkpoints\\ppo_rotary_500000_steps.zip": "c88084936c0e7d615fcc29e3bb69bf101b89335dfb85fb5c05fae8321aa29b0c",
+        "checkpoints\\ppo_rotary_50000_steps.zip": "5ce6b9d3ee6f4b00ee57de95cf7b81f70807467e2b76878ad45bf3868fd078f0",
+        "checkpoints\\ppo_rotary_final.zip": "58a648cdc0140d7dbeb29166225804fa7e1177e7e492f041b2d4e1d3e2d3e802",
+        "__pycache__\\env.cpython-314.pyc": "f977967db8c73dd939a24fcb93cef446a0c28c3754130f5d4f4ac3a18904f99e",
+        "tb_logs\\PPO_1\\events.out.tfevents.1788485979.Shins-MacBook-Air.local.2290.0": "f3c03fcccc2b811ed4440d5f11243ccb19cf1410e10ba3488054cb874abad85f",
+        "tb_logs\\PPO_2\\events.out.tfevents.1790657648.seonghwan.18344.0": "5492c3844fc4279d1efdd64806ed76718717691d200473623e8bb5a84fd01b0c"
+      }
+    },
+    {
+      "from": "test",
+      "to": "models/legacy_cad",
+      "files": {
+        "test.xml": "217a5ccce3323ef74adbc7b381d98b9498df3e281041ecb9b30f67690e6d750c",
+        "test_sim.xml": "9aaf5aac70e7bc0ee6ca0f2c4d1ab8bbca31fd06df4022fb49af429a5b0c86c7",
+        "meshes\\2804-body-v1.stl": "3e6dc95d52a3d05bad0ec0aeddb475d0c1acb1e111c0bc3a7dc5a0042446d18d",
+        "meshes\\6700zz-body-1-v1.stl": "aa4b66b0f82c6b7321c9095c7cf07123959a383b0e2886c99b71aee77bad6a5c",
+        "meshes\\6700zz-body-2-v1.stl": "aa4b66b0f82c6b7321c9095c7cf07123959a383b0e2886c99b71aee77bad6a5c",
+        "meshes\\6700zz-body-3-v1.stl": "aa4b66b0f82c6b7321c9095c7cf07123959a383b0e2886c99b71aee77bad6a5c",
+        "meshes\\6700zz-body-4-v1.stl": "aa4b66b0f82c6b7321c9095c7cf07123959a383b0e2886c99b71aee77bad6a5c",
+        "meshes\\arm-holder-v8.stl": "a9cae346c4a635b4baa562a341843490bf549fbe7268ac349886fdc7a34abea1",
+        "meshes\\bending-pipe-v5.stl": "a56096ae4ab7efe5adf793e15ec0ee4f8f8d496a6ad1f046d04adfa639d065f2",
+        "meshes\\DC-holder-v4.stl": "c1c68e0d73c7b05b22dd9a641f2a0d062f0cdab94ccd9c5f416d84245cbb0f31",
+        "meshes\\magnet-holder-v1.stl": "fc75f512e1feeaf953ccad99e2d2fab5803d7fc0c852d7e6e12c5370374f4319"
+      }
+    },
+    {
+      "from": "furuta_rev5_lite_mujoco",
+      "to": "models/rev5/source",
+      "files": {
+        "furuta_rev5_lite_mujoco.xml": "fbc64ac71bc7d9895a693372838968436a64654631078d870d179addd6783cba",
+        "meshes\\688ZZ_A.stl": "43447b57b995a239108f04dbff66c0f354497b668134318163dacae108095df4",
+        "meshes\\688ZZ_B.stl": "a74cd385caf151e445b02f559e5e22a6c76a4d01b0eaf9cc9adedfed0caaa1fd",
+        "meshes\\arm_holder.stl": "c51ed37403834f261c42ace63a35b518126d07dfafb870a15a6c3ea2373856ae",
+        "meshes\\AS5600_chip.stl": "7415f4eb2f96816543d02278ae0f14a08f1e3efed6e64ddc9841f8f6c7fd491c",
+        "meshes\\base_link.stl": "0bbd351bbe8bc1c46bfa8f1a416c373f43609511cb8964c5f3ff5f06593ba509",
+        "meshes\\bending_pipe.stl": "310664de5657b13885f5c49511fc5ca3a205077443aeb0954c43133b1d64ba1e",
+        "meshes\\box_lid_rev5.stl": "58ee855d6d0780dbf9d52c280e9dae3cc94272c925fab49b4647be0976852087",
+        "meshes\\drive_tube_6x4.stl": "1326bcc2b049fbb78de88bc42e655697902db93640a5e9f12d36fab7ceb8fe93",
+        "meshes\\E-stop_22mm_placeholder.stl": "a3319baa4f4d2f3dc94fa107c2ef0fa9304a1d79021db09c26b0f1197b1c0e07",
+        "meshes\\electronics_box_rev5.stl": "dd334ac4d30523ae559dab3a6afa5e7145a2b344c41c367863395dd796da10ac",
+        "meshes\\encoder_pod_cover_rev5.stl": "7263db1f962dd04c1ca68d8ee7514589b32237572557636720b35d551cf0b72c",
+        "meshes\\encoder_pod_rev5.stl": "05e0c9fe1bec37b3795d8b9be175206b2104de10c084f2196eaa66df4c279da8",
+        "meshes\\Grove_AS5600_PCB.stl": "89e3dde1b615bdefb08018b83eb658e109e5382ed033b5853c9c3cd672750d54",
+        "meshes\\Grove_connector.stl": "63e002b3d79f65bcd9419fc8c48dba5f00e380f4420dc11368e6781f1e5145e0",
+        "meshes\\Grove_switch.stl": "c4185d8f0181debf7b96bd072ac5c86e555f6518bf28f39a2db31012505b4c9b",
+        "meshes\\hub_rev5.stl": "ded5261062d32f554da0d57de350bda07c3caf32616dfb3b295f9cc24e236449",
+        "meshes\\magnet_6x3_diametric.stl": "928b2ae2c3cdc20adb2ce43e76d9223be4dbd35c85a1c5d9dc2b0d7aeb7ca914",
+        "meshes\\magnet_insert_rev4.stl": "d8d3b5cab7beaf81bffd9b331f0613176ef626d3a7798ee7843e1227c94cb69c",
+        "meshes\\module_48V_5V_converter.stl": "6df4d9001caf0ff0441be9272dc3c5f963942897d056629a0abd06c3b30b79b1",
+        "meshes\\module_DC_SSR.stl": "7ac94e1f9e6790ac5bd70ad4b2727ef969335d507450a8dd35e2d57a0d947afb",
+        "meshes\\module_terminal_block.stl": "0e8aa29e66334d47a929cf4a2b6cee2acf135af6d3e84577c3d8fe4be0ee8d16",
+        "meshes\\Raspberry_Pi_5.stl": "7f2f19db24ee210f9d798d088546dc4b1909d04c5278a73cde6384ba61e8ca60",
+        "meshes\\ring_A.stl": "081c26589fc17d266fc3b7fc7f191e5031243707fc758dc20df412bf9595ad82",
+        "meshes\\ring_B.stl": "5d8b9d0063c8fa38f1edcfe3685a86a427ee9f35e6f569c61406bf37a344e0ca",
+        "meshes\\RMD-X6-P20-60-E.stl": "922a94ff4f65f9606494c70dbe623d37ca3940ac83925b40bad1b180a21d013b",
+        "meshes\\SEENGREAT_RS485_Dual_CAN_HAT.stl": "c965354f2dbdd61ed1c8db024170e585c2a6798a274227096a19ffbf89111be6",
+        "meshes\\slipring_bracket.stl": "f088d6df84820827c92c4164f4c0b582ef27b61392bf742616b355b9e25ea856",
+        "meshes\\slipring_SZH-SLI020_PLACEHOLDER.stl": "5e508ef061115708d4f67543557d101a48f2a58f9a9335c1a6df1d0bdd72dbc7",
+        "meshes\\SPCC_plate_146x146x3_2.stl": "19933be97f461a8231f5dd102e03414b12495d181f60f4ed8460d4031b695a6d",
+        "meshes\\top_plate_Al_3t.stl": "9a2188e63889cc596baa372e371aa4bd108fd2dffc53a2945949631bd3569704"
+      }
+    },
+    {
+      "from": "pi",
+      "to": "deployment/pi",
+      "files": {
+        "encoder.py": "024b17b2e9f9d496ccad624dd7623bc2859d773640496333a6212e5e35eabe45",
+        "replay.py": "873051ab227e1589f276e150a2c57f08c1613860911d301b511b884707b67e08",
+        "transport.py": "8d98216864045ff9943bcb338196e073f62e6be718b836e9a51dd8fc40865fba",
+        "__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "__pycache__\\encoder.cpython-314.pyc": "c1b91f6d6e07149223f41f00b9c67e94ecc03888f1200342fd16c5882a23338b",
+        "__pycache__\\replay.cpython-314.pyc": "be804ddae7d3dd0ef0ca150e0fafb4f74485faeaa4dfb7d57862d930de97b66e",
+        "__pycache__\\transport.cpython-314.pyc": "49ed0351e78d538792797443384cfbd673ce5b8360e7a9f2fd7ef06e912b653c",
+        "__pycache__\\__init__.cpython-314.pyc": "c9c138bbdf922ccce4ed907ed11e77fae86f435f1d17a95dca4b6a5d0db3b94d"
+      }
+    },
+    {
+      "from": "furuta_platform/config.json",
+      "to": "configs/rev5_baseline.json",
+      "files": {
+        ".": "2467575175e1e13e711dc18604621e3ca1a72e141e3fdf5518373df6c0024e50"
+      }
+    },
+    {
+      "from": "furuta_platform/test_contract.py",
+      "to": "tests/test_contract.py",
+      "files": {
+        ".": "10024a54a3dbc2aacf6388ee8fc27628926ce1bb8a32473e57a64685ee63ab1c"
+      }
+    },
+    {
+      "from": "docs/static_audit.json",
+      "to": "docs/reports/static_audit.json",
+      "files": {
+        ".": "c36296ef3ac8aa1555360f40bedfa48e4d967f34e97dc03fc19e1de21f3886cd"
+      }
+    },
+    {
+      "from": "docs/validation.txt",
+      "to": "docs/reports/validation_initial.txt",
+      "files": {
+        ".": "6f674874553578cca9b6d7718f86ab451a2e3b5117e456e06f3709bea22df8c0"
+      }
+    },
+    {
+      "from": "docs/IO_SPEC.md",
+      "to": "docs/interfaces/IO_SPEC.md",
+      "files": {
+        ".": "dc5bbd385bff468601e1097ae40119fed7d962762c999107d3113d394dd9e9ad"
+      }
+    },
+    {
+      "from": "README-FURUTA.md",
+      "to": "README.md",
+      "files": {
+        ".": "0386c1fda1b91f17718e480828b37c1330a5a170944270ea2eff0a9353efb6b6"
+      }
+    },
+    {
+      "from": "__MACOSX",
+      "to": "legacy/macos_metadata",
+      "files": {
+        "Capstone1\\._.DS_Store": "2f380f4a3d05a8d90c2106f50da75064e9ce57a598599dc5404f8f69a0223aa9",
+        "Capstone1\\Mujoco\\._.DS_Store": "2f380f4a3d05a8d90c2106f50da75064e9ce57a598599dc5404f8f69a0223aa9",
+        "Capstone1\\Mujoco\\._files": "7d75e0ece0d7c30bd9fedeaf486ff6cd1904adff1eb7f8cef6f844ff6b008e76",
+        "Capstone1\\Mujoco\\files\\._checkpoints": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\._env.py": "57ac1a10fda74671de797ca5f0c6f160b1d44b9ce80a7663d30bd4367b5921bd",
+        "Capstone1\\Mujoco\\files\\._play.py": "e0544f572bce757a3d0c0a6a20bda7faa08ff59a6a8e7cf6cd018e22ffd6c3bb",
+        "Capstone1\\Mujoco\\files\\._README.md": "7d75e0ece0d7c30bd9fedeaf486ff6cd1904adff1eb7f8cef6f844ff6b008e76",
+        "Capstone1\\Mujoco\\files\\._rotary_pendulum.xml": "7d75e0ece0d7c30bd9fedeaf486ff6cd1904adff1eb7f8cef6f844ff6b008e76",
+        "Capstone1\\Mujoco\\files\\._sim_test.png": "f00e18d3f90813036ff6beffc40b7801bcf5029c212c0d24347409a2fee4df33",
+        "Capstone1\\Mujoco\\files\\._sim_test.py": "78fdeffb928cf8a7f8de49a313168bf3a3fcb6c0c07114cf9637d921ff7ac18a",
+        "Capstone1\\Mujoco\\files\\._tb_logs": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\._train_ppo.py": "b946fa7980cbcf39b5386154b0991e2233a803f45b2f6b9a0a4e57337cf4fd80",
+        "Capstone1\\Mujoco\\files\\._viewer.py": "81b96d79fe57f44ff276e268f1b76b13db09caf08acabf427b795fe2253b58f8",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_100000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_150000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_200000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_250000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_300000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_350000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_400000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_450000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_500000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_50000_steps.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\checkpoints\\._ppo_rotary_final.zip": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\tb_logs\\._PPO_1": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f",
+        "Capstone1\\Mujoco\\files\\tb_logs\\PPO_1\\._events.out.tfevents.1788485979.Shins-MacBook-Air.local.2290.0": "10358d70948b178758dc996e438f7e503ffde45710c2eb4facff87cc89c6703f"
+      }
+    },
+    {
+      "from": "Capstone1",
+      "to": "legacy/import_metadata",
+      "files": {
+        ".DS_Store": "df96f36045129f4283357e1d0605159ef14d1255f9fe23075adf1fe38515891c",
+        "Mujoco\\.DS_Store": "56126635f86e47de0657510f129ec758f11505fbdc65b2ecb6d0996be2a4c8be"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+test_actor_integrity (furuta_platform.test_contract.Tests.test_actor_integrity) ... ok
+test_encoder (furuta_platform.test_contract.Tests.test_encoder) ... ok
+test_faults (furuta_platform.test_contract.Tests.test_faults) ... ok
+test_model_adapter (furuta_platform.test_contract.Tests.test_model_adapter) ... ok
+test_observation (furuta_platform.test_contract.Tests.test_observation) ... ok
+test_transport (furuta_platform.test_contract.Tests.test_transport) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.279s
+
+OK

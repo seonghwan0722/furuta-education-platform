@@ -1,0 +1,23 @@
+test_actor_integrity (test_contract.Tests.test_actor_integrity) ... ok
+test_encoder (test_contract.Tests.test_encoder) ... ok
+test_faults (test_contract.Tests.test_faults) ... ok
+test_model_adapter (test_contract.Tests.test_model_adapter) ... ok
+test_observation (test_contract.Tests.test_observation) ... ok
+test_transport (test_contract.Tests.test_transport) ... ok
+test_old_parent_has_unknown_total (test_history.HistoryTests.test_old_parent_has_unknown_total) ... ok
+test_parent_lineage_and_changes (test_history.HistoryTests.test_parent_lineage_and_changes) ... ok
+test_same_filename_keeps_receipts_and_checks_hash (test_history.HistoryTests.test_same_filename_keeps_receipts_and_checks_hash) ... ok
+test_active_config_and_model (test_layout.LayoutTests.test_active_config_and_model) ... ok
+test_models_resolve_external_assets (test_layout.LayoutTests.test_models_resolve_external_assets) ... ok
+test_preserved_assets (test_layout.LayoutTests.test_preserved_assets) ... ok
+test_absorbing_failure_freezes_physics_until_horizon (test_rewards.RewardTests.test_absorbing_failure_freezes_physics_until_horizon) ... ok
+test_baseline_formula_unchanged (test_rewards.RewardTests.test_baseline_formula_unchanged) ... ok
+test_edge_effort_smoothness (test_rewards.RewardTests.test_edge_effort_smoothness) ... ok
+test_failure_bound (test_rewards.RewardTests.test_failure_bound) ... ok
+test_staged_starts (test_rewards.RewardTests.test_staged_starts) ... ok
+test_upright_and_gated_speed (test_rewards.RewardTests.test_upright_and_gated_speed) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.675s
+
+OK

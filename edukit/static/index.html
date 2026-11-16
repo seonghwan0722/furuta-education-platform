@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>로봇 블록 실험실</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="toolbar">
+    <div class="brand">🤖 로봇 블록 실험실 <small>MuJoCo</small></div>
+    <div class="group">
+      <select id="tplSelect" title="수업용 예제"></select>
+      <button id="btnLoadTpl">예제 불러오기</button>
+    </div>
+    <div class="group">
+      <label class="dur">시간 <input id="duration" type="number" min="1" max="60" step="1" value="10"> 초</label>
+      <button id="btnRun" class="primary">▶ 시뮬레이션</button>
+      <button id="btnView">🎥 3D로 보기</button>
+    </div>
+    <div class="group">
+      <button id="btnXml" title="블록이 바뀐 MuJoCo 코드(XML) 보기">📄 MuJoCo 코드</button>
+      <button id="btnSave">💾 저장</button>
+      <button id="btnOpen">📂 열기</button>
+      <button id="btnNew">🗑 새로 만들기</button>
+      <input type="file" id="fileOpen" accept=".json,application/json" hidden>
+    </div>
+  </header>
+
+  <main>
+    <aside id="palette"></aside>
+    <section id="canvasWrap">
+      <div id="canvas">
+        <div id="world"><svg id="wires"></svg></div>
+      </div>
+      <div id="zoomCtl">
+        <button data-z="in" title="확대">＋</button>
+        <button data-z="out" title="축소">－</button>
+        <button data-z="fit" title="전체 보기">전체</button>
+      </div>
+      <div id="legend">
+        <span><i class="k-mech"></i>기구 연결</span>
+        <span><i class="k-signal"></i>신호</span>
+        <span><i class="k-torque"></i>모터 힘</span>
+      </div>
+    </section>
+    <aside id="props"></aside>
+  </main>
+
+  <section id="results">
+    <div class="rhead">
+      <b>📈 결과</b>
+      <span id="status">▶ 시뮬레이션을 누르면 스코프 그래프가 여기에 나와요.</span>
+      <button id="btnToggleRes">접기</button>
+    </div>
+    <div id="scopes"></div>
+  </section>
+
+  <div id="modal" hidden>
+    <div class="mbox">
+      <div class="mhead"><b id="mtitle"></b><button id="mclose">닫기</button></div>
+      <div id="mdesc"></div>
+      <pre id="mbody"></pre>
+    </div>
+  </div>
+  <div id="toasts"></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "physics_dt": 0.002,
+  "frame_skip": 5,
+  "episode_seconds": 10,
+  "torque_nm": 0.05,
+  "damping": [
+    0.001,
+    0.0001
+  ],
+  "velocity_scale": [
+    20,
+    30
+  ],
+  "limits": {
+    "arm_rad": 6.28,
+    "velocity": [
+      20,
+      30
+    ]
+  },
+  "reward": {
+    "upright": 1.0,
+    "balance": 0.5,
+    "arm_boundary": 0.1,
+    "effort": 0.01,
+    "smoothness": 0.02
+  },
+  "randomization": {
+    "mass_fraction": 0,
+    "inertia_fraction": 0,
+    "damping_fraction": 0,
+    "noise_std": 0,
+    "delay_steps": 0,
+    "motor_time_constant": 0
+  },
+  "success": {
+    "angle_rad": 0.174533,
+    "velocity_rad_s": 1,
+    "hold_seconds": 2
+  },
+  "seed": 42,
+  "total_steps": 500000,
+  "reward_version": "shaped_v1",
+  "reward_shape": {
+    "upright_power": 4,
+    "balance_velocity_scale": [
+      2.0,
+      2.0
+    ],
+    "arm_edge_fraction": 0.7
+  },
+  "initialization": {
+    "balance_probability": 0.5,
+    "angle_noise_rad": 0.03
+  },
+  "failure": {
+    "mode": "absorbing",
+    "reward_per_step": -1.0
+  }
+}

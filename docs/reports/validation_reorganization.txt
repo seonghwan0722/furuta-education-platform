@@ -1,0 +1,14 @@
+test_actor_integrity (test_contract.Tests.test_actor_integrity) ... ok
+test_encoder (test_contract.Tests.test_encoder) ... ok
+test_faults (test_contract.Tests.test_faults) ... ok
+test_model_adapter (test_contract.Tests.test_model_adapter) ... ok
+test_observation (test_contract.Tests.test_observation) ... ok
+test_transport (test_contract.Tests.test_transport) ... ok
+test_active_config_and_model (test_layout.LayoutTests.test_active_config_and_model) ... ok
+test_models_resolve_external_assets (test_layout.LayoutTests.test_models_resolve_external_assets) ... ok
+test_preserved_assets (test_layout.LayoutTests.test_preserved_assets) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.312s
+
+OK

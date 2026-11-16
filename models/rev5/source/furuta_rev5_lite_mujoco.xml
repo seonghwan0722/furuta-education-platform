@@ -1,0 +1,161 @@
+<mujoco model="furuta_rev5_lite_mujoco">
+    <compiler angle="radian" />
+    <asset>
+        <mesh name="RMD-X6-P20-60-E" file="meshes/RMD-X6-P20-60-E.stl" scale="0.001 0.001 0.001" />
+        <mesh name="top_plate_Al_3t" file="meshes/top_plate_Al_3t.stl" scale="0.001 0.001 0.001" />
+        <mesh name="hub_rev5" file="meshes/hub_rev5.stl" scale="0.001 0.001 0.001" />
+        <mesh name="arm_holder" file="meshes/arm_holder.stl" scale="0.001 0.001 0.001" />
+        <mesh name="688ZZ_A" file="meshes/688ZZ_A.stl" scale="0.001 0.001 0.001" />
+        <mesh name="688ZZ_B" file="meshes/688ZZ_B.stl" scale="0.001 0.001 0.001" />
+        <mesh name="ring_A" file="meshes/ring_A.stl" scale="0.001 0.001 0.001" />
+        <mesh name="ring_B" file="meshes/ring_B.stl" scale="0.001 0.001 0.001" />
+        <mesh name="bending_pipe" file="meshes/bending_pipe.stl" scale="0.001 0.001 0.001" />
+        <mesh name="magnet_insert_rev4" file="meshes/magnet_insert_rev4.stl" scale="0.001 0.001 0.001" />
+        <mesh name="magnet_6x3_diametric" file="meshes/magnet_6x3_diametric.stl" scale="0.001 0.001 0.001" />
+        <mesh name="AS5600_chip" file="meshes/AS5600_chip.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Grove_AS5600_PCB" file="meshes/Grove_AS5600_PCB.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Grove_connector" file="meshes/Grove_connector.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Grove_switch" file="meshes/Grove_switch.stl" scale="0.001 0.001 0.001" />
+        <mesh name="encoder_pod_rev5" file="meshes/encoder_pod_rev5.stl" scale="0.001 0.001 0.001" />
+        <mesh name="encoder_pod_cover_rev5" file="meshes/encoder_pod_cover_rev5.stl" scale="0.001 0.001 0.001" />
+        <mesh name="drive_tube_6x4" file="meshes/drive_tube_6x4.stl" scale="0.001 0.001 0.001" />
+        <mesh name="slipring_SZH-SLI020_PLACEHOLDER" file="meshes/slipring_SZH-SLI020_PLACEHOLDER.stl" scale="0.001 0.001 0.001" />
+        <mesh name="slipring_bracket" file="meshes/slipring_bracket.stl" scale="0.001 0.001 0.001" />
+        <mesh name="base_link" file="meshes/base_link.stl" scale="0.001 0.001 0.001" />
+        <mesh name="electronics_box_rev5" file="meshes/electronics_box_rev5.stl" scale="0.001 0.001 0.001" />
+        <mesh name="box_lid_rev5" file="meshes/box_lid_rev5.stl" scale="0.001 0.001 0.001" />
+        <mesh name="SPCC_plate_146x146x3_2" file="meshes/SPCC_plate_146x146x3_2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Raspberry_Pi_5" file="meshes/Raspberry_Pi_5.stl" scale="0.001 0.001 0.001" />
+        <mesh name="SEENGREAT_RS485_Dual_CAN_HAT" file="meshes/SEENGREAT_RS485_Dual_CAN_HAT.stl" scale="0.001 0.001 0.001" />
+        <mesh name="E-stop_22mm_placeholder" file="meshes/E-stop_22mm_placeholder.stl" scale="0.001 0.001 0.001" />
+        <mesh name="module_48V_5V_converter" file="meshes/module_48V_5V_converter.stl" scale="0.001 0.001 0.001" />
+        <mesh name="module_DC_SSR" file="meshes/module_DC_SSR.stl" scale="0.001 0.001 0.001" />
+        <mesh name="module_terminal_block" file="meshes/module_terminal_block.stl" scale="0.001 0.001 0.001" />
+    </asset>
+    <worldbody>
+        <light directional="true" pos="-0.5 0.5 3" dir="0 0 -1" />
+        <geom pos="0 0 0" size="1 1 1" type="plane" rgba="1 0.83 0.61 0.5" />
+        <body name="base_link" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+            <geom name="base_link_geom" type="mesh" mesh="base_link" pos="0 0 0" euler="0 0 0" />
+            <inertial mass="1.4818316319511198" pos="6.478814537983507e-05 -2.7839402283870097e-06 -0.08720518232484926" fullinertia="0.005497507249541402 0.00550186713597068 0.0036715065698998636 -2.6727252245273166e-10 3.004462826416078e-06 -6.515884611751008e-08" />
+            <body name="RMD-X6-P20-60-E" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="RMD-X6-P20-60-E_geom" type="mesh" mesh="RMD-X6-P20-60-E" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.5295460172821769" pos="-8.898918041415573e-05 -0.00013495544677870794 -0.02861574603154959" fullinertia="0.0005329118585045489 0.0005318244984692392 0.0005420384995759367 7.067599187778668e-07 -1.9374945314959245e-06 -2.743134480207274e-06" />
+            </body>
+            <body name="top_plate_Al_3t" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="top_plate_Al_3t_geom" type="mesh" mesh="top_plate_Al_3t" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.04208497467862233" pos="1.0001462731623697e-14 -1.0028814042649102e-16 -0.0015063670196845528" fullinertia="3.4818729070369334e-05 3.4486637646668954e-05 6.924242130442234e-05 -1.6604571148887543e-07 -1.2949051262064548e-19 -1.3160529754499048e-21" />
+            </body>
+            <body name="slipring_SZH-SLI020_PLACEHOLDER" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="slipring_SZH-SLI020_PLACEHOLDER_geom" type="mesh" mesh="slipring_SZH-SLI020_PLACEHOLDER" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.0950153429495964" pos="9.32744475233623e-14 5.870378722598168e-18 -0.08632108763023062" fullinertia="1.1428331415161549e-05 1.1428331364707008e-05 1.0107656041155469e-05 1.1155520951485599e-20 6.185693900914913e-17 5.782961395814038e-20" />
+            </body>
+            <body name="slipring_bracket" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="slipring_bracket_geom" type="mesh" mesh="slipring_bracket" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.1436747351231029" pos="-0.0019819402920794376 3.882213856832705e-17 -0.0985" fullinertia="8.479741941885203e-05 7.446851240407973e-05 0.00015905041972024612 1.674335469965459e-19 -5.082197683525802e-20 -1.9522161665008755e-20" />
+            </body>
+            <body name="electronics_box_rev5" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="electronics_box_rev5_geom" type="mesh" mesh="electronics_box_rev5" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.8208148864821171" pos="0.002742198181315165 0.004689009623718564 -0.18001149455798277" fullinertia="0.0023744942869411804 0.0024587719247566794 0.004573095057647558 0.00010007381597758821 -8.794224210412725e-06 -2.7487391638882867e-05" />
+            </body>
+            <body name="box_lid_rev5" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="box_lid_rev5_geom" type="mesh" mesh="box_lid_rev5" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.3820749661262098" pos="-9.02544061665338e-05 -0.00018221432457189558 -0.1516519532976607" fullinertia="0.000956654363030076 0.0009570108829092244 0.0019127656273683106 -2.414109308533263e-06 -2.4462720572080774e-08 -4.757483789999227e-08" />
+            </body>
+            <body name="SPCC_plate_146x146x3_2" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="SPCC_plate_146x146x3_2_geom" type="mesh" mesh="SPCC_plate_146x146x3_2" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.5340065618922325" pos="-2.4557751561583383e-05 -5.018323145254561e-05 -0.19340000000000002" fullinertia="0.0009454567177696153 0.0009456802224071248 0.0018902255689777733 -9.230236699785122e-07 -2.7570922433127476e-19 -2.1175823681357508e-19" />
+            </body>
+            <body name="Raspberry_Pi_5" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="Raspberry_Pi_5_geom" type="mesh" mesh="Raspberry_Pi_5" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.15621931750000087" pos="-0.03256410689654306 -0.04863618844705284 -0.17770242568672728" fullinertia="0.00010799530991518515 4.2002397521310325e-05 0.00014112204519685107 1.0779111715354835e-05 -2.3998974685768195e-07 1.0765664744193321e-05" />
+            </body>
+            <body name="SEENGREAT_RS485_Dual_CAN_HAT" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="SEENGREAT_RS485_Dual_CAN_HAT_geom" type="mesh" mesh="SEENGREAT_RS485_Dual_CAN_HAT" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.12528993684249518" pos="-0.048501872194621404 -0.017999998175318995 -0.1686245785232124" fullinertia="3.479562574944207e-05 4.034313002730444e-05 7.275959915954754e-05 4.0657581468206416e-20 2.723311433297168e-06 -1.0842021724855044e-19" />
+            </body>
+            <body name="E-stop_22mm_placeholder" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="E-stop_22mm_placeholder_geom" type="mesh" mesh="E-stop_22mm_placeholder" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.1193616712804906" pos="0.044999999999999984 -0.0525 -0.17079999999999998" fullinertia="1.952558006030128e-05 7.2213811124709724e-06 1.9525580060300303e-05 0.0 8.673617379884035e-19 -8.673617379884035e-19" />
+            </body>
+            <body name="module_48V_5V_converter" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="module_48V_5V_converter_geom" type="mesh" mesh="module_48V_5V_converter" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.2967299999999995" pos="-0.033 0.036000000000000004 -0.18080000000000004" fullinertia="3.8302897499998406e-05 9.703070999999772e-05 0.00011931018749999987 -1.0842021724855044e-19 2.168404344971009e-19 -4.336808689942018e-19" />
+            </body>
+            <body name="module_DC_SSR" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="module_DC_SSR_geom" type="mesh" mesh="module_DC_SSR" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.41966099999999984" pos="0.034 0.0425 -0.17880000000000004" fullinertia="8.774412074999578e-05 0.00011890394999999714 0.00017279541675000007 0.0 0.0 -8.673617379884035e-19" />
+            </body>
+            <body name="module_terminal_block" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <geom name="module_terminal_block_geom" type="mesh" mesh="module_terminal_block" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.08477999999999986" pos="0.04 -0.0075 -0.18080000000000002" fullinertia="3.8786850000004265e-06 1.359306000000074e-05 1.2893624999999983e-05 3.3881317890172014e-21 0.0 1.3552527156068805e-20" />
+            </body>
+            <body name="hub_rev5" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                <joint name="base_link_J1_yaw" type="hinge" axis="0.0 0.0 1.0" pos="0.0 0.0 0.0" />
+                <geom name="hub_rev5_geom" type="mesh" mesh="hub_rev5" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.019832305826006934" pos="6.334948209511458e-06 4.442614994304577e-18 0.003846693050057123" fullinertia="3.896570962818379e-06 3.431908871421857e-06 7.1181665474424305e-06 7.049142093917723e-21 -1.1229689922214598e-08 -1.8637607452326086e-21" />
+                <body name="arm_holder" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="arm_holder_geom" type="mesh" mesh="arm_holder" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.017663069712980626" pos="-2.8424480768683017e-12 -5.768473624794685e-07 0.015905917781525163" fullinertia="2.503616629279688e-06 2.5672895228418083e-06 3.706027090878154e-06 4.2913617163219844e-21 -2.9651550670377967e-16 6.016343314434523e-12" />
+                </body>
+                <body name="688ZZ_A" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="688ZZ_A_geom" type="mesh" mesh="688ZZ_A" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.005918760559363255" pos="0.016 -2.788462968231947e-13 0.018" fullinertia="2.367504233937143e-07 1.3070596184301187e-07 1.3070596388138353e-07 2.6145752230027163e-23 0.0 7.843725669008149e-23" />
+                </body>
+                <body name="688ZZ_B" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="688ZZ_B_geom" type="mesh" mesh="688ZZ_B" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.005918760559363255" pos="-0.016 -2.788462968231947e-13 0.018" fullinertia="2.367504233937143e-07 1.3070596184301187e-07 1.3070596388138353e-07 -1.1329825966345104e-22 4.235164736271502e-22 7.843725669008149e-23" />
+                    <body name="ring_B" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                        <joint name="688ZZ_B_J2_pendulum" type="hinge" axis="1.0 0.0 0.0" pos="-0.0185 0.0 0.018" />
+                        <geom name="ring_B_geom" type="mesh" mesh="ring_B" pos="0 0 0" euler="0 0 0" />
+                        <inertial mass="0.0006658605629283556" pos="-0.020000000000000004 -2.4541316986601248e-18 0.018000000000000006" fullinertia="1.3650141540031019e-08 7.324466192211724e-09 7.324466192211512e-09 -2.7235158572835816e-24 -5.293955920339377e-23 1.6885798315158226e-23" />
+                        <body name="bending_pipe" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                            <geom name="bending_pipe_geom" type="mesh" mesh="bending_pipe" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.0404810331676941" pos="0.05804143296811888 -0.0418429445646091 0.017997924119062675" fullinertia="8.739271874299467e-05 4.082210915887574e-05 0.000127709095047693 3.715262539327471e-05 -6.473777685567206e-09 3.4489047578753072e-09" />
+                        </body>
+                        <body name="ring_A" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                            <geom name="ring_A_geom" type="mesh" mesh="ring_A" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.0006658605629283556" pos="0.020100000000000007 -2.4541316986601248e-18 0.018000000000000006" fullinertia="1.3650141540031019e-08 7.324466192211724e-09 7.324466192211512e-09 3.9218628344883545e-24 1.0587911840678754e-22 1.6885798315158226e-23" />
+                        </body>
+                        <body name="magnet_insert_rev4" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                            <geom name="magnet_insert_rev4_geom" type="mesh" mesh="magnet_insert_rev4" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.0003028220080455772" pos="-0.020003758683729087 -8.958771672203236e-15 0.018116788900865367" fullinertia="2.01880312561132e-09 3.053908917178372e-09 3.1153813983866116e-09 1.2870644834276415e-21 8.668422003963615e-11 9.257947255001311e-21" />
+                        </body>
+                        <body name="magnet_6x3_diametric" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                            <geom name="magnet_6x3_diametric_geom" type="mesh" mesh="magnet_6x3_diametric" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.0006658605629283288" pos="-0.0234 6.274077672453813e-13 0.018000000000000002" fullinertia="2.9963723396906607e-09 1.997581785528354e-09 1.9975813985547877e-09 3.949097980847364e-25 -5.293955920339377e-23 3.676746408021645e-24" />
+                        </body>
+                    </body>
+                </body>
+                <body name="encoder_pod_rev5" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="encoder_pod_rev5_geom" type="mesh" mesh="encoder_pod_rev5" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.021327607571930463" pos="-0.025668348451380815 -0.004921423811282861 0.018946841017900985" fullinertia="7.69743151784967e-06 1.995769022994516e-06 6.6890984751123705e-06 2.834056722013257e-07 2.9079953222129184e-09 -6.620085789305091e-09" />
+                </body>
+                <body name="encoder_pod_cover_rev5" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="encoder_pod_cover_rev5_geom" type="mesh" mesh="encoder_pod_cover_rev5" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.0029898563826147324" pos="-0.03668117274392343 -0.005387765769535873 0.01799999999999999" fullinertia="8.62392468753039e-07 1.9413178328876895e-07 6.72673097439614e-07 -2.269422618409756e-09 0.0 -2.117582368135751e-22" />
+                </body>
+                <body name="Grove_AS5600_PCB" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="Grove_AS5600_PCB_geom" type="mesh" mesh="Grove_AS5600_PCB" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.0023511221076278556" pos="-0.0292 -0.009998882871009487 0.018" fullinertia="3.9036580184173034e-07 7.840966792904181e-08 3.1295927934527646e-07 0.0 2.117582368135751e-22 1.0587911840678754e-22" />
+                </body>
+                <body name="Grove_connector" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="Grove_connector_geom" type="mesh" mesh="Grove_connector" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.0005172800000000002" pos="-0.0325 -0.02 0.018000000000000002" fullinertia="9.174822933333419e-09 7.493662933333236e-09 3.836493333333296e-09 0.0 0.0 2.6469779601696886e-23" />
+                </body>
+                <body name="Grove_switch" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="Grove_switch_geom" type="mesh" mesh="Grove_switch" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="6.268416000000009e-05" pos="-0.0316 -0.013900000000000001 0.01292" fullinertia="2.6849715200000193e-10 2.810339839999896e-10 9.444413439999819e-11 -3.308722450212111e-24 -3.308722450212111e-24 0.0" />
+                </body>
+                <body name="AS5600_chip" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="AS5600_chip_geom" type="mesh" mesh="AS5600_chip" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.0002354999999999998" pos="-0.027649999999999997 0.0 0.018" fullinertia="8.04625000000029e-10 3.581562500000463e-10 5.347812500000514e-10 1.0213184464813451e-24 2.6469779601696886e-23 -3.404394821604484e-25" />
+                </body>
+                <body name="drive_tube_6x4" pos="0.0 0.0 0.0" euler="-0.0 0.0 -0.0">
+                    <geom name="drive_tube_6x4_geom" type="mesh" mesh="drive_tube_6x4" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.009556332153138622" pos="-1.6730857608254598e-13 0.0 -0.0337500000000003" fullinertia="4.814201412149952e-06 4.814201413137291e-06 6.211615948906929e-08 3.2682190287403044e-23 -3.0978304296768797e-17 -5.229150445984487e-22" />
+                </body>
+            </body>
+        </body>
+    </worldbody>
+</mujoco>

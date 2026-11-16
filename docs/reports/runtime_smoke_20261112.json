@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-12",
+  "original_model_load": "passed nq=2 nv=2 nu=0",
+  "training_model_load": "passed nq=2 nv=2 nu=1",
+  "gymnasium_check_env": "passed",
+  "training_steps": 512,
+  "export_parity": "passed 100 inputs atol=1e-5",
+  "render": "passed latest_frame.png",
+  "evaluation": {
+    "mode": "nominal deterministic, proposed criteria",
+    "success_rate": 0.0,
+    "episodes": [
+      {
+        "seed": 42,
+        "success": false,
+        "first_entry_s": null,
+        "longest_hold_s": 0.0,
+        "angle_rmse_rad": 2.979821565400306,
+        "torque_rms_nm": 0.006953870851256072,
+        "return": -147.74363315308898,
+        "fault": true
+      },
+      {
+        "seed": 43,
+        "success": false,
+        "first_entry_s": null,
+        "longest_hold_s": 0.0,
+        "angle_rmse_rad": 2.984453512760236,
+        "torque_rms_nm": 0.00695679122780704,
+        "return": -147.91418077152278,
+        "fault": true
+      }
+    ]
+  },
+  "limits": "Smoke test only; no convergence or hardware validation; periodic checkpoint callback not exercised at 512 steps"
+}

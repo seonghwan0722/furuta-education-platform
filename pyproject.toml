@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "furuta-education-platform"
+version = "0.1.0"
+description = "Furuta reinforcement-learning education and deployment reference"
+requires-python = ">=3.11"
+dependencies = ["numpy==2.5.3"]
+
+[project.optional-dependencies]
+training = ["mujoco==3.14.0", "gymnasium==1.3.0", "stable-baselines3==2.9.0", "torch==2.14.0", "Pillow"]
+
+[tool.setuptools.packages.find]
+include = ["furuta_platform*", "deployment*"]
+exclude = ["tests*", "legacy*", "edukit*"]
+
+# Editable/source-checkout use: models/ and configs/ remain project assets.
+# A standalone wheel containing those external assets is not supported yet.

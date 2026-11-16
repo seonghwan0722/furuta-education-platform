@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "runs": [
+    "runs\\provenance_smoke_20261112\\balance",
+    "runs\\provenance_smoke_20261112\\mixed"
+  ],
+  "actual_steps_per_stage": 512,
+  "child_cumulative_steps": 1024,
+  "receipts_per_stage": 3,
+  "checkpoint_interval": 256,
+  "export_parity": "100 observations passed",
+  "evaluation_export_policy_hash_match": true,
+  "scope": "provenance integration only, not policy performance"
+}
