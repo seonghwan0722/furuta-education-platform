@@ -76,6 +76,19 @@ for j=idx
     u(j)=ub;
 end
 u=max(-1,min(1,u));
+% optional regeneration guard (hardware 2026-11-20: RMD stopped replying ~65 ms after a full
+% reversal at ~8-13 rad/s): limit braking current when command opposes a fast arm, and slew-limit.
+if isfield(g,'brakeMax') && isfinite(g.brakeMax)
+    br=sign(u)~=sign(v) & abs(v)>g.brakeV & u~=0 & ~mem.bal;         % swing-up phase
+    u(br)=sign(u(br)).*min(abs(u(br)),g.brakeMax);
+end
+if isfield(g,'brakeMaxBal') && isfinite(g.brakeMaxBal)
+    br=sign(u)~=sign(v) & abs(v)>g.brakeVBal & u~=0 & mem.bal;       % balance phase
+    u(br)=sign(u(br)).*min(abs(u(br)),g.brakeMaxBal);
+end
+if isfield(g,'slew') && isfinite(g.slew)
+    u=mem.c1+max(-g.slew,min(g.slew,u-mem.c1));
+end
 % quantize like the RMD A1 path so the observer knows the applied value
 u=round(u*c.maxCurrent/c.currentLSB)*c.currentLSB/c.maxCurrent;
 mem.c2=mem.c1; mem.c1=u;

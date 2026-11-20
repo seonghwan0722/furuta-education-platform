@@ -50,7 +50,7 @@ elseif armed
     assert(d.watchdog_cutoff_verified && d.hardware_enable_cutoff_verified && ...
         abs(d.current_sign)==1 && isfinite(d.amps_per_action) && d.amps_per_action>=.01 && ...
         isfinite(d.max_current_a) && d.max_current_a>=.01 && d.max_current_a<=d.amps_per_action && ...
-        isfinite(d.drive_seconds) && d.drive_seconds>.1 && d.drive_seconds<=10 && ...
+        isfinite(d.drive_seconds) && d.drive_seconds>.1 && d.drive_seconds<=20 && ...   % 20 s cap: user request 2026-11-20
         numel(d.limits)==4 && all(isfinite(d.limits)) && all(d.limits>0) && ...
         (opts.ManualCurrent || opts.SpeedControl || strlength(opts.Checkpoint)>0 || strlength(opts.ControllerFunction)>0), ...
         'Verified drive profile and command source required.');
@@ -401,6 +401,17 @@ if opts.NativeSpeed, name = 'furutaA2Telemetry'; end
 set_param(line,'Name',name);
 ports = get_param([mdl '/Telemetry'],'PortHandles');
 set_param(ports.Outport,'DataLogging','on');
+% Sensor-path health (added 2026-11-20 after a run lost valid samples during fast arm motion):
+% CAN status/error/remote of the RMD reply, first reply byte, AS5600 magnet byte and both I2C status codes.
+chart('Health log',[1250 360 1420 470],[ ...
+    "function row = health(frame,status,err,remote,magnet,mstat,astat)"; ...
+    "row = [double(status); double(err); double(remote); double(frame(1)); double(magnet(1)); double(mstat); double(astat)];";"end"]);
+hin = {'RMD reply/1','RMD reply/2','RMD reply/3','RMD reply/4','AS5600 magnet status/1','AS5600 magnet status/2','AS5600 angle/2'};
+for k=1:numel(hin)
+    wire(hin{k},sprintf('Health log/%d',k));
+end
+hp = get_param([mdl '/Health log'],'PortHandles');
+set_param(hp.Outport,'DataLogging','on','DataLoggingNameMode','Custom','DataLoggingName','furutaPiHealth');
 set_param(mdl,'SignalLogging','on');
 if opts.SpeedControl
     furuta_pi_enable_speed_tuning(mdl);

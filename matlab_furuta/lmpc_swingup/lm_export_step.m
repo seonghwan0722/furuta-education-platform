@@ -94,5 +94,32 @@ if isfield(g,'noSwing') && g.noSwing
     L=[L(1:i0); "    u=0;"; L(i1:end)];
     L=strrep(L,"observer + energy swing-up +","observer + (NO swing-up, balance only) +");
 end
+if (isfield(g,'brakeMax') && isfinite(g.brakeMax)) || (isfield(g,'slew') && isfinite(g.slew)) || (isfield(g,'brakeMaxBal') && isfinite(g.brakeMaxBal))
+    % regeneration guard / slew limit, inserted after the +-1 clip (same as lm_controller)
+    i0=find(strcmp(L,"u=max(-1,min(1,u));"),1); add=strings(0,1);
+    if isfield(g,'brakeMax') && isfinite(g.brakeMax)
+        add(end+1)="if ~bal && u~=0 && sign(u)~=sign(v) && abs(v)>"+S(g.brakeV)+", u=sign(u)*min(abs(u),"+S(g.brakeMax)+"); end";
+    end
+    if isfield(g,'brakeMaxBal') && isfinite(g.brakeMaxBal)
+        add(end+1)="if bal && u~=0 && sign(u)~=sign(v) && abs(v)>"+S(g.brakeVBal)+", u=sign(u)*min(abs(u),"+S(g.brakeMaxBal)+"); end";
+    end
+    if isfield(g,'slew') && isfinite(g.slew)
+        add(end+1)="u=c1+max(-"+S(g.slew)+",min("+S(g.slew)+",u-c1));";
+    end
+    L=[L(1:i0); add(:); L(i0+1:end)];
+end
+if isfield(g,'fcOnCmd') && g.fcOnCmd
+    % Coulomb feed-forward keyed on the commanded direction instead of the estimated arm rate
+    L=strrep(L,"u=ub+"+S(D.fc*p.coulomb/p.tau_max)+"*tanh(v/","u=ub+"+S(D.fc*p.coulomb/p.tau_max)+"*tanh(ub/");
+end
+if isfield(g,'pidScale') && g.pidScale~=1
+    G=g.pid; Gs=G; Gs(1:4)=G(1:4)*g.pidScale;
+    for q=1:4, L=strrep(L,S(G(q))+"*z(",S(Gs(q))+"*z("); end
+end
+if isfield(g,'thOffsetDeg') && g.thOffsetDeg~=0
+    % pendulum zero trim inside the controller: true angle = measured - offset (sensor JSON untouched)
+    L=strrep(L,"x=double(x(:)); u=0; balancing=false;", ...
+        "x=double(x(:)); x(2)=x(2)-"+S(deg2rad(g.thOffsetDeg))+"; u=0; balancing=false;");
+end
 file=fullfile(outDir,name+".m"); writelines(L,file);
 end
