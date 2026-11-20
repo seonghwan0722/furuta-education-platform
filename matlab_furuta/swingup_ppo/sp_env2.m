@@ -9,8 +9,13 @@ methods (Static)
         n=size(x0,2); s.x=x0; s.queue=zeros(2,n); s.t=zeros(1,n);
         s.delay=ones(1,n)*c.delaySteps; s.frac=zeros(1,n); s.alpha=c.p.alpha*ones(1,n); s.coul=c.p.coulomb*ones(1,n); s.eta=c.p.eta_phi*ones(1,n);
         s.useFilter=dr.filter;
+        if isfield(dr,'regenBudget') && isfinite(dr.regenBudget)
+            s.regenBudget=dr.regenBudget; s.regen=zeros(1,n); s.dead=false(1,n); s.deadNew=false(1,n);
+        end
+        if isfield(dr,'biasDeg'), s.bias=zeros(1,n); end          % pendulum zero error (sensor/trim) [rad]
+        if isfield(dr,'coulThMax'), s.coulTh=zeros(1,n); end      % pendulum bearing Coulomb friction [N m]
         s = sp_env2.randomize(s,true(1,n),dr,c);
-        [ma,mp]=sp_env2.measure(x0); s.prev=[ma;mp]; s.filt=x0(3:4,:);
+        [ma,mp]=sp_env2.measure(x0,sp_env2.biasOf(s,true(1,n))); s.prev=[ma;mp]; s.filt=x0(3:4,:);
     end
     function s = randomize(s,m,dr,c)
         n=nnz(m); if n==0, return; end
@@ -20,22 +25,29 @@ methods (Static)
             if ~isfield(s,'tau'), s.tau=.03*ones(1,numel(s.frac)); end
             s.tau(m)=dr.tauRange(1)+(dr.tauRange(2)-dr.tauRange(1))*rand(1,n);
         end
+        if isfield(dr,'biasDeg'), s.bias(m)=deg2rad(dr.biasDeg)*(2*rand(1,n)-1); end
+        if isfield(dr,'coulThMax'), s.coulTh(m)=dr.coulThMax*rand(1,n); end
         s.alpha(m)=c.p.alpha*(1+dr.alpha*(2*rand(1,n)-1));
         s.coul(m)=c.p.coulomb*(1+dr.coul*(2*rand(1,n)-1));
         s.eta(m)=c.p.eta_phi*(1+dr.eta*(2*rand(1,n)-1));
     end
     function s = resetSome(s,m,xn,dr,c)
         s.x(:,m)=xn; s.queue(:,m)=0; s.t(m)=0;
+        if isfield(s,'regenBudget'), s.regen(m)=0; s.dead(m)=false; s.deadNew(m)=false; end
         s=sp_env2.randomize(s,m,dr,c);
-        [ma,mp]=sp_env2.measure(xn); s.prev(:,m)=[ma;mp]; s.filt(:,m)=xn(3:4,:);
+        [ma,mp]=sp_env2.measure(xn,sp_env2.biasOf(s,m)); s.prev(:,m)=[ma;mp]; s.filt(:,m)=xn(3:4,:);
     end
-    function [ma,mp] = measure(x)
+    function [ma,mp] = measure(x,bias)
+        if nargin<2, bias=0; end
         ma=round(rad2deg(x(1,:))*100)/100*pi/180;
-        cnt=mod(round(x(2,:)/(2*pi)*4096),4096); mp=cnt*2*pi/4096; mp=atan2(sin(mp),cos(mp));
+        cnt=mod(round((x(2,:)+bias)/(2*pi)*4096),4096); mp=cnt*2*pi/4096; mp=atan2(sin(mp),cos(mp));
+    end
+    function b = biasOf(s,m)
+        if isfield(s,'bias'), b=s.bias(m); else, b=0; end
     end
     function [o,s] = observe(s,Ts)
         % called once per control tick, BEFORE the action is chosen
-        [ma,mp]=sp_env2.measure(s.x);
+        [ma,mp]=sp_env2.measure(s.x,sp_env2.biasOf(s,true(1,size(s.x,2))));
         if s.useFilter
             d=[ma;mp]-s.prev; d(2,:)=atan2(sin(d(2,:)),cos(d(2,:)));
             tau=.03; if isfield(s,'tau'), tau=s.tau; end   % per-env filter tau (default = Pi decode 30 ms)
@@ -55,8 +67,17 @@ methods (Static)
         older=s.queue(2,:);
         s.queue=[cmd; s.queue(1,:)];
         tauNew=c.p.tau_max*applied; tauOld=c.p.tau_max*older;
+        if isfield(s,'regenBudget')
+            % hardware 2026-11-20: braking energy per event above ~1 J made the RMD stop responding.
+            % Model: accumulate braking energy while the applied torque opposes the arm; over budget -> motor dead.
+            pb=max(0,-tauNew.*s.x(3,:))*c.Ts;
+            s.regen=(pb>0).*(s.regen+pb);
+            s.deadNew=~s.dead & s.regen>s.regenBudget; s.dead=s.dead | s.deadNew;
+            tauNew(s.dead)=0; tauOld(s.dead)=0;
+        end
         nOld=round(s.frac*round(c.Ts/c.p.h));
         p=c.p; p.alpha=s.alpha; p.coulomb=s.coul; p.eta_phi=s.eta;
+        if isfield(s,'coulTh'), p.coulTh=s.coulTh; end
         x=s.x; h=p.h;
         for i=1:round(c.Ts/h)
             tau=tauNew; o=i<=nOld; tau(o)=tauOld(o);
@@ -73,6 +94,7 @@ s=sin(x(2,:)); c=cos(x(2,:)); v=x(3,:); w=x(4,:);
 d=p.alpha+p.beta*s.^2; b=p.gam*c;
 f=tau-2*p.beta*s.*c.*v.*w+p.gam*s.*w.^2-p.eta_phi.*v-p.coulomb.*sign(v);
 g=p.beta*s.*c.*v.^2-p.eta_theta*w+p.delta*s;
+if isfield(p,'coulTh'), g=g-p.coulTh.*tanh(w/0.05); end   % smoothed pendulum bearing friction
 detD=d*p.beta2-b.^2;
 a=[(p.beta2*f-b.*g)./detD; (d.*g-b.*f)./detD];
 end

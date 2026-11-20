@@ -20,6 +20,9 @@ arguments
     opts.NativeSpeed (1,1) logical = false
     opts.SpeedRPM (1,1) double {mustBeFinite} = 0
     opts.AutoArmHome (1,1) logical = true   % first valid 0x92 angle of each run = arm zero
+    % Consecutive missed (invalid / un-acked) samples tolerated with a 0 A command before Motor Off
+    % latches (user decision 2026-11-20). 0 = original behaviour (first miss latches).
+    opts.MissTolerance (1,1) double {mustBeInteger,mustBeNonnegative,mustBeLessThanOrEqual(opts.MissTolerance,2)} = 0
 end
 root = fileparts(mfilename('fullpath'));
 profile = jsondecode(fileread(fullfile(root,'..','deployment','pi','rmd_x6_48v.json')));
@@ -233,12 +236,16 @@ elseif strlength(opts.ControllerFunction)>0
     assert(exist(char(opts.ControllerFunction),'file')==2,'Controller function not found on the path.');
     chart('Classical controller',[500 36 605 99],[
         "function [a,balancing] = control(obs,valid,act)"
-        "persistent last bal"
-        "if isempty(last), last = 0; bal = false; end"
+        "persistent last bal miss"
+        "if isempty(last), last = 0; bal = false; miss = 0; end"
         "x = [obs(3); atan2(obs(2),obs(1)); obs(4); obs(5)];"
         "if ~valid"
-        "    [~,~] = "+opts.ControllerFunction+"(x,false); last = 0; bal = false;"
+        "    if act, miss = miss + 1; end"
+        "    if miss > "+string(opts.MissTolerance)+" || "+string(opts.MissTolerance)+" == 0"
+        "        [~,~] = "+opts.ControllerFunction+"(x,false); last = 0; bal = false;"
+        "    end"
         "elseif act"
+        "    miss = 0;"
         "    [last,bal] = "+opts.ControllerFunction+"(x,true);"
         "end"
         "a = last; balancing = bal;"
@@ -297,6 +304,11 @@ if opts.NativeSpeed
         "[packet,send,applied] = furuta_pi_speed_frame(rpm,obs,ok,armed,cal(2),s(2),s(1),lim,t,d(4));"; ...
         "needsAck = packet(1)==162;";"end"]);
 else
+if opts.MissTolerance>0
+    frameCall = "[packet,send,applied] = furuta_pi_frame_tol(a,obs,valid && (~needsAck || ack),engaged,d(1),d(2),d(3),lim,t,d(4),"+string(opts.MissTolerance)+");";
+else
+    frameCall = "[packet,send,applied] = furuta_pi_frame(a,obs,valid && (~needsAck || ack),engaged,d(1),d(2),d(3),lim,t,d(4));";
+end
 chart('Drive interlocks',[730 35 905 365],[ ...
     "function [packet,send,applied] = command(a,obs,valid,act,ack,d,lim,t)"; ...
     "persistent needsAck count"; ...
@@ -305,7 +317,7 @@ chart('Drive interlocks',[730 35 905 365],[ ...
     "if ~act || d(4)==0, return, end"; ...
     "if valid, count = count+1; end"; ...
     "engaged = count>0 || t>.2;"; ...
-    "[packet,send,applied] = furuta_pi_frame(a,obs,valid && (~needsAck || ack),engaged,d(1),d(2),d(3),lim,t,d(4));"; ...
+    frameCall; ...
     "needsAck = packet(1)==161;";"end"]);
 end
 inputs = {source,'Sensor decoder/1','Sensor decoder/2','CAN slots/2', ...

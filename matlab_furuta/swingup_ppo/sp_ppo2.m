@@ -3,6 +3,7 @@ function sp_ppo2(folder,init,cfg)
 % Saves checkpoints + evaluation logs every cfg.evalEvery iterations.
 rng(cfg.seed,'twister');
 c=sp_config; sc=single(sp_scale);
+if isfield(cfg,'plantFn'), c=feval(cfg.plantFn); end   % e.g. 'rev11_ident_config'
 if isfield(cfg,'armLimTrain'), c.armRateLimitTrain=cfg.armLimTrain; end  % stricter training trip only; eval keeps 15
 if isfield(cfg,'maxCurrent'), c.maxCurrent=cfg.maxCurrent; c.p.tau_max=c.maxCurrent*c.Kt; end  % action full scale [A]
 actor=init.actor; critic=init.critic; logStd=dlarray(single(log(cfg.std0)));
@@ -27,6 +28,8 @@ for iter=1:cfg.iters
         aprev=s.queue(1,:);
         s=sp_env2.step(s,double(a),c);
         [r,term]=sp_reward(s.x,max(-1,min(1,double(a))),c,cfg.rw);
+        if isfield(s,'deadNew'), term=term|s.deadNew; r(s.deadNew)=-cfg.rw.termPenalty; end   % RMD dropout (regen budget)
+        if isfield(cfg.rw,'regen') && isfield(s,'regen'), r(~term)=r(~term)-cfg.rw.regen*s.regen(~term); end
         if isfield(cfg.rw,'du') && cfg.rw.du>0, r(~term)=r(~term)-cfg.rw.du*(max(-1,min(1,double(a(~term))))-aprev(~term)).^2; end
         epT=epT+1; epR=epR+r;
         trunc=~term & epT>=maxSteps;
@@ -82,6 +85,7 @@ for iter=1:cfg.iters
     if mod(iter,cfg.evalEvery)==0 || iter==cfg.iters
         evs=[struct('filter',cfg.dr.filter,'delay',1,'armLim',15,'pendLim',25,'frac',0), struct('filter',cfg.dr.filter,'delay',2,'armLim',15,'pendLim',25,'frac',0)];
         if isfield(cfg.dr,'fracMax') && cfg.dr.fracMax>0, evs(2)=struct('filter',cfg.dr.filter,'delay',1,'armLim',15,'pendLim',25,'frac',cfg.dr.fracMax); end
+        if isfield(cfg.dr,'regenBudget'), evs(1).regenBudget=cfg.dr.regenBudget; evs(2).regenBudget=cfg.dr.regenBudget; end
         M1=sp_eval2(actor,xe,25,c,evs(1)); M2=sp_eval2(actor,xe,25,c,evs(2));
         row.EvalPass=nnz(M1.Passed); row.EvalPassD2=nnz(M2.Passed); row.EvalN=height(M1);
         row.EvalMaxHoldErr=max(M1.HoldMaxErrDeg); row.EvalMaxArm=max(M1.PeakArmRate); row.EvalMaxReach=max(M1.ReachTime);

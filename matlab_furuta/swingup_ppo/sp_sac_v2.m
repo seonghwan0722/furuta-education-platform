@@ -6,6 +6,7 @@ function sp_sac_v2(folder,init,cfg)
 % n-step returns, TD3+BC-style behaviour regularization, fixed or auto entropy.
 rng(cfg.seed,'twister');
 c=sp_config; sc=single(sp_scale);
+if isfield(cfg,'plantFn'), c=feval(cfg.plantFn); end
 if isfield(cfg,'armLimTrain'), c.armRateLimitTrain=cfg.armLimTrain; end
 if isfield(cfg,'pendLimTrain'), c.pendRateLimitTrain=cfg.pendLimTrain; end   % stricter training trip; eval keeps 25
 if isfield(init,'sacActor'), actor=init.sacActor; else, actor=sacActorFromBC(init.actor,cfg.std0); end
@@ -35,6 +36,8 @@ for iter=1:cfg.iters
         aprev=s.queue(1,:);
         s=sp_env2.step(s,double(a),c);
         [r,term]=sp_reward(s.x,double(a),c,cfg.rw);
+        if isfield(s,'deadNew'), term=term|s.deadNew; r(s.deadNew)=-cfg.rw.termPenalty; end
+        if isfield(cfg.rw,'regen') && isfield(s,'regen'), r(~term)=r(~term)-cfg.rw.regen*s.regen(~term); end
         r(~term)=r(~term)-cfg.rw.du*(double(a(~term))-aprev(~term)).^2;
         epT=epT+1; epR=epR+r; trunc=~term & epT>=maxSteps;
         [o2,s]=sp_env2.observe(s,c.Ts); o2=single(o2)./sc;
@@ -93,8 +96,9 @@ for iter=1:cfg.iters
     doneR=[]; row.EvalPass=NaN; row.EvalPassD2=NaN;
     if mod(iter,cfg.evalEvery)==0
         det=sp_sac_det(actor);
-        M1=sp_eval2(det,xe,25,c,struct('filter',cfg.dr.filter,'delay',1,'armLim',15,'pendLim',25,'frac',0));
-        M2=sp_eval2(det,xe,25,c,struct('filter',true,'delay',1,'armLim',15,'pendLim',25,'frac',1));
+        rb=Inf; if isfield(cfg.dr,'regenBudget'), rb=cfg.dr.regenBudget; end
+        M1=sp_eval2(det,xe,25,c,struct('filter',cfg.dr.filter,'delay',1,'armLim',15,'pendLim',25,'frac',0,'regenBudget',rb));
+        M2=sp_eval2(det,xe,25,c,struct('filter',true,'delay',1,'armLim',15,'pendLim',25,'frac',1,'regenBudget',rb));
         row.EvalPass=nnz(M1.Passed); row.EvalPassD2=nnz(M2.Passed);
         fprintf('EVAL it %d d1 pass %d/16 d2 pass %d maxArm %.2f\n',iter,nnz(M1.Passed),nnz(M2.Passed),max(M1.PeakArmRate));
         ck=struct('actor',det,'sacActor',actor,'q1',q1,'q2',q2,'logAlpha',logA,'iter',iter,'cfg',cfg, ...

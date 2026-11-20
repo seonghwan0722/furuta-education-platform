@@ -9,9 +9,11 @@ arguments
     opts.fc (1,1) double = 0.9          % Coulomb feed-forward fraction
     opts.vs (1,1) double = 0.05         % feed-forward smoothing [rad/s]
     opts.vmax (1,1) double = 13.5       % arm-rate constraint inside the LMPC [rad/s] (Inf = off)
+    opts.plantCfg = []                  % optional full config (e.g. rev11_ident_config) used for the model
 end
 here=fileparts(mfilename('fullpath')); addpath(fileparts(here)); addpath(fullfile(fileparts(here),'swingup_ppo'));
-c=sp_config; p=c.p; lp=p; lp.coulomb=0;
+c=sp_config; if ~isempty(opts.plantCfg), c=opts.plantCfg; end
+p=c.p; lp=p; lp.coulomb=0;
 [~,~,Ad,Bd]=furuta_linearize(lp,false);
 N=opts.N; Q=diag(opts.Q); R=opts.R;
 [K,P]=riccati_gain(Ad,Bd,Q,R,false);

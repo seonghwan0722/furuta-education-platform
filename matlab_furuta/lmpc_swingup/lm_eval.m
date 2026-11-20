@@ -3,6 +3,7 @@ function [M,R] = lm_eval(D,g,x0,T,ev)
 c=D.c; n=size(x0,2); N=round(T/c.Ts);
 dr=struct('filter',ev.filter,'delayMax',1,'alpha',0,'coul',0,'eta',0);
 c2=c; c2.delaySteps=ev.delay;
+if isfield(ev,'plantCfg'), c2=ev.plantCfg; c2.delaySteps=ev.delay; end   % full plant swap (controller keeps D.c)
 s=sp_env2.reset(x0,c2,dr); s.delay(:)=ev.delay;
 if isfield(ev,'frac'), s.frac(:)=ev.frac; end
 if isfield(ev,'plant')   % optional plant mismatch for robustness checks

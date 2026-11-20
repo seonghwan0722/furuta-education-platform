@@ -2,6 +2,7 @@ function [M,R] = sp_eval2(actor,x0,T,c,ev)
 % Deterministic policy rollout in sp_env2. ev: struct(filter,delay,armLim,pendLim)
 sc=single(sp_scale); n=size(x0,2); N=round(T/c.Ts);
 dr=struct('filter',ev.filter,'delayMax',1,'alpha',0,'coul',0,'eta',0);
+if isfield(ev,'regenBudget'), dr.regenBudget=ev.regenBudget; end
 c2=c; c2.delaySteps=ev.delay;
 s=sp_env2.reset(x0,c2,dr); s.delay(:)=ev.delay;
 if isfield(ev,'frac'), s.frac(:)=ev.frac; end

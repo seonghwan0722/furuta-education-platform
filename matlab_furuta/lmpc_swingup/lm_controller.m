@@ -47,7 +47,7 @@ if mode~="lmpc"
         if mode=="lqr"
             ub=-D.K*z;
         else  % PID on the pendulum angle with arm PD terms and conditional-integration anti-windup
-            G=g.pid; cand=G(1)*z(2)+G(2)*z(4)+G(3)*z(1)+G(4)*z(3)+G(5)*(mem.iint(j)+c.Ts*z(2));
+            G=g.pid; if isfield(g,"pidScale"), G(1:4)=G(1:4)*g.pidScale; end; cand=G(1)*z(2)+G(2)*z(4)+G(3)*z(1)+G(4)*z(3)+G(5)*(mem.iint(j)+c.Ts*z(2));
             if abs(cand)<=1 || sign(cand)~=sign(z(2)), mem.iint(j)=mem.iint(j)+c.Ts*z(2); end
             ub=G(1)*z(2)+G(2)*z(4)+G(3)*z(1)+G(4)*z(3)+G(5)*mem.iint(j);
         end
