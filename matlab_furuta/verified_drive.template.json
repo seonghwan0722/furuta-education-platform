@@ -1,0 +1,11 @@
+{
+  "watchdog_cutoff_verified": false,
+  "hardware_enable_cutoff_verified": false,
+  "current_sign": null,
+  "amps_per_action": null,
+  "max_current_a": null,
+  "drive_seconds": null,
+  "limits": [null, null, null, null],
+  "speed_kp_a_per_rad_s": null,
+  "max_target_rpm": null
+}

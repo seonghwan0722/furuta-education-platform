@@ -1,0 +1,9 @@
+function det = sp_sac_det_hist(actor)
+% Deterministic SAC policy tanh(mu) as a single-output net with fc1,fc2,fc3 names (same layout as the PPO actor).
+P=actor.Learnables; W=@(l,p) single(extractdata(P.Value{P.Layer==l & P.Parameter==p}));
+Wh=W("head","Weights"); bh=W("head","Bias");
+det=dlnetwork([featureInputLayer(8,Name="obs") ...
+    fullyConnectedLayer(64,Name="fc1",Weights=W("fc1","Weights"),Bias=W("fc1","Bias")) tanhLayer(Name="t1") ...
+    fullyConnectedLayer(64,Name="fc2",Weights=W("fc2","Weights"),Bias=W("fc2","Bias")) tanhLayer(Name="t2") ...
+    fullyConnectedLayer(1,Name="fc3",Weights=Wh(1,:),Bias=bh(1)) tanhLayer(Name="mean")]);
+end
