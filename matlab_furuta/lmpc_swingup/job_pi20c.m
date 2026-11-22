@@ -4,7 +4,7 @@ if ~exist('missTol','var'), missTol=2; end
 if ~exist("ctrls","var"), ctrls=["furuta_pid_bal_step","furuta_pid_step"]; end
 for cf=string(ctrls)
   sub=fullfile(out,char(cf)); if ~isfolder(sub), mkdir(sub); end; old=cd(sub);
-  f=build_furuta_pi_hardware(ControllerFunction=cf,Folder=sub,DriveProfile=prof,MissTolerance=missTol);
+  f=build_furuta_pi_hardware(ControllerFunction=cf,Folder=sub,DriveProfile=prof,MissTolerance=missTol,TimingLog=exist('timingLog','var')&&timingLog);
   load_system(f); [~,m]=fileparts(f); w=get_param(m,'ModelWorkspace');
   dv=getVariable(w,'drive'); lv=getVariable(w,'limits');
   set_param(m,'GenCodeOnly','on','RTWVerbose','off'); slbuild(m); close_system(m,0);

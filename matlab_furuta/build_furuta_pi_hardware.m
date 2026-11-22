@@ -22,6 +22,7 @@ arguments
     opts.AutoArmHome (1,1) logical = true   % first valid 0x92 angle of each run = arm zero
     % Consecutive missed (invalid / un-acked) samples tolerated with a 0 A command before Motor Off
     % latches (user decision 2026-11-20). 0 = original behaviour (first miss latches).
+    opts.TimingLog (1,1) logical = false   % log Pi wall-clock step timing as furutaPiTiming (diagnostic, 2026-11-22)
     opts.MissTolerance (1,1) double {mustBeInteger,mustBeNonnegative,mustBeLessThanOrEqual(opts.MissTolerance,2)} = 0
 end
 root = fileparts(mfilename('fullpath'));
@@ -428,6 +429,12 @@ for k=1:numel(hin)
 end
 hp = get_param([mdl '/Health log'],'PortHandles');
 set_param(hp.Outport,'DataLogging','on','DataLoggingNameMode','Custom','DataLoggingName','furutaPiHealth');
+if opts.TimingLog
+    chart('Timing log',[1250 500 1420 560],["function row = timing(t)";"row = furuta_pi_timing(t);";"end"]);
+    wire('Time/1','Timing log/1');
+    tp = get_param([mdl '/Timing log'],'PortHandles');
+    set_param(tp.Outport,'DataLogging','on','DataLoggingNameMode','Custom','DataLoggingName','furutaPiTiming');
+end
 set_param(mdl,'SignalLogging','on');
 if opts.SpeedControl
     furuta_pi_enable_speed_tuning(mdl);
