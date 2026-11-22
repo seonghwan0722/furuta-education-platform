@@ -94,7 +94,7 @@ if isfield(g,'noSwing') && g.noSwing
     L=[L(1:i0); "    u=0;"; L(i1:end)];
     L=strrep(L,"observer + energy swing-up +","observer + (NO swing-up, balance only) +");
 end
-if (isfield(g,'brakeMax') && isfinite(g.brakeMax)) || (isfield(g,'slew') && isfinite(g.slew)) || (isfield(g,'brakeMaxBal') && isfinite(g.brakeMaxBal))
+if (isfield(g,'brakeMax') && isfinite(g.brakeMax)) || (isfield(g,'slew') && isfinite(g.slew)) || (isfield(g,'brakeMaxBal') && isfinite(g.brakeMaxBal)) || (isfield(g,'slewBal') && isfinite(g.slewBal))
     % regeneration guard / slew limit, inserted after the +-1 clip (same as lm_controller)
     i0=find(strcmp(L,"u=max(-1,min(1,u));"),1); add=strings(0,1);
     if isfield(g,'brakeMax') && isfinite(g.brakeMax)
@@ -105,6 +105,9 @@ if (isfield(g,'brakeMax') && isfinite(g.brakeMax)) || (isfield(g,'slew') && isfi
     end
     if isfield(g,'slew') && isfinite(g.slew)
         add(end+1)="u=c1+max(-"+S(g.slew)+",min("+S(g.slew)+",u-c1));";
+    end
+    if isfield(g,'slewBal') && isfinite(g.slewBal)   % balance-only command slew limit (2026-11-22, against LMPC chatter)
+        add(end+1)="if bal, u=c1+max(-"+S(g.slewBal)+",min("+S(g.slewBal)+",u-c1)); end";
     end
     L=[L(1:i0); add(:); L(i0+1:end)];
 end

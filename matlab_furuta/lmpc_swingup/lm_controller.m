@@ -89,6 +89,9 @@ end
 if isfield(g,'slew') && isfinite(g.slew)
     u=mem.c1+max(-g.slew,min(g.slew,u-mem.c1));
 end
+if isfield(g,'slewBal') && isfinite(g.slewBal)   % balance-only slew limit (2026-11-22)
+    b=mem.bal; u(b)=mem.c1(b)+max(-g.slewBal,min(g.slewBal,u(b)-mem.c1(b)));
+end
 % quantize like the RMD A1 path so the observer knows the applied value
 u=round(u*c.maxCurrent/c.currentLSB)*c.currentLSB/c.maxCurrent;
 mem.c2=mem.c1; mem.c1=u;
