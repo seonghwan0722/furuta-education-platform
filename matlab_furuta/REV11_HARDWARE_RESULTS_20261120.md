@@ -39,3 +39,21 @@ Raspberry Pi + RMD-X6, 20 s 구동 제한, 전류 1.5 A, 암 15 / 펜듈럼 25 r
 - Pi 모델: `results/pi_drive20s_tol2/<제어기>/furuta_pi_hardware_drive.slx` (rmd_drive_20s.json)
 - 로그: `C:/Capstone1/runs_pid/<실행>.mat`, `_detail.png`
 - 분석: `lmpc_swingup/sum_pi_run.m`, `sum_bal.m`(영점 보정 판정), `bal_detail.m`
+
+## 추가 시험 (2026-11-20 저녁)
+
+| 실행 | 제어기 | 결과 | 메모 |
+|---|---|---|---|
+| ppo_rev11b_tol2_16 | PPO run10 ck_0250 (영점 오차 ±3° 학습) | 4.1 s 정지 | CAN 응답 1회 지연 후 응답이 한 칸(5 ms)씩 밀려 기존 디코더가 이후 샘플을 모두 무효 처리 → 누락 3회째 Motor Off |
+| ppo_rev11b_tol2b_18 | PPO run10 + 수정 디코더 | 3.1 s 정지 | 응답 1회 누락과 동시에 펜듈럼 각도가 10 ms에 5.7°→−163.8°로 점프(속도 59 rad/s) → 25 rad/s 한계. Pi 순간 정지 추정, 미확정 |
+| ppo_rev11b_tol2b_19 | PPO run10 + 수정 디코더 | 20 s 유지, 엄격 기준 3.04 s | 4~20 s 최대 오차 2.37°, 암 이동 79°. 약 0.6 s 간격으로 속도 0.5~0.62 rad/s 1~2샘플 |
+| sac_rev11b_tol2b_20 | SAC sac20b ck_0150 (영점 오차 학습) | 출발 못 함 | 바닥에서 0.15 A만 출력, 암 정지마찰을 못 넘음 |
+| sac_rev11c_tol2b_21 | SAC sac21 ck_0100 (정지마찰 학습 +0~50%) | 실패 | 0.29 A(0.6 N·m)로 8.5 s간 정지 후 출발, 10.4 s 도립 0.2 s, 16.8 s 펜듈럼 25 rad/s 한계 |
+
+### 바꾼 것
+- 응답 밀림 대응 디코더: `furuta_pi_sample_tol.m`, `furuta_pi_decode_tol.m` (응답을 칸 위치가 아니라 종류로 구분, 누락 2회 이내에는 속도 필터 유지). MissTolerance>0일 때만 사용. 단위 시험 `lmpc_swingup/test_sample_tol.m`.
+- 학습 환경 `sp_env2`: 암 정지마찰(dr.stictionMax), `sp_sample_x0`: 바닥 정지 출발(mix 5번째 항목). 기존 설정은 동작 그대로.
+
+### 알게 된 점
+- 실제 암 정지마찰 ≥ 0.6 N·m (식별 동마찰 0.40의 1.5배 초과).
+- SAC는 영점 오차·정지마찰 등 시뮬·실물 차이에 PPO보다 민감. PPO run10은 영점 ±3°, 정지마찰 +30%에서 시뮬 39/39.

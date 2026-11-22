@@ -173,8 +173,12 @@ add('raspberrypiCommlib/CAN Receive','RMD reply',[25 30 150 115], ...
 i2c('AS5600 magnet status',11,1,[25 140 150 185]);
 i2c('AS5600 angle',14,2,[25 205 150 250]);
 constant('Sensor calibration','calibration',[25 285 150 315]);
+sampleFn = "furuta_pi_sample";
+if opts.MissTolerance>0
+    sampleFn = "furuta_pi_sample_tol";   % sorts replies by opcode (survives a one-slot reply lag), keeps rate filter over short gaps
+end
 chart('Sensor decoder',[285 30 445 320],["function [obs,valid,ack] = decode(frame,status,err,remote,magnet,mstat,angle,astat,cal,act)"; ...
-    "[obs,valid,ack] = furuta_pi_sample(frame,status,err,remote,magnet,mstat,angle,astat,cal,act);";"end"]);
+    "[obs,valid,ack] = "+sampleFn+"(frame,status,err,remote,magnet,mstat,angle,astat,cal,act);";"end"]);
 ackSource = 'Sensor decoder/3';
 if opts.NativeSpeed
     chart('A2 feedback',[320 545 470 680],[

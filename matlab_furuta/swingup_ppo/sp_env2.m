@@ -14,6 +14,7 @@ methods (Static)
         end
         if isfield(dr,'biasDeg'), s.bias=zeros(1,n); end          % pendulum zero error (sensor/trim) [rad]
         if isfield(dr,'coulThMax'), s.coulTh=zeros(1,n); end      % pendulum bearing Coulomb friction [N m]
+        if isfield(dr,'stictionMax'), s.coulS=zeros(1,n); end     % arm static friction [N m] (hardware 2026-11-20: 0.15 A did not move the arm)
         s = sp_env2.randomize(s,true(1,n),dr,c);
         [ma,mp]=sp_env2.measure(x0,sp_env2.biasOf(s,true(1,n))); s.prev=[ma;mp]; s.filt=x0(3:4,:);
     end
@@ -30,6 +31,7 @@ methods (Static)
         s.alpha(m)=c.p.alpha*(1+dr.alpha*(2*rand(1,n)-1));
         s.coul(m)=c.p.coulomb*(1+dr.coul*(2*rand(1,n)-1));
         s.eta(m)=c.p.eta_phi*(1+dr.eta*(2*rand(1,n)-1));
+        if isfield(dr,'stictionMax'), s.coulS(m)=s.coul(m).*(1+dr.stictionMax*rand(1,n)); end
     end
     function s = resetSome(s,m,xn,dr,c)
         s.x(:,m)=xn; s.queue(:,m)=0; s.t(m)=0;
@@ -81,8 +83,10 @@ methods (Static)
         x=s.x; h=p.h;
         for i=1:round(c.Ts/h)
             tau=tauNew; o=i<=nOld; tau(o)=tauOld(o);
+            if isfield(s,'coulS'), stk=abs(x(3,:))<1e-3 & abs(tau)<s.coulS; tau(stk)=0; x(3,stk)=0; else, stk=false(1,size(x,2)); end
             k1=rhs(x); k2=rhs(x+h/2*k1); k3=rhs(x+h/2*k2); k4=rhs(x+h*k3);
             x=x+h/6*(k1+2*k2+2*k3+k4);
+            if any(stk), x(3,stk)=0; x(1,stk)=x(1,stk)-h/6*(k1(1,stk)+2*k2(1,stk)+2*k3(1,stk)+k4(1,stk)); end
         end
         s.x=x; s.t=s.t+c.Ts;
         function y=rhs(z), y=[z(3:4,:); accel(z,tau,p)]; end
