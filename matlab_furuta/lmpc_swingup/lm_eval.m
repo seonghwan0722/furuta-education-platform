@@ -6,16 +6,19 @@ c2=c; c2.delaySteps=ev.delay;
 if isfield(ev,'plantCfg'), c2=ev.plantCfg; c2.delaySteps=ev.delay; end   % full plant swap (controller keeps D.c)
 s=sp_env2.reset(x0,c2,dr); s.delay(:)=ev.delay;
 if isfield(ev,'frac'), s.frac(:)=ev.frac; end
+if isfield(ev,'stic'), s.coulS=s.coul.*(1+ev.stic); end                     % arm static friction (fraction above Coulomb)
+if isfield(ev,'biasDeg'), s.bias=deg2rad(ev.biasDeg).*ones(1,n); [ma,mp]=sp_env2.measure(x0,s.bias); s.prev=[ma;mp]; end   % pendulum zero error
+if isfield(ev,'coulTh'), s.coulTh=ev.coulTh*ones(1,n); end                 % pendulum bearing friction
 if isfield(ev,'plant')   % optional plant mismatch for robustness checks
     s.alpha(:)=ev.plant(1); s.coul(:)=ev.plant(2); s.eta(:)=ev.plant(3);
 end
-X=zeros(4,n,N+1); X(:,:,1)=x0; A=zeros(n,N); U=zeros(n,N); mem=struct();
+X=zeros(4,n,N+1); X(:,:,1)=x0; A=zeros(n,N); U=zeros(n,N); mem=struct(); O=zeros(5,n,N);
 for k=1:N
     [o,s]=sp_env2.observe(s,c.Ts);
-    [u,mem]=lm_controller(o,mem,D,g);
+    O(:,:,k)=o; [u,mem]=lm_controller(o,mem,D,g);
     [s,ap]=sp_env2.step(s,u,c2);
     X(:,:,k+1)=s.x; A(:,k)=ap; U(:,k)=u;
 end
-R.X=X; R.A=A; R.U=U; R.t=(0:N)*c.Ts;
+R.X=X; R.A=A; R.U=U; R.O=O; R.t=(0:N)*c.Ts;
 M=sp_metrics(R,c,ev.armLim,ev.pendLim);
 end
