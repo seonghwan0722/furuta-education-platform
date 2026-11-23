@@ -66,9 +66,11 @@ for iter=1:cfg.iters
             it=it+1; j=idx(b:b+bs-1);
             Xb=dlarray(O(:,j)./sc,'CB');
             [lossA,lossC,gA,gC,gS,kl]=dlfeval(@ppoLoss,actor,critic,logStd,Xb,A(j),LP(j),Adv(j),Ret(j),cfg);
-            [critic,aC,aC2]=adamupdate(critic,gC,aC,aC2,it,cfg.lrC);
+            lrScale=1; if isfield(cfg,'lrAnneal') && cfg.lrAnneal, lrScale=max(0.1,1-(iter-1)/cfg.iters); end   % linear LR annealing (2026-11-23)
+            if isfield(cfg,'gradClip') && isfinite(cfg.gradClip), gA=clipG(gA,cfg.gradClip); gC=clipG(gC,cfg.gradClip); end
+            [critic,aC,aC2]=adamupdate(critic,gC,aC,aC2,it,cfg.lrC*lrScale);
             if updActor
-                [actor,aA,aA2]=adamupdate(actor,gA,aA,aA2,it,cfg.lrA);
+                [actor,aA,aA2]=adamupdate(actor,gA,aA,aA2,it,cfg.lrA*lrScale);
                 if cfg.learnStd
                     [logStd,aS,aS2]=adamupdate(logStd,gS,aS,aS2,it,cfg.lrA);
                     logStd=max(log(cfg.stdMin),logStd);
@@ -99,6 +101,11 @@ for iter=1:cfg.iters
     logT=[logT; row]; %#ok<AGROW>
     writetable(logT,fullfile(folder,'train_log.csv'));
 end
+end
+
+function g=clipG(g,mx)
+n=sqrt(sum(cellfun(@(v) sum(extractdata(v).^2,'all'),g.Value)));
+if n>mx, g.Value=cellfun(@(v) v*(mx/n),g.Value,'UniformOutput',false); end
 end
 
 function [lossA,lossC,gA,gC,gS,kl]=ppoLoss(actor,critic,logStd,X,A,LP,Adv,Ret,cfg)
