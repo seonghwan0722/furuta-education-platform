@@ -1,0 +1,665 @@
+{
+ "arm": {
+  "mass_kg": 0.10133954038973446,
+  "com_m": [
+   -0.010795231214123052,
+   -0.005431588796122594,
+   0.012004891652147923
+  ],
+  "inertia_about_com_kgm2": [
+   [
+    4.654501069144476e-05,
+    -9.177731694712984e-06,
+    7.6109304358030235e-06
+   ],
+   [
+    -9.177731694712984e-06,
+    4.657525885751177e-05,
+    3.3604345391043575e-06
+   ],
+   [
+    7.6109304358030235e-06,
+    3.3604345391043575e-06,
+    6.517165487008317e-05
+   ]
+  ]
+ },
+ "pend_with_tip": {
+  "mass_kg": 0.031931163561267704,
+  "com_m": [
+   0.06350895795914233,
+   1.9530621922722402e-07,
+   -0.06646169384340704
+  ],
+  "inertia_about_com_kgm2": [
+   [
+    0.00010282692366893762,
+    5.214568640696084e-10,
+    3.502628263466911e-05
+   ],
+   [
+    5.214568640696084e-10,
+    0.0001294131308123867,
+    -5.268166290937573e-10
+   ],
+   [
+    3.502628263466911e-05,
+    -5.268166290937573e-10,
+    2.7083745933291733e-05
+   ]
+  ]
+ },
+ "pend_no_tip": {
+  "mass_kg": 0.020716705204104683,
+  "com_m": [
+   0.05674725191444675,
+   3.0103024439627905e-07,
+   -0.040338914892415055
+  ],
+  "inertia_about_com_kgm2": [
+   [
+    6.120090920577986e-05,
+    4.792884659123238e-10,
+    2.4607120651657054e-05
+   ],
+   [
+    4.792884659123238e-10,
+    8.509018618432791e-05,
+    -3.639057103956787e-10
+   ],
+   [
+    2.4607120651657054e-05,
+    -3.639057103956787e-10,
+    2.425856275548901e-05
+   ]
+  ]
+ },
+ "pivot_m": [
+  0,
+  0,
+  0.018000000000000002
+ ],
+ "pend_axis": [
+  1.0,
+  0.0,
+  0.0
+ ],
+ "parts": [
+  {
+   "name": "electronics_box_rev10",
+   "body": "base",
+   "material": "PLA",
+   "mass_g": 122.013
+  },
+  {
+   "name": "box_lid_rev11_body",
+   "body": "base",
+   "material": "PLA",
+   "mass_g": 59.7
+  },
+  {
+   "name": "logo_blue",
+   "body": "base",
+   "material": "PLA",
+   "mass_g": 0.056
+  },
+  {
+   "name": "logo_black",
+   "body": "base",
+   "material": "PLA",
+   "mass_g": 0.141
+  },
+  {
+   "name": "SPCC_plate_146x146x3.2",
+   "body": "base",
+   "material": "SPCC",
+   "mass_g": 534.007
+  },
+  {
+   "name": "Raspberry_Pi_5_simple",
+   "body": "base",
+   "material": "PCB",
+   "mass_g": 44.792
+  },
+  {
+   "name": "SEENGREAT_RS485_CAN_HAT_simple",
+   "body": "base",
+   "material": "PCB",
+   "mass_g": 23.19
+  },
+  {
+   "name": "breadboard_81x45x9.5",
+   "body": "base",
+   "material": "misc",
+   "mass_g": 51.941
+  },
+  {
+   "name": "E-stop_22mm_placeholder",
+   "body": "base",
+   "material": "misc",
+   "mass_g": 22.808
+  },
+  {
+   "name": "tower_D100_rev11",
+   "body": "base",
+   "material": "PLA",
+   "mass_g": 233.672
+  },
+  {
+   "name": "slipring_bracket_rev11",
+   "body": "base",
+   "material": "PLA",
+   "mass_g": 22.594
+  },
+  {
+   "name": "slipring_SZH-SLI020_PLACEHOLDER",
+   "body": "base",
+   "material": "slipring",
+   "mass_g": 30.26
+  },
+  {
+   "name": "RMD-X6-P20-60-E",
+   "body": "base",
+   "material": "motor(avg)",
+   "mass_g": 182.143
+  },
+  {
+   "name": "top_plate_PETG_4.5t_rev10",
+   "body": "base",
+   "material": "PLA",
+   "mass_g": 28.82
+  },
+  {
+   "name": "hub_tube_rev10",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 20.386
+  },
+  {
+   "name": "arm_holder_rev6",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 17.617
+  },
+  {
+   "name": "688ZZ_A",
+   "body": "arm",
+   "material": "steel (688ZZ catalogue mass)",
+   "mass_g": 3.6
+  },
+  {
+   "name": "688ZZ_B",
+   "body": "arm",
+   "material": "steel (688ZZ catalogue mass)",
+   "mass_g": 3.6
+  },
+  {
+   "name": "encoder_pod_rev11",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 27.954
+  },
+  {
+   "name": "encoder_cover_rev11_body",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 6.449
+  },
+  {
+   "name": "encoder_cover_rev11_logo_blue",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 0.024
+  },
+  {
+   "name": "encoder_cover_rev11_logo_black_names",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 0.16
+  },
+  {
+   "name": "Grove_AS5600_PCB",
+   "body": "arm",
+   "material": "PCB",
+   "mass_g": 2.351
+  },
+  {
+   "name": "AS5600_chip",
+   "body": "arm",
+   "material": "plastic",
+   "mass_g": 0.042
+  },
+  {
+   "name": "Grove_connector",
+   "body": "arm",
+   "material": "plastic",
+   "mass_g": 0.683
+  },
+  {
+   "name": "Grove_switch",
+   "body": "arm",
+   "material": "plastic",
+   "mass_g": 0.083
+  },
+  {
+   "name": "Grove_plug_placeholder",
+   "body": "arm",
+   "material": "plastic",
+   "mass_g": 0.595
+  },
+  {
+   "name": "cable_AS5600_4C_placeholder",
+   "body": "arm",
+   "material": "cable",
+   "mass_g": 1.477
+  },
+  {
+   "name": "arm_pendulum_solid_rev10",
+   "body": "pend",
+   "material": "PLA",
+   "mass_g": 19.485
+  },
+  {
+   "name": "magnet_cap_embedded",
+   "body": "pend",
+   "material": "PLA",
+   "mass_g": 0.477
+  },
+  {
+   "name": "magnet_8x2_diametric_N35",
+   "body": "pend",
+   "material": "NdFeB",
+   "mass_g": 0.754
+  },
+  {
+   "name": "M6x30_button_bolt_weight",
+   "body": "pend",
+   "material": "steel",
+   "mass_g": 11.214
+  },
+  {
+   "name": "M2.5_standoff_11_1",
+   "body": "base",
+   "material": "brass",
+   "mass_g": 2.046
+  },
+  {
+   "name": "M2.5_standoff_11_2",
+   "body": "base",
+   "material": "brass",
+   "mass_g": 2.046
+  },
+  {
+   "name": "M2.5_standoff_11_3",
+   "body": "base",
+   "material": "brass",
+   "mass_g": 2.046
+  },
+  {
+   "name": "M2.5_standoff_11_4",
+   "body": "base",
+   "material": "brass",
+   "mass_g": 2.046
+  },
+  {
+   "name": "M2.5x5_HAT_screw_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.402
+  },
+  {
+   "name": "M2.5x5_HAT_screw_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.402
+  },
+  {
+   "name": "M2.5x5_HAT_screw_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.402
+  },
+  {
+   "name": "M2.5x5_HAT_screw_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.402
+  },
+  {
+   "name": "M3_nut_lid_box_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.36
+  },
+  {
+   "name": "M3_nut_lid_box_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.36
+  },
+  {
+   "name": "M3_nut_lid_box_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.36
+  },
+  {
+   "name": "M3_nut_lid_box_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.36
+  },
+  {
+   "name": "M3_washer_lid_tower_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.119
+  },
+  {
+   "name": "M3_washer_lid_tower_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.119
+  },
+  {
+   "name": "M3_washer_lid_tower_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.119
+  },
+  {
+   "name": "M3_washer_lid_tower_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.119
+  },
+  {
+   "name": "M3_washer_lid_tower_5",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.119
+  },
+  {
+   "name": "M3_washer_lid_tower_6",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.119
+  },
+  {
+   "name": "M3x10_armholder_hub_1",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_armholder_hub_2",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_armholder_hub_3",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_armholder_hub_4",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_bracket_tower_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_bracket_tower_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_bracket_tower_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_lid_tower_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_lid_tower_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_lid_tower_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_lid_tower_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_lid_tower_5",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_lid_tower_6",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_topplate_tower_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_topplate_tower_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_topplate_tower_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_topplate_tower_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_topplate_tower_5",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x10_topplate_tower_6",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 0.917
+  },
+  {
+   "name": "M3x14_lid_box_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_lid_box_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_lid_box_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_lid_box_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_motor_topplate_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_motor_topplate_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_motor_topplate_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_motor_topplate_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_pod_ear_hub_1",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x14_pod_ear_hub_2",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 1.126
+  },
+  {
+   "name": "M3x20_spcc_box_1",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.439
+  },
+  {
+   "name": "M3x20_spcc_box_2",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.439
+  },
+  {
+   "name": "M3x20_spcc_box_3",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.439
+  },
+  {
+   "name": "M3x20_spcc_box_4",
+   "body": "base",
+   "material": "steel",
+   "mass_g": 1.439
+  },
+  {
+   "name": "M3x6_encoder_cover",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 0.708
+  },
+  {
+   "name": "M4x10_hub_motor_1",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 1.92
+  },
+  {
+   "name": "M4x10_hub_motor_2",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 1.92
+  },
+  {
+   "name": "M4x10_hub_motor_3",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 1.92
+  },
+  {
+   "name": "M4x10_hub_motor_4",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 1.92
+  },
+  {
+   "name": "M4x10_hub_motor_5",
+   "body": "arm",
+   "material": "steel",
+   "mass_g": 1.92
+  },
+  {
+   "name": "filament_rivet_AS5600_1",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 0.03
+  },
+  {
+   "name": "filament_rivet_AS5600_2",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 0.03
+  },
+  {
+   "name": "filament_rivet_AS5600_3",
+   "body": "arm",
+   "material": "PLA",
+   "mass_g": 0.03
+  },
+  {
+   "name": "rubber_foot_D12x5_1",
+   "body": "base",
+   "material": "rubber",
+   "mass_g": 0.679
+  },
+  {
+   "name": "rubber_foot_D12x5_2",
+   "body": "base",
+   "material": "rubber",
+   "mass_g": 0.679
+  },
+  {
+   "name": "rubber_foot_D12x5_3",
+   "body": "base",
+   "material": "rubber",
+   "mass_g": 0.679
+  },
+  {
+   "name": "rubber_foot_D12x5_4",
+   "body": "base",
+   "material": "rubber",
+   "mass_g": 0.679
+  }
+ ]
+}

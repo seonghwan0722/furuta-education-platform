@@ -1,0 +1,32 @@
+{
+  "status": "CANDIDATE - watchdog cutoff observed; cutoff time and A2 current limit remain unverified.",
+  "created_kst": "2026-11-18",
+  "watchdog_cutoff_verified": true,
+  "watchdog_cutoff_note": "2026-11-19: user observed CAN transmission stop and motor output cut off in the watchdog test. Cutoff time was not reported.",
+  "watchdog_cutoff_measured_ms": [],
+  "a2_current_cap_verified": false,
+  "a2_rated_current_a": [],
+  "a2_current_percent": [],
+  "hardware_enable_cutoff_verified": true,
+  "hardware_enable_cutoff_note": "User reported physical enable/E-stop cutoff checked on 2026-11-18. No log recorded.",
+  "current_sign": -1,
+  "current_sign_note": "2026-11-19: +RMD current moved the calibrated arm angle negative in runs/pi_current_03 (0.1 A, -0.07 deg), pi_current_05 (0.3 A, -1.0 deg) and a -107 deg rotation between runs. Set by user request.",
+  "amps_per_action": 1.5,
+  "max_current_a": 1.5,
+  "max_current_note": "2026-11-19: 1.5 A ceiling set at user request, matching a colleague's successful run (1.5 A cap, ~1 A average). Not yet logged on this rig above 0.5 A. 2026-11-19: user allows up to 2.0 A on hardware. Kept 1.5 A action scale/cap for the PPO swing-up policy because PC tests at 2.0 A full scale were worse (run7 policy 111-112/120 random vs 114-120/120 at 1.5 A; 2 A fine-tune run8 plateaued at 13/16 with arm overspeed ~16.8 rad/s).",
+  "drive_seconds": 3,
+  "limits": [
+    3.141593,
+    3.3,
+    15.0,
+    25
+  ],
+  "limits_note": "[arm rad, pendulum rad from upright, arm rad/s, pendulum rad/s]. Pendulum limit above pi because the pendulum hangs down during speed tests. 2026-11-19: arm rad/s limit raised 6 -> 9 at user request. 2026-11-19: arm rad/s limit 9 -> 3*pi (9.424778) to match colleague's successful run. 2026-11-19: arm rad/s limit 3*pi -> 15 at user request so hardware matches the swing-up speed seen in MIL (RMD rated 153 RPM = 16.0 rad/s). 2026-11-19: pendulum rad/s limit 20 -> 25 at user request; swing-up from hanging needs ~20.5 rad/s at the bottom (PPO swing-up MIL peaks 20-22 rad/s).",
+  "speed_kp_a_per_rad_s": 0.05,
+  "max_target_rpm": 40,
+  "pc_test_note": "PC simulation 2026-11-18: with 0.07 N*m friction the P loop reaches only ~3-5 RPM of a 10 RPM target; with lower Kp the 0.01 A command step gives zero current. Values need hardware tuning.",
+  "max_target_rpm_note": "2026-11-19: raised 10 -> 40 RPM at user request (4.19 rad/s, ~30% below the 6 rad/s arm overspeed trip). Ceiling only; tracking at this speed is untested on hardware.",
+  "drive_seconds_unlimited": true,
+  "arm_angle_unlimited": true,
+  "unlimited_note": "2026-11-19: user requested unlimited drive time and no arm-angle trip (arm has a slip ring). drive_seconds and limits[0] stay as fallbacks if the flags are removed. Speed/pendulum/sensor/ack interlocks, watchdog and E-stop remain."
+}

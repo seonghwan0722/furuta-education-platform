@@ -1,0 +1,22 @@
+{
+ "식": "τ_cmd = s·τ_pol + (Fc± − 0.012)·tanh(θ̇_obs/0.2) + (b − 1e-4)·θ̇_obs, τ_pol = speed_torque_limit(u·τmax, θ̇_obs, τmax, 16)",
+ "s_관성배율": 4.476106803162841,
+ "학습조건_팔축관성": 0.0052358,
+ "몸체관성_alpha0": 0.0002358,
+ "comp_J": 0.0232,
+ "실기설정": {
+  "tau": 1.0,
+  "iq_max": 120,
+  "팔속도한계_dps": 1100,
+  "팔각도한계": "없음(슬립링)",
+  "진자속도한계_rad_s": 25,
+  "종료": "iq 0 을 10 ms 마다 → 팔 < 50 dps(최대 1 s) → 0x81 ×3 → 0x78 ×3"
+ },
+ "실기_재측정": {
+  "run1": "logs/run_policy_20261118_192014_fric.json",
+  "run2": "logs/run_policy_20261118_192756_fric.json",
+  "run3": "logs/run_policy_20261118_193110_fric.json",
+  "run4": "logs/run_policy_20261118_193653_fric.json"
+ },
+ "1.8A": "미시험"
+}

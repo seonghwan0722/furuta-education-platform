@@ -1,0 +1,6 @@
+function p = furuta_params
+% 검증된 공칭 플랜트의 SI 파라미터
+p = struct('alpha',1.9818e-4,'beta',1.6078e-4,'beta2',1.6134e-4, ...
+    'gam',1.3805e-4,'delta',1.6934e-2,'eta_phi',1e-4,'eta_theta',1e-5, ...
+    'tau_max',0.03,'Ts',0.01,'h',0.002,'coulomb',0);
+end

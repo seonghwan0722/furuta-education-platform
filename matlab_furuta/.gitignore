@@ -1,0 +1,13 @@
+results/
+slprj/
+*.slxc
+*.slx.autosave
+archive_*/
+*_ert_rtw/
+*.elf
+*.out
+swingup_ppo/queue*/
+**/fixrun*/
+**/simrun*/
+*.asv
+backup_*/

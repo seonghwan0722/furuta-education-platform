@@ -1,0 +1,100 @@
+{
+ "fit": {
+  "armature": 0.023236248939736182,
+  "Fc_pos": 0.4422106208697935,
+  "Fc_neg": 0.43732062290090556,
+  "viscous": 0.2383558308781739,
+  "theta_rms_deg": 1.1837027897783348,
+  "omega_rms_dps": 3.462402707980196,
+  "status": "`xtol` termination condition is satisfied."
+ },
+ "pend": {
+  "damping": 7.83e-05,
+  "frictionloss": 0.000216,
+  "armature": 2.36e-05
+ },
+ "tau_max": 1.0,
+ "n_ics": 15,
+ "rows": [
+  {
+   "cond": "nominal",
+   "seconds": 5.0,
+   "success": 1.0,
+   "upright_tail_mean": 1.0,
+   "max_abs_alpha_deg_mean": 180.0,
+   "max_pend_speed": 20.0
+  },
+  {
+   "cond": "nominal",
+   "seconds": 10.0,
+   "success": 1.0,
+   "upright_tail_mean": 1.0,
+   "max_abs_alpha_deg_mean": 180.0,
+   "max_pend_speed": 20.0
+  },
+  {
+   "cond": "J_only",
+   "seconds": 5.0,
+   "success": 0.2,
+   "upright_tail_mean": 0.799,
+   "max_abs_alpha_deg_mean": 179.4,
+   "max_pend_speed": 19.7
+  },
+  {
+   "cond": "J_only",
+   "seconds": 10.0,
+   "success": 0.267,
+   "upright_tail_mean": 0.782,
+   "max_abs_alpha_deg_mean": 179.9,
+   "max_pend_speed": 20.0
+  },
+  {
+   "cond": "fric_only",
+   "seconds": 5.0,
+   "success": 0.0,
+   "upright_tail_mean": 0.0,
+   "max_abs_alpha_deg_mean": 17.1,
+   "max_pend_speed": 3.4
+  },
+  {
+   "cond": "fric_only",
+   "seconds": 10.0,
+   "success": 0.0,
+   "upright_tail_mean": 0.0,
+   "max_abs_alpha_deg_mean": 18.1,
+   "max_pend_speed": 3.4
+  },
+  {
+   "cond": "calibrated",
+   "seconds": 5.0,
+   "success": 0.0,
+   "upright_tail_mean": 0.0,
+   "max_abs_alpha_deg_mean": 64.3,
+   "max_pend_speed": 10.9
+  },
+  {
+   "cond": "calibrated",
+   "seconds": 10.0,
+   "success": 0.0,
+   "upright_tail_mean": 0.0,
+   "max_abs_alpha_deg_mean": 113.7,
+   "max_pend_speed": 14.9
+  },
+  {
+   "cond": "calib_ideal_sensor",
+   "seconds": 5.0,
+   "success": 0.0,
+   "upright_tail_mean": 0.0,
+   "max_abs_alpha_deg_mean": 54.1,
+   "max_pend_speed": 9.2
+  },
+  {
+   "cond": "calib_ideal_sensor",
+   "seconds": 10.0,
+   "success": 0.0,
+   "upright_tail_mean": 0.0,
+   "max_abs_alpha_deg_mean": 107.0,
+   "max_pend_speed": 14.2
+  }
+ ]
+}
