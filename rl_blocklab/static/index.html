@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RL 블록 실험실</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8C%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <header id="toolbar">
+    <div class="brand" title="MuJoCo · PPO · Raspberry Pi">🌀 RL 블록 실험실</div>
+    <div class="group">
+      <select id="tplSelect" title="수업용 예제"></select>
+      <button id="btnLoadTpl">예제 불러오기</button>
+    </div>
+    <div class="group">
+      <input id="runName" type="text" placeholder="실험 이름 (예: 1모둠-보너스2배)" size="16">
+      <button id="btnTrain" class="primary">▶ 학습 시작</button>
+      <button id="btnStop" class="danger" hidden>■ 멈추기</button>
+    </div>
+    <div class="group">
+      <select id="policySel" title="시험 주행에 쓸 정책"></select>
+      <label class="dur">시간 <input id="duration" type="number" min="1" max="60" step="1" value="8"> 초</label>
+      <button id="btnRollout">🧪 시험 주행</button>
+      <button id="btnView" title="이 컴퓨터에 MuJoCo 3D 창을 띄워요">🎥 3D 뷰어</button>
+    </div>
+    <div class="group">
+      <button id="btnSave">💾 저장</button>
+      <button id="btnOpen">📂 열기</button>
+      <button id="btnNew">🗑 새로</button>
+      <input type="file" id="fileOpen" accept=".json,application/json" hidden>
+    </div>
+  </header>
+
+  <main>
+    <aside id="palette"></aside>
+    <section id="canvasWrap">
+      <div id="canvas">
+        <div id="world"><svg id="wires"></svg></div>
+      </div>
+      <div id="zoomCtl">
+        <button data-z="in" title="확대">＋</button>
+        <button data-z="out" title="축소">－</button>
+        <button data-z="fit" title="전체 보기">전체</button>
+      </div>
+      <div id="legend">
+        <span><i class="k-signal"></i>숫자 신호</span>
+        <span><i class="k-state"></i>관측값</span>
+        <span><i class="k-action"></i>모터 명령</span>
+        <span><i class="k-rand"></i>랜덤화</span>
+        <span><i class="k-policy"></i>정책</span>
+      </div>
+      <div id="trainBar" hidden>
+        <div class="tb-text"><b id="tbTitle">학습 중</b> <span id="tbInfo"></span></div>
+        <div class="tb-track"><div id="tbFill"></div></div>
+      </div>
+    </section>
+    <aside id="props"></aside>
+  </main>
+
+  <section id="results">
+    <div class="rhead">
+      <div class="tabs">
+        <button data-tab="train" class="on">📊 학습 결과</button>
+        <button data-tab="roll">🧪 시험 주행</button>
+        <button data-tab="pi">🍓 라즈베리파이</button>
+      </div>
+      <span id="status">예제를 불러오고 ▶ 학습 시작을 눌러 보세요.</span>
+      <button id="btnToggleRes">접기</button>
+    </div>
+    <div class="tabpane on" id="tab-train">
+      <div class="charts">
+        <div class="chartbox"><div class="ct">한 판 점수 (보상 합계)</div><canvas id="chRet"></canvas></div>
+        <div class="chartbox"><div class="ct">보상 항별 점수 (지금 실험)</div><canvas id="chTerms"></canvas></div>
+        <div class="chartbox"><div class="ct">똑바로 선 시간 비율 (%) · 보상과 상관없는 공통 성적표</div><canvas id="chUp"></canvas></div>
+      </div>
+      <div class="runs"><table id="runTable"></table></div>
+    </div>
+    <div class="tabpane" id="tab-roll">
+      <div class="rollwrap">
+        <div class="anim">
+          <canvas id="animCv" width="360" height="200"></canvas>
+          <div class="animctl">
+            <button id="btnPlay">⏸</button>
+            <input id="tSlider" type="range" min="0" max="0" value="0">
+            <span id="tLabel">0.00 s</span>
+          </div>
+          <div id="rollInfo" class="muted"></div>
+        </div>
+        <div id="rollCharts" class="rollcharts"></div>
+      </div>
+    </div>
+    <div class="tabpane" id="tab-pi">
+      <div id="piPane"></div>
+    </div>
+  </section>
+
+  <div id="modal" hidden>
+    <div class="mbox">
+      <div class="mhead"><b id="mtitle"></b><button id="mclose">닫기</button></div>
+      <div id="mbody"></div>
+    </div>
+  </div>
+  <div id="toasts"></div>
+  <script src="app.js"></script>
+</body>
+</html>

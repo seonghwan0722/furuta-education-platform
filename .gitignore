@@ -15,3 +15,40 @@ legacy/macos_metadata/
 legacy/import_metadata/
 legacy/mujoco_initial/checkpoints*/
 legacy/mujoco_initial/tb_logs*/
+# ---- 2026-11-25 추가: 대용량·임시·개인 파일 ----
+# 개인 문서·임시 폴더
+/*.docx
+/*.hwpx
+.codex-attachments/
+/tp*_*/
+*.7z
+
+# 압축본 (원본 폴더를 따로 올림)
+/*.zip
+
+# 영상·큰 그림 (필요하면 GitHub Release에 첨부)
+*.mp4
+*.gif
+
+# MATLAB/Simulink 생성물
+slprj/
+*.slxc
+*.slx.autosave
+*_ert_rtw/
+*.elf
+*.asv
+*.out
+*.log
+
+# 실물 로그·세션 상태 (용량 큼, 로그 원본은 별도 보관)
+**/logs/*.csv
+**/pi_host/state/
+**/changes/*.diff
+rev11_s2r_calib_20261120/**/handoff/
+mujoco_crosscheck/**/*.mat
+mujoco_crosscheck/multibody/*.png
+python_handoff/videos/
+
+# 학습 산출물
+**/checkpoints*/
+**/tb_logs*/

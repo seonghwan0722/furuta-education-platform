@@ -1,0 +1,807 @@
+{
+ "settings": {
+  "fit": {
+   "armature": 0.023236248939736182,
+   "Fc_pos": 0.4422106208697935,
+   "Fc_neg": 0.43732062290090556,
+   "viscous": 0.2383558308781739,
+   "theta_rms_deg": 1.1837027897783348,
+   "omega_rms_dps": 3.462402707980196,
+   "status": "`xtol` termination condition is satisfied."
+  },
+  "pend": {
+   "damping": 3.821852062884378e-08,
+   "frictionloss": 0.000369660224193002,
+   "armature": 2.0809512545848557e-05,
+   "c2": 4.134889993990559e-06
+  },
+  "s_inertia": 4.476106803162841,
+  "train_fc": 0.012,
+  "train_b": 0.0001
+ },
+ "main": [
+  {
+   "variant": "보상 없음",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 47,
+   "iq_p99": 47.0,
+   "tau_max": 0.9870000000000001
+  },
+  {
+   "variant": "보상 없음",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 47,
+   "iq_p99": 47.0,
+   "tau_max": 0.9870000000000001
+  },
+  {
+   "variant": "보상 없음",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 47,
+   "iq_p99": 47.0,
+   "tau_max": 0.9870000000000001
+  },
+  {
+   "variant": "보상 없음",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 47,
+   "iq_p99": 47.0,
+   "tau_max": 0.9870000000000001
+  },
+  {
+   "variant": "(a) 마찰 sign",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 sign",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 152,
+   "iq_p99": 108.0,
+   "tau_max": 3.192
+  },
+  {
+   "variant": "(a) 마찰 sign",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 159,
+   "iq_p99": 140.0,
+   "tau_max": 3.3390000000000004
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.05",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.05",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.05",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 134,
+   "iq_p99": 107.0,
+   "tau_max": 2.8140000000000005
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.05",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 160,
+   "iq_p99": 141.01000000000022,
+   "tau_max": 3.3600000000000003
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.2",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.2",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 113,
+   "iq_p99": 102.0,
+   "tau_max": 2.373
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.2",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 156,
+   "iq_p99": 135.01000000000022,
+   "tau_max": 3.2760000000000002
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.5",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.5",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.5",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 115,
+   "iq_p99": 102.0,
+   "tau_max": 2.4150000000000005
+  },
+  {
+   "variant": "(a) 마찰 tanh ε0.5",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 154,
+   "iq_p99": 135.0,
+   "tau_max": 3.2340000000000004
+  },
+  {
+   "variant": "(b) 관성 ×4.48",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(b) 관성 ×4.48",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(b) 관성 ×4.48",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 213,
+   "iq_p99": 209.50999999999976,
+   "tau_max": 4.473
+  },
+  {
+   "variant": "(b) 관성 ×4.48",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 0.0,
+   "iq_max": 213,
+   "iq_p99": 199.0,
+   "tau_max": 4.473
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.13333333333333333,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.50999999999976,
+   "tau_max": 4.872
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 217.0,
+   "tau_max": 4.872
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 60,
+   "seconds": 5.0,
+   "success": 0.0,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 60,
+   "seconds": 10.0,
+   "success": 0.13333333333333333,
+   "iq_max": 60,
+   "iq_p99": 60.0,
+   "tau_max": 1.26
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 10.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 214.0,
+   "tau_max": 4.872
+  }
+ ],
+ "capsweep": [
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 80,
+   "success": 0.6666666666666666,
+   "iq_max": 80,
+   "iq_p99": 80.0,
+   "tau_max": 1.6800000000000002
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 100,
+   "success": 0.6,
+   "iq_max": 100,
+   "iq_p99": 100.0,
+   "tau_max": 2.1
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 120,
+   "success": 0.8,
+   "iq_max": 120,
+   "iq_p99": 120.0,
+   "tau_max": 2.52
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 150,
+   "success": 0.8,
+   "iq_max": 150,
+   "iq_p99": 150.0,
+   "tau_max": 3.1500000000000004
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "success": 0.9333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 200,
+   "success": 0.9333333333333333,
+   "iq_max": 200,
+   "iq_p99": 200.0,
+   "tau_max": 4.2
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 80,
+   "success": 0.6666666666666666,
+   "iq_max": 80,
+   "iq_p99": 80.0,
+   "tau_max": 1.6800000000000002
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 100,
+   "success": 0.6666666666666666,
+   "iq_max": 100,
+   "iq_p99": 100.0,
+   "tau_max": 2.1
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 120,
+   "success": 0.8666666666666667,
+   "iq_max": 120,
+   "iq_p99": 120.0,
+   "tau_max": 2.52
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 150,
+   "success": 0.9333333333333333,
+   "iq_max": 150,
+   "iq_p99": 150.0,
+   "tau_max": 3.1500000000000004
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "success": 0.9333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "variant": "(c) 둘 다 sign",
+   "cap": 200,
+   "success": 0.9333333333333333,
+   "iq_max": 200,
+   "iq_p99": 200.0,
+   "tau_max": 4.2
+  }
+ ],
+ "robust": [
+  {
+   "plant": "기준",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.933,
+   "iq_max": 180,
+   "note": "코어3에서 먼저 끝남"
+  },
+  {
+   "plant": "기준",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "note": "코어3에서 먼저 끝남"
+  },
+  {
+   "plant": "기준",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.933,
+   "iq_max": 180,
+   "note": "코어3에서 먼저 끝남"
+  },
+  {
+   "plant": "기준",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "note": "코어3에서 먼저 끝남"
+  },
+  {
+   "plant": "J ×0.94",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.9333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "J ×0.94",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "J ×0.94",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.933,
+   "iq_max": 180,
+   "note": "코어3에서 먼저 끝남"
+  },
+  {
+   "plant": "J ×0.94",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "J ×1.06",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8666666666666667,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "J ×1.06",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 228.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "J ×1.06",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8666666666666667,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "J ×1.06",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 228.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "b ×0.97",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.9333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "b ×0.97",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "b ×0.97",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.9333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "b ×0.97",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "b ×1.03",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "b ×1.03",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 227.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "b ×1.03",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "b ×1.03",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 227.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×0.85 (J 0.0246, b 0.268, 비용 ×1.25)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×0.85 (J 0.0246, b 0.268, 비용 ×1.25)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 233,
+   "iq_p99": 228.0,
+   "tau_max": 4.893000000000001
+  },
+  {
+   "plant": "쿨롱 ×0.85 (J 0.0246, b 0.268, 비용 ×1.25)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.7333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×0.85 (J 0.0246, b 0.268, 비용 ×1.25)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 228.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×0.9 (J 0.0241, b 0.258, 비용 ×1.12)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8666666666666667,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×0.9 (J 0.0241, b 0.258, 비용 ×1.12)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 227.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×0.9 (J 0.0241, b 0.258, 비용 ×1.12)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8666666666666667,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×0.9 (J 0.0241, b 0.258, 비용 ×1.12)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 227.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×0.95 (J 0.0237, b 0.248, 비용 ×1.03)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8666666666666667,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×0.95 (J 0.0237, b 0.248, 비용 ×1.03)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 227.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×0.95 (J 0.0237, b 0.248, 비용 ×1.03)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.8666666666666667,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×0.95 (J 0.0237, b 0.248, 비용 ×1.03)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 227.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×1.05 (J 0.0228, b 0.229, 비용 ×1.03)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.9333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×1.05 (J 0.0228, b 0.229, 비용 ×1.03)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 224.50999999999976,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×1.05 (J 0.0228, b 0.229, 비용 ×1.03)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 0.9333333333333333,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×1.05 (J 0.0228, b 0.229, 비용 ×1.03)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×1.1 (J 0.0223, b 0.220, 비용 ×1.13)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×1.1 (J 0.0223, b 0.220, 비용 ×1.13)",
+   "variant": "(c) 둘 다 sign",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  },
+  {
+   "plant": "쿨롱 ×1.1 (J 0.0223, b 0.220, 비용 ×1.13)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 180,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 180,
+   "iq_p99": 180.0,
+   "tau_max": 3.7800000000000002
+  },
+  {
+   "plant": "쿨롱 ×1.1 (J 0.0223, b 0.220, 비용 ×1.13)",
+   "variant": "(c) 둘 다 tanh ε0.2",
+   "cap": 999,
+   "seconds": 5.0,
+   "success": 1.0,
+   "iq_max": 232,
+   "iq_p99": 222.0,
+   "tau_max": 4.872
+  }
+ ]
+}

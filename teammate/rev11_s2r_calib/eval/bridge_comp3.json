@@ -1,0 +1,370 @@
+{
+ "models": {
+  "cold": {
+   "J": 0.023236248939736182,
+   "Fp": 0.4422106208697935,
+   "Fm": 0.43732062290090556,
+   "b": 0.2383558308781739
+  },
+  "warm": {
+   "J": 0.021249361183691202,
+   "Fp": 0.7179865232100889,
+   "Fm": 0.6580169278557738,
+   "b": 0.10226585890943861
+  }
+ },
+ "rows": [
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 80,
+   "success": 0.6666666666666666,
+   "iq_max": 80,
+   "w_max_dps": 294.3935172098566,
+   "runaway": 5,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 120,
+   "success": 0.8,
+   "iq_max": 120,
+   "w_max_dps": 494.2495707140319,
+   "runaway": 4,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 180,
+   "success": 1.0,
+   "iq_max": 180,
+   "w_max_dps": 707.9906173863517,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 999,
+   "success": 1.0,
+   "iq_max": 232,
+   "w_max_dps": 830.8957280422294,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 80,
+   "success": 0.6666666666666666,
+   "iq_max": 80,
+   "w_max_dps": 295.54571686949527,
+   "runaway": 5,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 120,
+   "success": 0.8,
+   "iq_max": 120,
+   "w_max_dps": 493.89244416491687,
+   "runaway": 3,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 180,
+   "success": 1.0,
+   "iq_max": 180,
+   "w_max_dps": 706.9504320052156,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 999,
+   "success": 1.0,
+   "iq_max": 232,
+   "w_max_dps": 830.8957280422294,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 80,
+   "success": 0.6666666666666666,
+   "iq_max": 80,
+   "w_max_dps": 490.25827914629593,
+   "runaway": 5,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 120,
+   "success": 0.8666666666666667,
+   "iq_max": 120,
+   "w_max_dps": 744.2811461391075,
+   "runaway": 2,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 180,
+   "success": 1.0,
+   "iq_max": 180,
+   "w_max_dps": 868.7227169036316,
+   "runaway": 0,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 999,
+   "success": 1.0,
+   "iq_max": 222,
+   "w_max_dps": 861.7669973908165,
+   "runaway": 0,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 80,
+   "success": 0.7333333333333333,
+   "iq_max": 80,
+   "w_max_dps": 454.12776139843294,
+   "runaway": 5,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 120,
+   "success": 0.8666666666666667,
+   "iq_max": 120,
+   "w_max_dps": 744.2811461391075,
+   "runaway": 2,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 180,
+   "success": 1.0,
+   "iq_max": 180,
+   "w_max_dps": 868.7227169036316,
+   "runaway": 0,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 999,
+   "success": 1.0,
+   "iq_max": 222,
+   "w_max_dps": 861.7669973908165,
+   "runaway": 0,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 80,
+   "success": 0.7333333333333333,
+   "iq_max": 80,
+   "w_max_dps": 492.08048508542277,
+   "runaway": 3,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 120,
+   "success": 1.0,
+   "iq_max": 120,
+   "w_max_dps": 817.2146876512536,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 180,
+   "success": 1.0,
+   "iq_max": 180,
+   "w_max_dps": 1122.2866667456788,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "sign",
+   "cap": 999,
+   "success": 1.0,
+   "iq_max": 232,
+   "w_max_dps": 1271.918356494135,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 80,
+   "success": 0.7333333333333333,
+   "iq_max": 80,
+   "w_max_dps": 492.08048508542277,
+   "runaway": 4,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 120,
+   "success": 1.0,
+   "iq_max": 120,
+   "w_max_dps": 817.2146876512536,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 180,
+   "success": 1.0,
+   "iq_max": 180,
+   "w_max_dps": 1122.2866667456788,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "warm",
+   "comp": "cold",
+   "g": "tanh0.2",
+   "cap": 999,
+   "success": 1.0,
+   "iq_max": 232,
+   "w_max_dps": 1271.918356494135,
+   "runaway": 0,
+   "s_inertia": 4.482991890396154
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 80,
+   "success": 0.6,
+   "iq_max": 80,
+   "w_max_dps": 295.32538584384474,
+   "runaway": 6,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 120,
+   "success": 0.6666666666666666,
+   "iq_max": 120,
+   "w_max_dps": 497.36559350019763,
+   "runaway": 5,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 180,
+   "success": 0.6666666666666666,
+   "iq_max": 180,
+   "w_max_dps": 628.8543359952241,
+   "runaway": 5,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "sign",
+   "cap": 999,
+   "success": 0.6666666666666666,
+   "iq_max": 227,
+   "w_max_dps": 635.7532791363018,
+   "runaway": 4,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 80,
+   "success": 0.6,
+   "iq_max": 80,
+   "w_max_dps": 295.2991326590217,
+   "runaway": 6,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 120,
+   "success": 0.6,
+   "iq_max": 120,
+   "w_max_dps": 497.8343095301046,
+   "runaway": 6,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 180,
+   "success": 0.6666666666666666,
+   "iq_max": 180,
+   "w_max_dps": 628.5825158299798,
+   "runaway": 5,
+   "s_inertia": 4.1035106733815665
+  },
+  {
+   "plant": "cold",
+   "comp": "warm",
+   "g": "tanh0.2",
+   "cap": 999,
+   "success": 0.6666666666666666,
+   "iq_max": 225,
+   "w_max_dps": 635.3014135712694,
+   "runaway": 4,
+   "s_inertia": 4.1035106733815665
+  }
+ ]
+}

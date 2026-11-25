@@ -1,0 +1,16 @@
+{
+ "measured_kst": "2026-11-20 20:13:05",
+ "epoch": 1795173185.295213,
+ "temp_C": 41,
+ "valid": true,
+ "invalid_reasons": [],
+ "bridge": {
+  "Fc_pos": 0.6795712534928859,
+  "Fc_neg": 0.7002615273635584,
+  "viscous": 0.1291449851820765,
+  "resid_rms": 0.026422989386836602
+ },
+ "replay": null,
+ "source": "pi_host/logs/run_policy_20261120_111254_fric.csv",
+ "made_by": "run_policy.py --comp"
+}
