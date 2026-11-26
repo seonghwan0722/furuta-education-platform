@@ -4,6 +4,22 @@
 
 > **처음 보는 사람·AI는 [docs/handoff/HANDOFF_다른AI용.md](docs/handoff/HANDOFF_다른AI용.md)부터 읽으세요.** 최종 하드웨어, 실행 방법, 결과, 문서 간 충돌, 다음 할 일이 한 문서에 있습니다.
 
+## 2026-11-26 교육 앱·발표자료 확장
+
+- [Pendulum Studio Classroom](pendulum_studio/README.md): 활동0 배경지식·길찾기, 보상 블록, `.pendulum` 작품 저장, PID·LQR·LMPC 제어 실험실을 포함한 소스입니다. [팀원 원본 저장소](https://github.com/sjh030619-boop/furuta-pendulum-rl)를 바탕으로 확장했습니다.
+- [10분 최종발표·최종설계보고서·A0 포스터](docs/deliverables/20261126/README.md): 편집 가능 파일과 대본입니다. 저장된 PPTX와 후속 Canva 수정 대본의 버전 차이를 함께 기록했습니다.
+- [고등학교 수업자료 1·2·3](docs/lessons/README.md): 총 60장 구성 원고와 Canva 교정 상태입니다.
+
+새 USB-C 직결과 자동 스윙업 후 PID·LQR·LMPC 전환은 **소스 구현 단계이며 Pi 설치·실물 실행은 미검증**입니다. 아래의 기존 실물 기록과 구분합니다. 이번 소스 확장은 이전 배포 설치 파일에 자동 반영되지 않습니다.
+
+Windows에서 앱을 직접 실행하려면 Node.js를 설치한 후 저장소 루트에서 실행합니다.
+
+```powershell
+cd pendulum_studio
+npm.cmd ci
+npm.cmd start
+```
+
 ## 하드웨어 (2026-11-17 확정)
 
 | 구분 | 부품 |
@@ -13,19 +29,21 @@
 | 제어기 | Raspberry Pi 5 + SEENGREAT Dual CAN HAT (MCP2515, 1 Mbps) |
 | 전원 | MEAN WELL LRS-350-48 |
 
-Pi가 10 ms마다 각도를 읽고 RMD에 전류 지령(0xA1)을 CAN으로 직접 보냅니다. Teensy·SimpleFOC가 나오는 문서는 이전 설계입니다.
+기존 MATLAB/Pi 실험은 10 ms 주기, 팀원 Python 및 앱 경로는 20 ms(50 Hz) 주기로 RMD에 전류 지령(0xA1)을 보냅니다. 계산 주기와 모델에 넣은 지연은 별개입니다. Teensy·SimpleFOC가 나오는 문서는 이전 설계입니다.
 
-## 결과 요약 (실물, 엄격 기준: 5° 이내 5 s 연속)
+## 결과 요약 (선정된 MATLAB/Pi 실물 버전)
+
+직립 오차 5° 이내와 30 ms 필터 각속도 0.5 rad/s 이내를 5 s 연속 만족한 기록입니다. 아래 숫자는 개발 과정 전체의 누적 성공률이 아닙니다.
 
 | 제어기 | 실물 | 최장 유지 |
 |---|---|---|
-| PID | 2/2 통과 | 14.8 s |
-| LQR | 1/1 통과 | 13.3 s |
-| LMPC | 1/2 통과 | 18.1 s |
-| PPO | 1회 통과 | 7.57 s |
-| **SAC (sac24 ck0100)** | **3/3 통과** | **15.5 s** |
+| PID r7 | 2/2 통과 | 14.80 s |
+| LQR rev11 | 1/1 통과 | 13.34 s |
+| LMPC rev11c | 1/3 통과 | 6.76 s |
+| PPO run12 ck0300 | 1/3 통과 | 8.07 s |
+| SAC sac24 ck0100 / ck0200 | 각각 3/3 통과 | 15.52 / 11.71 s |
 
-처음부터 학습하면 PPO가 11~13분에 성공하고 SAC는 25분 안에 실패했습니다. 그래서 수업용 학습은 PPO, 실물 최고 성능은 기존 정책에서 이어 학습한 SAC입니다.
+출처는 [PID 기록](matlab_furuta/PID_HARDWARE_RESULTS_20261120.md)과 [REV11 기록](matlab_furuta/REV11_HARDWARE_RESULTS_20261120.md)입니다. 기존 MATLAB 포팅 환경의 처음 학습에서는 PPO가 11~13분에 기준을 넘었고 SAC는 25분 안에 넘지 못했습니다. 팀원의 보정 환경에서는 결과가 달랐으며, Pendulum Studio는 SAC 사전 정책과 CEM 추가 조정을 사용합니다. 서로 다른 환경의 시간을 알고리즘의 보편적인 우열로 해석하지 않습니다. 팀원의 50 Hz·1.2 A 실물 비교는 [발표자료와 대본](docs/deliverables/20261126/README.md)에 따로 정리했습니다.
 
 ## 폴더
 
@@ -37,6 +55,7 @@ Pi가 10 ms마다 각도를 읽고 RMD에 전류 지령(0xA1)을 CAN으로 직�
 | `matlab_furuta/` | MATLAB/Simulink: Pi 코드 생성 모델, 디코더·인터록, PPO/SAC/LMPC/PID/LQR |
 | `python_handoff/` | MATLAB 없이 정책 평가·재검증·학습 (numpy 정책 `policies/*.npz`) |
 | `rl_blocklab/` | 교육용 블록 보상 설계 앱 (localhost:8770) |
+| `pendulum_studio/` | Electron 교육 앱 확장판: 배경지식·보상 블록·작품 저장·제어 실험실·Pi 수신기 소스 |
 | `teammate/` | 팀원 MuJoCo SAC(`sac_rev11`)와 실기 보정, Pi 호스트 코드 |
 | `docs/` | 인수인계, 결과 표, 입출력 규약, 하드웨어 기록 |
 | `edukit/`, `legacy/` | 이전 버전 |
@@ -56,5 +75,5 @@ MATLAB 없이 정책 재검증: `python_handoff/README_인수인계.md` 참고. 
 
 ## 안전
 
-- 실물 모터 구동은 사람이 직접 시작합니다. 전류 한계 1.5 A, 암 15 · 진자 25 rad/s, 구동 20 s 인터록을 유지하세요.
+- 실물 모터 구동은 사람이 직접 시작합니다. 기존 MATLAB 시험과 새 앱 경로의 전류·속도·실행 시간은 다르므로 해당 버전의 설정과 인터록을 확인합니다. 새 앱 고전제어 경로의 한계·미검증 항목은 [CLASSICAL_CONTROL.md](pendulum_studio/kit/CLASSICAL_CONTROL.md)에 있습니다.
 - Pi 주소·계정은 `deployment/pi/connection.local.json`에만 두고 커밋하지 않습니다.

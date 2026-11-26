@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net data:; script-src 'self'; img-src 'self' data:;">
+  <title>Pendulum Studio · 제어 실험실</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="css/control.css?v=20261126kit1">
+</head>
+<body>
+<header class="appHeader">
+  <div class="brand">
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="4.5" r="3.2" fill="#fff"/><rect x="9.8" y="6.5" width="2.4" height="9" rx="1.2" fill="#fff" opacity=".92"/><rect x="3" y="15" width="16" height="3.4" rx="1.7" fill="#fff" opacity=".75"/></svg>
+    <b>Pendulum Studio</b><span class="workspaceName">제어 실험실</span>
+  </div>
+  <div class="headerActions">
+    <div class="methods" role="group" aria-label="제어 방법">
+      <button data-method="pid" aria-pressed="true" title="PID: 지금·누적·변화에 반응">PID</button>
+      <button data-method="lqr" aria-pressed="false" title="LQR: 균형과 힘 사이에서 절충">LQR</button>
+      <button data-method="lmpc" aria-pressed="false" title="LMPC: 앞을 예측하고 다시 계획">LMPC</button>
+    </div>
+    <button id="back" class="quiet"><span aria-hidden="true">←</span> 강화학습으로 돌아가기</button>
+  </div>
+</header>
+<nav class="learningFlow" aria-label="제어 실험 활동 순서">
+  <span class="flowLabel">활동 순서</span>
+  <button data-open-tab="overview" aria-current="step"><i>1</i>살펴보기</button>
+  <button data-open-tab="settings"><i>2</i>조건 바꾸기</button>
+  <button data-open-tab="results"><i>3</i>실험하고 비교하기</button>
+  <button data-open-tab="notes"><i>4</i>설명하기</button>
+  <span class="flowHint">한 번에 한 가지 값만 바꿔 보세요.</span>
+</nav>
+<main class="labLayout">
+  <section class="leftColumn" aria-label="진자와 실험 실행">
+    <section class="card visual">
+      <div class="stageHead"><h1>균형을 잡는 모습</h1><span class="tag" id="stageSource">PC 시뮬레이션</span></div>
+      <div class="stageContext"><span id="selectedMethod" class="pill agent">PID</span><span id="methodDescription">지금 · 누적 · 변화</span><span id="clock">0.00 / 10.00초</span></div>
+      <div class="sceneView"><canvas id="scene" width="840" height="440" aria-label="진자의 옆모습과 회전 팔의 윗모습"></canvas></div>
+      <div class="legend"><span><i class="pendulumDot" aria-hidden="true"></i>진자: 직립이 0°</span><span><i class="armDot" aria-hidden="true"></i><span id="armReference">팔: 시작 위치가 0°</span></span></div>
+      <p id="resultContext" class="stageFoot">설정 탭에서 조건을 정해 보세요.</p>
+    </section>
+    <section class="card executionDock" aria-label="실험 실행">
+      <div class="experimentTarget" role="group" aria-label="실험 대상">
+        <button id="targetSim" aria-pressed="true">시뮬레이션</button><button id="targetKit" aria-pressed="false">실제 키트</button>
+      </div>
+      <div class="kitControl" id="kitControl" hidden>
+        <div class="kitControlHead"><span class="pill state">Pi에서 제어</span><b id="kitConnection">연결 확인 중</b></div>
+        <p class="hint" id="kitConnectionNote" role="status" aria-live="polite">메인 앱의 키트 연결을 함께 사용합니다.</p>
+        <div class="kitControlActions"><button class="secondary" id="connectKit">키트 연결하기</button><button class="secondary" id="checkKit" disabled>모터·센서 점검</button></div>
+        <details class="kitSteps"><summary>아래 자세에서 시작 → 자동 스윙업 → 직립 유지</summary><ol class="kitProcedure" id="kitProcedure"><li>진자를 아래로 내려 두고 ‘실제 키트 시작’을 누릅니다.</li><li>팔이 회전하며 받침 수평을 측정합니다.</li><li>자동 스윙업으로 진자를 올린 뒤 선택한 제어기로 직립을 유지합니다. 전환 순간의 팔 위치를 기준으로 삼습니다.</li></ol><p class="hint">수평 측정 후 스윙업·직립 유지를 합쳐 10초 동안 실행합니다. 제어 계산은 Pi 안에서 50 Hz로 수행합니다. 전환 조건은 직립 오차 5°·진자 속도 0.2 rad/s·팔 속도 4 rad/s 이내인 시험 전 후보입니다.</p></details>
+        <p class="hint">시뮬레이션에서 계산한 게인의 실물 안정성은 아직 확인하지 않았습니다. 정지는 아래 ‘정지하기’로 요청하세요.</p>
+      </div>
+      <div class="runActions">
+        <button id="run" class="primary"><span aria-hidden="true">▶</span> 시작하기</button>
+        <button id="stop" class="stopButton" disabled><span aria-hidden="true">■</span> 정지하기</button>
+        <label class="speedControl" id="speedField" for="speed">재생<select id="speed"><option value="1">1배</option><option value="4">4배</option></select></label>
+      </div>
+      <div class="setupRow"><span class="smallLabel">다음 실험</span><p id="setupSummary">PID · 5° · 상한 80% · 원리 보기</p><button class="textButton" data-open-tab="settings">조건 변경</button></div>
+    </section>
+    <section class="card resultSummary" aria-label="실험 진행과 결과">
+      <div class="summaryHead"><b>실험 결과</b><div class="runState"><span class="statusDot" aria-hidden="true"></span><span id="runState">실험 준비</span></div><button class="textButton" data-open-tab="results">그래프 보기 <span aria-hidden="true">→</span></button></div>
+      <progress id="runProgress" value="0" max="10" aria-label="10초 실험 진행"></progress>
+      <section class="metrics" aria-label="핵심 실험 결과">
+        <div><span id="meanLabel">평균 기울기 오차</span><b id="mean">—</b><small id="meanHint">얼마나 바르게 서 있었나요?</small></div>
+        <div><span>모터 힘 RMS</span><b id="rms">—</b><small>힘을 얼마나 사용했나요?</small></div>
+        <div><span>힘 상한 도달 비율</span><b id="sat">—</b><small id="satHint">최대 힘이 얼마나 필요했나요?</small></div>
+      </section>
+      <p id="status" class="statusMessage" role="status" aria-live="polite">먼저 결과를 예상해 보세요.</p>
+    </section>
+  </section>
+  <section class="rightColumn" aria-label="제어 학습 작업대">
+    <div class="workspaceTabs" role="tablist" aria-label="제어 실험 학습 도구">
+      <button id="overviewTab" role="tab" data-lab-tab="overview" aria-controls="overviewPanel" aria-selected="true" tabindex="0">살펴보기</button>
+      <button id="settingsTab" role="tab" data-lab-tab="settings" aria-controls="settingsPanel" aria-selected="false" tabindex="-1">설정</button>
+      <button id="resultsTab" role="tab" data-lab-tab="results" aria-controls="resultsPanel" aria-selected="false" tabindex="-1">그래프</button>
+      <button id="notesTab" role="tab" data-lab-tab="notes" aria-controls="notesPanel" aria-selected="false" tabindex="-1">실험 노트</button>
+    </div>
+    <div class="workspace">
+      <section id="overviewPanel" class="tabPanel" role="tabpanel" aria-labelledby="overviewTab" data-lab-panel="overview" tabindex="0">
+        <section class="card lessonIntro"><div class="sectionTitle"><span class="stepNo">1</span><h2>같은 진자, 세 가지 제어 방법</h2></div><p class="lead">이번에는 사람이 정한 제어 규칙으로 진자를 세워 봅니다. 강화학습처럼 움직임을 보고 행동하지만, 규칙을 정하는 방법이 달라요.</p><div class="learningBridge"><span class="pill reward">강화학습</span><span>경험과 보상으로 정책을 배워요.</span><span class="pill agent">제어 실험실</span><span>게인이나 비용 기준으로 행동을 정해요.</span></div></section>
+      <section class="card lessonCard"><div><p class="eyebrow">선택한 방법의 원리</p><h2 id="lessonTitle"></h2><p id="lessonText"></p></div><div id="rule" class="rule"></div></section>
+      <div id="controllerLesson" class="controller-lesson" role="region" aria-label="선택한 제어 방식의 자세한 설명"></div>
+        <section class="card"><h2>진자를 보고, 힘을 정하고, 다시 확인해요</h2><div class="controlLoop" aria-label="센서 상태에서 제어 규칙을 거쳐 모터 명령을 정하고 진자의 움직임을 다시 관찰하는 반복">
+          <div><span class="pill state">상태</span><b>얼마나 기울었지?</b><p>각도와 움직이는 속도</p></div><span class="loopArrow" aria-hidden="true">→</span>
+          <div><span class="pill agent">제어 규칙</span><b>어떤 힘을 줄까?</b><p>PID · LQR · LMPC</p></div><span class="loopArrow" aria-hidden="true">→</span>
+          <div><span class="pill action">행동</span><b>모터로 힘 주기</b><p>설정한 상한 안에서</p></div>
+        </div><p class="loopReturn"><span aria-hidden="true">↶</span> 진자가 움직이면, 달라진 상태를 다시 확인합니다.</p></section>
+        <section class="card"><div class="sectionTitle"><span class="stepNo">2</span><h2>한 가지 조건을 바꾸고 차이를 찾아보세요</h2></div><div class="practiceSteps"><div><b>예상하기</b><p>값을 바꾸면 움직임이 어떻게 달라질까요?</p></div><div><b>관찰하기</b><p>왼쪽에서 움직임을, 그래프에서 오차와 힘을 보세요.</p></div><div><b>설명하기</b><p>조건이 같은 기록을 비교하고 이유를 적어 보세요.</p></div></div><div class="cardActions"><button class="primary" data-open-tab="settings">조건 바꾸러 가기 <span aria-hidden="true">→</span></button><button class="secondary" data-open-tab="notes">실험 노트에 예상 적기</button></div></section>
+      <section class="card theory-card"><h3>세 방법은 어디가 다를까요?</h3><div class="theory-table-wrap" role="region" aria-label="PID LQR LMPC 비교" tabindex="0"><table><thead><tr><th>비교 기준</th><th>PID + 팔 피드백</th><th>LQR</th><th>LMPC</th></tr></thead><tbody><tr><th>명령을 정하는 방법</th><td>현재·누적·변화율의 합에 팔 피드백 추가</td><td>모델·비용으로 구한 K와 현재 상태의 곱</td><td>현재 상태에서 제한 안의 미래 입력 계획 계산</td></tr><tr><th>설정에서 바꾸는 것</th><td>P·I·D 기준 게인의 배율</td><td>상태와 힘의 중요도 Q·R</td><td>Q·R, 예측 길이 N</td></tr><tr><th>힘의 상한</th><td>합산한 명령을 제한, I 누적 조절 가능</td><td>계산한 명령을 상한에서 제한</td><td>계획을 계산할 때부터 입력 제한 포함</td></tr><tr><th>그래프에서 볼 것</th><td>흔들림, 누적, 상한 도달</td><td>오차와 힘 사용의 절충</td><td>예측, 상한, 재계획과 실제 응답</td></tr></tbody></table></div><p class="theory-note">세 방법 모두 다음 측정값을 받아 명령을 다시 계산합니다. 결과는 게인·시작 상태·마찰·상한에 따라 달라지며, 어떤 방법이 항상 우수하다고 정해져 있지는 않습니다.</p></section>
+      <details class="reference"><summary>공통 기호와 실험 조건 다시 보기</summary><div class="referenceBody"><p id="formula"></p><p>상태는 [팔 각도, 진자 직립 오차, 팔 각속도, 진자 각속도]입니다. 게인 계산은 직립점에서 선형화하고, 실험은 기존 비선형 Furuta 모델을 사용합니다. Q와 R은 게인을 계산하는 점수 기준이며 신경망을 학습하지 않습니다.</p><p>PID에는 팔의 위치·속도 피드백을 함께 씁니다. P·D 기본값은 기준 LQR 게인을 출발점으로 정했으므로 기본 PD와 LQR의 결과가 같을 수 있습니다. 슬라이더는 이 기준의 배율입니다.</p><p>LMPC는 입력 상한을 포함한 4상태 QP를 매 주기 풉니다. 종단 비용은 LQR 해입니다. 입력 제한이 작동하지 않으면 LQR과 같은 결과가 나올 수 있습니다. 각도·속도에는 QP 제약을 두지 않습니다.</p><p>모터 명령과 힘 RMS는 비율입니다. 1의 기준 토크는 2.52 N·m이며, 보정 모델의 실제 토크에는 추가 제한이 적용됩니다.</p><p>시뮬레이션은 직립 근처 또는 아래 자세에서 시작하는 10초 실험을 선택할 수 있습니다. 실제 키트는 수평 측정 후 자동 스윙업과 선택한 제어기의 직립 유지를 수행합니다. 실물의 스윙업 설정과 게인은 시험 전 후보이며, 시뮬레이션 통과가 실물 성공을 보장하지 않습니다. 기울기·속도·계산 실패 등의 종료 사유는 실험 기록에 남깁니다.</p></div></details>
+</section>
+<section id="settingsPanel" class="tabPanel" role="tabpanel" aria-labelledby="settingsTab" data-lab-panel="settings" tabindex="0" hidden>
+    <section class="card settings" aria-label="실험 설정">
+      <div class="sectionHead"><h2>무엇을 바꿔 볼까요?</h2><button id="resetParams" class="textButton">기본값</button></div>
+      <p class="hint settingsIntro">값 하나를 바꾸고, 결과를 예상해 보세요. 설정을 마치면 왼쪽의 ‘시작하기’를 누릅니다.</p>
+      <section id="pidSettings">
+        <div class="presets" aria-label="PID 빠른 설정"><button data-preset="p">P만</button><button data-preset="pd">P + D</button><button data-preset="pid">P + I + D</button></div>
+        <label class="rangeField" for="p"><span>P · 지금 기울기</span><output for="p"></output><input id="p" type="range" min="0" max="3" step="0.1" value="1"></label><p class="hint">기울어짐에 얼마나 강하게 반응할까요?</p>
+        <label class="rangeField" for="i"><span>I · 남아 있는 오차</span><output for="i"></output><input id="i" type="range" min="0" max="3" step="0.1" value="0"></label><p class="hint">오차를 쌓아, 남아 있는 기울기를 줄입니다.</p>
+        <label class="rangeField" for="d"><span>D · 기울어지는 빠르기</span><output for="d"></output><input id="d" type="range" min="0" max="3" step="0.1" value="1"></label><p class="hint">빠른 변화에 반응해 흔들림을 줄입니다.</p>
+        <details class="advanced"><summary>누적 제한 설정</summary><label class="check"><input id="antiWindup" type="checkbox" checked><span>힘이 꽉 차면 I의 누적을 제한</span></label><p class="hint">힘의 상한에 도달했을 때 오차가 계속 쌓이는 현상을 줄입니다.</p></details>
+      </section>
+      <section id="optimalSettings" hidden>
+        <label class="rangeField" for="qAngle"><span>진자를 세우는 중요도 Q</span><output for="qAngle"></output><input id="qAngle" type="range" min="1" max="200" value="40"></label><p class="hint">크면 진자의 기울기를 더 중요하게 봅니다.</p>
+        <label class="rangeField" for="qArm"><span>팔을 제자리로 돌리는 중요도 Q</span><output for="qArm"></output><input id="qArm" type="range" min="0.05" max="10" step="0.05" value="0.5"></label><p class="hint">크면 팔의 시작 위치를 더 중요하게 봅니다.</p>
+        <label class="rangeField" for="r"><span>힘을 아끼는 중요도 R</span><output for="r"></output><input id="r" type="range" min="0.1" max="20" step="0.1" value="1"></label><p class="hint">크면 힘을 사용하는 데 더 큰 비용을 줍니다.</p>
+      </section>
+      <section id="mpcSettings" hidden><label class="rangeField" for="horizon"><span>앞을 보는 칸 수 N</span><output for="horizon"></output><input id="horizon" type="range" min="5" max="40" value="20"></label><p class="hint">한 칸은 0.02초. 첫 명령을 실행하고 다시 예측합니다.</p></section>
+      <section class="conditions" aria-label="공통 실험 조건">
+        <h3>실험 조건</h3><p class="hint" id="simulationOnlyNote">세 방법을 비교할 때 같은 조건을 씁니다.</p>
+        <label class="selectField" for="startMode">시뮬레이션 시작 방식<select id="startMode"><option value="balance">직립 근처 · 선택한 제어기만</option><option value="swingup">아래 자세 · 자동 스윙업 후 전환</option></select></label>
+        <p class="hint" id="startModeNote">직립 근처에서 제어기 원리를 비교합니다.</p>
+        <div class="numberField"><label for="angle">처음 기울기</label><div><input id="angle" type="number" min="-30" max="30" step="1" value="5"><span aria-hidden="true">°</span></div></div>
+        <label class="rangeField" for="limit"><span>힘의 상한</span><output for="limit"></output><input id="limit" type="range" min="0.05" max="1" step="0.05" value="0.8"></label><p class="hint">스윙업과 직립 유지에 쓰는 모터 명령의 최대 크기입니다. 1이 기준입니다. 실제 키트의 준비 단계인 수평 측정은 별도의 기존 설정(0.6 A 펄스)을 사용합니다.</p>
+        <details class="advanced"><summary>흔들기 · 실험 환경</summary>
+          <label class="selectField" for="disturbance">2초에 살짝 흔들기<select id="disturbance"><option value="0">없음</option><option value="0.2">+0.2 rad/s</option><option value="-0.2">−0.2 rad/s</option></select></label>
+          <label class="selectField" for="plant">실험 환경<select id="plant"><option value="ideal">원리 보기 · 마찰 단순화</option><option value="calibrated">실물 보정 · 센서와 마찰 포함</option></select></label>
+          <p id="plantNote" class="hint"></p>
+        </details>
+      </section>
+    </section>
+</section>
+      <section id="resultsPanel" class="tabPanel" role="tabpanel" aria-labelledby="resultsTab" data-lab-panel="results" tabindex="0" hidden>
+        <section class="card comparisonCard"><div><h2>같은 조건에서 비교해 볼까요?</h2><p class="hint">시뮬레이션은 PID → LQR → LMPC를 연속 실행합니다. 실물은 방법마다 직접 시작하고 기록을 비교합니다.</p></div><button id="compare" class="secondary">세 방법 비교하기</button></section>
+        <section class="card graphCard">
+          <div class="sectionHead"><h2>무엇이 달라졌나요?</h2><a class="textLink" href="#recordsSection">기록 선택해서 비교 <span aria-hidden="true">↓</span></a></div>
+          <div class="graphGrid"><div><h3>진자 기울기 <span>(°)</span></h3><p class="hint">0°로 돌아오는 속도와 흔들림을 보세요.</p><div class="chart" id="angleChart"></div></div><div><h3>모터 명령 <span>(−1 ~ 1)</span></h3><p class="hint">힘의 상한에 닿는 구간을 찾아보세요.</p><div class="chart" id="actionChart"></div></div></div>
+          <div class="chartLegend" id="chartLegend">실험하면 그래프가 나타납니다. 기록을 선택하면 함께 비교할 수 있습니다.</div>
+        </section>
+        <section class="card mechanism" id="detailPanel"><div class="sectionHead"><h2 id="detailTitle">명령을 만드는 과정</h2><span class="subtleLabel">제어기 안 들여다보기</span></div><p id="detailText"></p><div class="chart compact" id="predictionChart" hidden></div><div id="components" class="components"></div></section>
+        <section class="card recordsCard" id="recordsSection">
+          <div class="sectionHead"><div><h2>실험 기록 <span id="recordCount" class="countBadge">0개 기록 · 0개 비교</span></h2><p class="hint">최대 3개를 선택해 그래프에서 겹쳐 보세요.</p></div><button id="csv" class="secondary" disabled>CSV 받기 <span aria-hidden="true">↓</span></button></div>
+          <div class="tableScroll" tabindex="0" role="region" aria-label="실험 기록 표"><table><thead><tr><th>선택</th><th>방법 · 환경</th><th>처음 각도 / 상한</th><th>평균 오차</th><th>힘 RMS</th><th>실행 상태</th></tr></thead><tbody id="records"></tbody></table></div>
+          <div id="recordsEmpty" class="emptyState"><span aria-hidden="true">＋</span><div><b>첫 번째 실험을 기다리고 있어요</b><p>왼쪽의 ‘시작하기’를 누르면 여기에 기록이 쌓입니다.</p></div></div>
+          <p class="recordNote">최근 12개 기록을 보관합니다. 화면을 닫기 전에 CSV 또는 학습 기록 JSON을 저장하세요. JSON에는 실물 제어 설정과 종료 사유도 담깁니다. 실물의 전체 오차에는 스윙업 구간이 포함되므로 직립 유지 성능과 구분하세요. 앱에서 받지 못한 진단값은 빈칸으로 남깁니다.</p>
+        </section>
+      </section>
+      <section id="notesPanel" class="tabPanel" role="tabpanel" aria-labelledby="notesTab" data-lab-panel="notes" tabindex="0" hidden>
+        <section class="card workbook">
+          <div class="sectionHead"><div><p class="eyebrow">나의 실험 노트</p><h2>결과를 나만의 말로 설명해요</h2></div><span class="autosave"><i aria-hidden="true"></i>자동 저장</span></div>
+          <div class="mission"><h3 id="missionTitle"></h3><ol id="missionSteps"></ol></div>
+          <div class="noteGrid">
+            <label for="predict"><span class="noteStep">01 예상</span><b>바꾸면 어떻게 될까요?</b><textarea id="predict" rows="4" maxlength="1000" placeholder="D를 늘리면 흔들림이…"></textarea></label>
+            <label for="observe"><span class="noteStep">02 관찰</span><b>그래프에서 무엇이 달랐나요?</b><textarea id="observe" rows="4" maxlength="1000" placeholder="바꾸기 전과 비교해 적어 보세요."></textarea></label>
+            <label for="explain"><span class="noteStep">03 설명</span><b>왜 그렇게 되었을까요?</b><textarea id="explain" rows="4" maxlength="1000" placeholder="예상과 같았나요? 원리를 연결해 보세요."></textarea></label>
+          </div>
+          <div class="noteFooter"><p class="hint">노트는 이 브라우저에 자동 저장합니다. 제출할 때는 파일로 받으세요.</p><button id="saveNote" class="secondary">학습 기록 JSON 받기 <span aria-hidden="true">↓</span></button></div>
+          <div class="quizSection"><div><p class="eyebrow">한 가지 확인</p><h3 id="quizQuestion"></h3></div><div><div id="quiz"></div><p id="feedback" role="status"></p></div></div>
+        </section>
+      </section>
+    </div>
+  </section>
+</main>
+<script src="assets/model.js"></script><script src="js/physics.js"></script><script src="js/charts.js"></script><script src="js/control-core.js?v=20261126kit1"></script><script src="js/control-explainers.js?v=20261126theory1"></script><script src="js/control-lessons.js?v=20261126theory1"></script><script src="js/control-lab.js?v=20261126kit1"></script>
+</body>
+</html>

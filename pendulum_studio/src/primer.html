@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; connect-src 'none'">
+<title>활동 0 · AI가 배우는 방법</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"><link rel="stylesheet" href="css/primer.css?v=20261126model1"></head>
+<body>
+<main>
+  <aside class="lesson-stage">
+    <header class="stagehead"><span class="pill env">환경</span><b id="sceneTitle">AI가 배우는 과정</b><span class="stage-mode">화면 속 체험</span></header>
+    <div class="stage-scenes">
+      <div class="scene" data-scene="basics">
+        <div class="scene-intro"><h2>강화학습 미리보기 · 길을 찾는 로봇</h2><p>오른쪽에서 세 학습 방법을 비교해 보세요.<br>이 그림은 그중 오늘 체험할 강화학습의 예입니다.</p></div>
+        <svg class="learning-picture" viewBox="0 0 430 310" role="img" aria-label="로봇이 격자 지도에서 목표 깃발을 향해 이동하고 점수를 받는 그림">
+          <rect x="35" y="18" width="360" height="228" rx="12" fill="#F7F9FB" stroke="#B9C4CC"/>
+          <path d="M95 18v228M155 18v228M215 18v228M275 18v228M335 18v228M35 75h360M35 132h360M35 189h360" stroke="#D7DEE3"/>
+          <rect x="98" y="78" width="54" height="51" rx="5" fill="#D7DEE3"/><rect x="158" y="78" width="54" height="51" rx="5" fill="#D7DEE3"/><rect x="278" y="135" width="54" height="51" rx="5" fill="#D7DEE3"/>
+          <path d="M65 105v110h180V48h115" stroke="#3B6DE4" stroke-width="4" fill="none" stroke-dasharray="7 5"/><path d="M350 41l12 7-12 7" fill="none" stroke="#3B6DE4" stroke-width="3"/>
+          <rect x="44" y="86" width="42" height="32" rx="9" fill="#A7CFF1" stroke="#14212B" stroke-width="2"/><circle cx="56" cy="99" r="3" fill="#14212B"/><circle cx="74" cy="99" r="3" fill="#14212B"/><path d="M57 109h15M65 85v-8" stroke="#14212B" stroke-width="2"/><circle cx="65" cy="75" r="3" fill="#FFDC91" stroke="#14212B"/>
+          <path d="M357 65V30l26 8-26 10" fill="#D8E6BC" stroke="#14212B" stroke-width="2"/>
+          <rect x="40" y="267" width="92" height="25" rx="13" fill="#A7CFF1" stroke="#14212B"/><text x="86" y="284" font-size="13" font-weight="700" text-anchor="middle">에이전트</text>
+          <text x="156" y="284" font-size="13" fill="#51606E">행동 → 결과 → 다시 시도</text>
+        </svg>
+        <div class="scene-terms"><div><span class="pill state">상태</span><b>지금 있는 칸</b></div><div><span class="pill action">행동</span><b>한 칸 이동</b></div><div><span class="pill reward">보상</span><b>도착하면 +10</b></div></div>
+        <p class="scene-caption">그림의 선은 설명용 경로입니다.<br>‘길찾기’에서는 AI가 직접 시행착오로 배웁니다.</p>
+        <button class="primary" data-go="grid">길찾기 체험 시작하기</button>
+      </div>
+      <div class="scene" data-scene="grid" hidden></div>
+      <div class="scene" data-scene="bandit" hidden></div>
+      <div class="scene" data-scene="future" hidden></div>
+      <div class="scene" data-scene="bridge" hidden>
+        <div class="scene-intro"><h2>이번에는 막대를 세워 봅시다</h2><p>장소는 바뀌어도, 배우는 과정은 같습니다.</p></div>
+        <svg class="pendulum-picture" viewBox="0 0 430 310" role="img" aria-label="모터가 수평 팔을 움직여 팔 끝의 진자를 세우는 회전 도립진자 개념도">
+          <ellipse cx="204" cy="254" rx="148" ry="28" fill="#E6ECEB"/>
+          <rect x="85" y="203" width="80" height="46" rx="8" fill="#A7CFF1" stroke="#14212B" stroke-width="2"/><path d="M125 205v-30l166 17" stroke="#4A4640" stroke-width="10" stroke-linecap="round"/><path d="M125 175l166 17" stroke="#D6D2CB" stroke-width="6"/>
+          <path d="M291 192V48" stroke="#3B6DE4" stroke-width="2" stroke-dasharray="6 6"/><path d="M291 192L248 57" stroke="#4A4640" stroke-width="9" stroke-linecap="round"/><path d="M291 192L248 57" stroke="#D6D2CB" stroke-width="5"/><circle cx="248" cy="57" r="10" fill="#C2410C" stroke="#14212B"/><circle cx="291" cy="192" r="9" fill="#FFDC91" stroke="#14212B" stroke-width="2"/>
+          <text x="106" y="231" font-size="13" fill="#14212B">모터</text><text x="194" y="208" font-size="13" fill="#51606E">팔</text><text x="206" y="115" font-size="13" fill="#51606E">진자</text><text x="300" y="59" font-size="12" fill="#3B6DE4">목표: 직립</text>
+        </svg>
+        <div class="scene-terms"><div><span class="pill state">상태</span><b>각도 · 각속도</b></div><div><span class="pill action">행동</span><b>모터 힘</b></div><div><span class="pill reward">보상</span><b>높이 · 균형 점수</b></div></div>
+        <p class="scene-caption">상태를 측정하고, 행동하고, 다시 측정합니다.</p>
+        <button class="primary" id="sceneContinue">진자 살펴보기로 이동</button>
+      </div>
+      <div class="scene model-scene" data-scene="modeling" hidden>
+        <div class="scene-intro"><h2>움직임에 이름을 붙여요</h2><p>각도를 움직여 구조를 살펴보세요. 그림은 원리 설명용이며 실물 비율과 다릅니다.</p></div>
+        <svg id="modelDrawing" class="model-drawing" viewBox="0 0 440 340" role="img" aria-labelledby="modelDrawingTitle modelDrawingDesc">
+          <title id="modelDrawingTitle">팔 각도와 진자 각도의 기하학적 모형</title><desc id="modelDrawingDesc">왼쪽은 팔의 윗모습, 오른쪽은 팔 끝에서 진자가 회전하는 면입니다. 주황색 점은 진자의 무게중심입니다.</desc>
+          <path d="M220 15v306" stroke="#D7DEE3"/>
+          <text x="20" y="26" class="model-view-title">팔 · 위에서 보기</text><text x="242" y="26" class="model-view-title">진자 · 회전면 보기</text>
+          <circle cx="110" cy="165" r="80" fill="#F7F9FB" stroke="#D7DEE3"/><path d="M110 165h88" stroke="#8FA2AB" stroke-dasharray="5 4"/><text x="145" y="184">θ = 0 방향</text>
+          <path id="modelArm" d="M110 165L182.5 131.2" stroke="#3b6de4" stroke-width="8" stroke-linecap="round"/><circle cx="110" cy="165" r="11" fill="#14212B"/><circle id="modelHinge" cx="182.5" cy="131.2" r="8" fill="#FFDC91" stroke="#14212B"/>
+          <path id="modelThetaArc" fill="none" stroke="#3b6de4" stroke-width="2"/><text id="modelArmLabel" x="140" y="135" class="model-symbol">r</text><text x="26" y="302">모터가 팔을 회전시켜요 · θ</text>
+          <path d="M330 58v240" stroke="#8FA2AB" stroke-dasharray="5 4"/><text x="344" y="65">직립</text><text x="344" y="289">아래</text>
+          <path id="modelRod" d="M330 172L385 76.7" stroke="#3b6de4" stroke-width="7" stroke-linecap="round"/><circle cx="330" cy="172" r="9" fill="#FFDC91" stroke="#14212B"/>
+          <circle id="modelCOM" cx="357.5" cy="124.4" r="7" fill="#C2410C" stroke="#fff" stroke-width="2"/><text id="modelCOMLabel" x="370" y="124" class="model-symbol">m · 무게중심</text>
+          <path id="modelAlphaArc" fill="none" stroke="#C2410C" stroke-width="2"/><text x="245" y="302">팔 끝의 축에서 흔들려요 · α</text>
+          <text x="20" y="330" class="model-caption">r: 팔 길이 · l: 진자 축에서 무게중심까지 거리</text>
+        </svg>
+        <div class="model-readouts"><div>팔 각도 θ<b id="modelThetaValue">25°</b></div><div>진자 각도 α<b id="modelAlphaValue">150°</b></div><div>직립 오차 φ<b id="modelPhiValue">−30°</b></div><div>상대 높이 Δz / l<b id="modelHeightValue">1.866</b></div></div>
+        <div class="model-angle-controls">
+          <label for="modelTheta">팔을 돌려 보기 θ <output id="modelThetaOut" for="modelTheta">25°</output><input id="modelTheta" type="range" min="-180" max="180" step="1" value="25"></label>
+          <label for="modelAlpha">진자를 기울여 보기 α <output id="modelAlphaOut" for="modelAlpha">150°</output><input id="modelAlpha" type="range" min="-180" max="180" step="1" value="150"></label>
+          <div class="model-poses" role="group" aria-label="진자 자세 예시"><button data-model-angle="0" aria-pressed="false">아래 0°</button><button data-model-angle="90" aria-pressed="false">옆 90°</button><button data-model-angle="180" aria-pressed="false">직립 180°</button></div>
+        </div>
+        <p class="model-geometry-note">그림과 높이만 바뀌는 기하학 체험입니다. 여기서 힘을 가하거나 제어기를 실행하지 않습니다.</p>
+      </div>
+    </div>
+    <div class="stagefoot"><span id="stageFooterPill" class="pill agent">에이전트</span><span id="stageFooterText">결과를 보며 더 나은 선택을 배웁니다</span></div>
+  </aside>
+  <nav class="lesson-tabs" role="tablist" aria-label="배경지식 주제">
+    <button role="tab" id="tab-basics" aria-controls="basics" aria-selected="true" data-topic="basics">살펴보기</button>
+    <button role="tab" id="tab-grid" aria-controls="grid" aria-selected="false" tabindex="-1" data-topic="grid">길찾기</button>
+    <button role="tab" id="tab-bandit" aria-controls="bandit" aria-selected="false" tabindex="-1" data-topic="bandit">탐험과 이용</button>
+    <button role="tab" id="tab-future" aria-controls="future" aria-selected="false" tabindex="-1" data-topic="future">미래의 보상</button>
+    <button role="tab" id="tab-bridge" aria-controls="bridge" aria-selected="false" tabindex="-1" data-topic="bridge">진자로 연결</button>
+    <button role="tab" id="tab-modeling" aria-controls="modeling" aria-selected="false" tabindex="-1" data-topic="modeling">수학적 모델링</button>
+  </nav>
+
+  <section id="basics" role="tabpanel" aria-labelledby="tab-basics">
+    <div class="section-title"><div><h2><span class="stepno">1</span>인공지능이 배우는 방법을 살펴봅시다</h2><p class="lead">무엇을 주고, 어떤 결과를 배우게 하는지가 다릅니다. 궁금한 방법의 ‘자세히 살펴보기’를 펼쳐 보세요.</p></div></div>
+    <div class="cards three learning-types">
+      <article class="card"><span class="badge">지도학습</span><h3>정답을 보고 배우기</h3><p>입력과 정답을 함께 줍니다. 예측과 정답의 차이를 줄여 새로운 입력의 답을 예측합니다.</p><p class="example">예: 손글씨 숫자 분류</p>
+        <details class="learning-details"><summary>지도학습 자세히 살펴보기</summary><div class="learning-expanded">
+          <div><h4>‘지도’는 정답이 붙은 예시를 뜻해요</h4><p>숫자 사진과 ‘7’이라는 정답을 한 쌍으로 준비합니다. 이 정답 표시를 <b>레이블</b>이라고 합니다. 사람은 보통 학습 전에 정답이 붙은 데이터를 준비합니다.</p><ol><li><b>예측:</b> 모델이 사진을 보고 숫자를 고릅니다.</li><li><b>비교:</b> 예측과 정답의 차이를 오차로 계산합니다.</li><li><b>수정:</b> 여러 예시의 오차를 줄이는 방향으로 모델을 바꿉니다.</li></ol><p>배운 뒤에는 정답을 가린 새 사진으로 확인합니다. 외운 사진만 잘 맞히는 것과 처음 보는 사진도 잘 맞히는 것은 다릅니다.</p><p class="example"><b>두 가지 결과:</b> 숫자 종류를 고르는 것은 ‘분류’, 집값처럼 수치를 예측하는 것은 ‘회귀’입니다.</p></div>
+          <figure class="learning-figure"><svg viewBox="0 0 360 290" role="img" aria-label="손글씨 7과 정답 7을 모델에 주고, 예측 1과 정답 7의 차이로 모델을 수정한 뒤 새 사진을 시험하는 지도학습 개념도">
+            <text x="18" y="24" class="diagram-title">학습: 입력과 정답을 함께 줍니다</text>
+            <rect x="18" y="40" width="90" height="72" rx="8" fill="#fff" stroke="#b9c4cc"/><path d="M43 57h35l-24 40" fill="none" stroke="#14212B" stroke-width="5" stroke-linecap="round"/><text x="63" y="132" text-anchor="middle">입력: 숫자 사진</text>
+            <path d="M116 76h29m-7-5 7 5-7 5" class="diagram-arrow"/><rect x="155" y="49" width="82" height="54" rx="8" fill="#A7CFF1" stroke="#14212B"/><text x="196" y="81" text-anchor="middle">모델</text>
+            <path d="M245 76h23m-7-5 7 5-7 5" class="diagram-arrow"/><rect x="277" y="49" width="65" height="54" rx="8" fill="#F9CCCF" stroke="#14212B"/><text x="309" y="81" text-anchor="middle">예측: 1</text>
+            <rect x="18" y="154" width="90" height="34" rx="8" fill="#D8E6BC" stroke="#14212B"/><text x="63" y="176" text-anchor="middle">정답: 7</text><path d="M115 171h45" class="diagram-arrow"/><text x="172" y="174">예측과 정답의 차이 확인</text><path d="M200 151v-39m-5 7 5-7 5 7" class="diagram-arrow"/>
+            <text x="18" y="217" class="diagram-title">평가: 정답을 가린 새 사진으로 확인</text><rect x="18" y="234" width="324" height="38" rx="8" fill="#eef2f5"/><text x="180" y="258" text-anchor="middle">새 사진 → 학습한 모델 → 예측 확인</text>
+          </svg><figcaption>설명용 예시입니다. 예측 오차를 이용해 모델을 바꾸는 흐름을 보여줍니다.</figcaption></figure>
+        </div></details>
+      </article>
+      <article class="card"><span class="badge">비지도학습</span><h3>데이터의 패턴 찾기</h3><p>정답 표시는 없이, 데이터에서 비슷한 특징과 구조를 찾습니다.</p><p class="example">예: 비슷한 과일끼리 묶기</p>
+        <details class="learning-details"><summary>비지도학습 자세히 살펴보기</summary><div class="learning-expanded">
+          <div><h4>이름표 없이, 닮은 특징을 찾아요</h4><p>과일의 무게와 당도는 주되, ‘사과’나 ‘배’ 같은 이름은 주지 않습니다. 모델은 선택한 특징을 기준으로 닮은 데이터끼리 묶을 수 있습니다. 이런 방법을 <b>군집화</b>라고 합니다.</p><ol><li><b>입력:</b> 정답 이름표 없는 데이터를 모읍니다.</li><li><b>탐색:</b> 데이터 사이의 유사성을 계산합니다.</li><li><b>발견:</b> 비슷한 묶음이나 간단한 표현을 찾습니다.</li></ol><p>묶음에 ‘사과’라는 의미를 자동으로 붙여 주는 것은 아닙니다. 어떤 특징을 쓰는지에 따라 묶음도 달라집니다.</p><p class="example"><b>다른 활용:</b> 많은 특징을 몇 가지로 압축하는 ‘차원 축소’도 있습니다. 비지도학습이 모두 묶기만 하는 것은 아닙니다.</p></div>
+          <figure class="learning-figure"><svg viewBox="0 0 360 290" role="img" aria-label="무게와 당도로 표시한 이름표 없는 과일 점들을 유사성에 따라 두 묶음으로 나눈 군집화 개념도">
+            <text x="18" y="24" class="diagram-title">입력: 이름표 없는 과일 데이터</text><path d="M43 39v78h273" class="diagram-axis"/>
+            <g fill="#8FA2AB"><circle cx="78" cy="93" r="5"/><circle cx="100" cy="85" r="5"/><circle cx="85" cy="73" r="5"/><circle cx="118" cy="98" r="5"/><circle cx="248" cy="62" r="5"/><circle cx="272" cy="76" r="5"/><circle cx="290" cy="54" r="5"/><circle cx="259" cy="45" r="5"/></g>
+            <text x="18" y="72">당도</text><text x="290" y="134">무게</text><text x="180" y="156" text-anchor="middle">↓ 비슷한 특징으로 묶기</text>
+            <path d="M43 170v86h273" class="diagram-axis"/><ellipse cx="98" cy="220" rx="47" ry="26" fill="#D8E6BC" fill-opacity=".5" stroke="#46713b"/><ellipse cx="267" cy="199" rx="45" ry="29" fill="#A7CFF1" fill-opacity=".5" stroke="#3b6de4"/>
+            <g fill="#46713b"><circle cx="78" cy="226" r="5"/><circle cx="100" cy="218" r="5"/><circle cx="85" cy="206" r="5"/><circle cx="118" cy="231" r="5"/></g><g fill="#3b6de4"><circle cx="248" cy="195" r="5"/><circle cx="272" cy="209" r="5"/><circle cx="290" cy="187" r="5"/><circle cx="259" cy="178" r="5"/></g>
+            <text x="98" y="279" text-anchor="middle">묶음 A</text><text x="267" y="279" text-anchor="middle">묶음 B</text>
+          </svg><figcaption>설명용 가상 데이터입니다. A·B는 구분을 위한 이름이며, 과일 종류의 정답이 아닙니다.</figcaption></figure>
+        </div></details>
+      </article>
+      <article class="card accent"><span class="badge">강화학습</span><h3>선택의 결과로 배우기</h3><p>행동하고 보상을 받습니다. 지금부터 앞으로 받을 보상의 합이 커지는 선택을 배웁니다.</p><p class="example">예: 길찾기, 게임, 로봇 제어</p>
+        <details class="learning-details"><summary>강화학습 자세히 살펴보기</summary><div class="learning-expanded">
+          <div><h4>정답 행동 대신, 행동의 결과를 받아요</h4><p>길찾기 로봇에게 매번 ‘오른쪽이 정답’이라고 알려 주지 않습니다. 로봇이 직접 움직이고, 목표 도착이나 함정 같은 결과에 따라 보상을 받습니다.</p><ol><li><b>관찰:</b> 현재 상태를 봅니다.</li><li><b>선택:</b> 행동을 하고 다음 상태와 보상을 받습니다.</li><li><b>개선:</b> 쌓인 경험으로 행동 규칙인 ‘정책’을 바꿉니다.</li></ol><p>행동이 다음에 겪는 상황을 바꾸고, 좋은 결과가 여러 걸음 뒤에 올 수도 있습니다. 그래서 당장 한 번의 점수보다 <b>기대 누적 보상</b>을 고려합니다.</p><p class="example"><b>직접 체험:</b> 길찾기에서 탐험 확률과 걸음 보상을 바꿔 보세요. 좋은 점수가 반드시 목표 도착을 뜻하는지도 확인합니다.</p></div>
+          <figure class="learning-figure"><svg viewBox="0 0 360 250" role="img" aria-label="에이전트가 환경에 행동을 보내고 다음 상태와 보상을 돌려받아 정책을 개선하는 강화학습 순환도">
+            <rect x="20" y="52" width="123" height="104" rx="10" fill="#A7CFF1" stroke="#14212B"/><text x="81" y="84" text-anchor="middle" class="diagram-title">에이전트</text><text x="81" y="109" text-anchor="middle">상태를 보고</text><text x="81" y="131" text-anchor="middle">행동 선택</text>
+            <rect x="217" y="52" width="123" height="104" rx="10" fill="#D8E6BC" stroke="#14212B"/><text x="278" y="84" text-anchor="middle" class="diagram-title">환경</text><text x="278" y="109" text-anchor="middle">지도 위에서</text><text x="278" y="131" text-anchor="middle">위치가 바뀜</text>
+            <path d="M82 47V25h196v22m-5-7 5 7 5-7" class="diagram-arrow"/><rect x="146" y="12" width="68" height="25" rx="12" fill="#F9CCCF" stroke="#14212B"/><text x="180" y="30" text-anchor="middle">행동</text>
+            <path d="M278 161v29H82v-29m-5 7 5-7 5 7" class="diagram-arrow"/><rect x="117" y="176" width="126" height="27" rx="13" fill="#FFDC91" stroke="#14212B"/><text x="180" y="195" text-anchor="middle">다음 상태 + 보상</text><text x="180" y="235" text-anchor="middle">경험을 쌓아 정책을 개선합니다</text>
+          </svg><figcaption>보상은 선택한 행동의 평가 신호입니다. 매번 정답 행동을 알려 주는 신호와는 다릅니다.</figcaption></figure>
+        </div></details>
+      </article>
+    </div>
+    <article class="card learning-comparison"><h3>세 가지 학습, 무엇이 다른가요?</h3><div class="comparison-scroll" role="region" aria-label="학습 방법 비교표" tabindex="0"><table><caption>주어진 정보 · 피드백 · 배우는 결과로 비교하기</caption><thead><tr><th scope="col">비교 기준</th><th scope="col">지도학습</th><th scope="col">비지도학습</th><th scope="col">강화학습</th></tr></thead><tbody>
+      <tr><th scope="row">무엇으로 배우나요?</th><td>입력과 정답이 짝지어진 예시</td><td>정답 이름표 없는 데이터</td><td>환경과 상호작용하며 쌓은 경험</td></tr>
+      <tr><th scope="row">피드백은 무엇인가요?</th><td>예측과 정답의 차이</td><td>정답 비교 대신 데이터의 유사성·구조 등을 학습 기준으로 사용</td><td>행동 결과로 받은 보상<br>여러 단계 뒤에 올 수도 있음</td></tr>
+      <tr><th scope="row">무엇을 배우나요?</th><td>새 입력의 정답을 예측하는 관계</td><td>묶음이나 데이터의 특징·표현</td><td>기대 누적 보상을 높이는 행동 규칙</td></tr>
+      <tr><th scope="row">대표 예시</th><td>손글씨 숫자 맞히기</td><td>특징이 비슷한 과일 묶기</td><td>미로의 목적지 찾기</td></tr>
+      <tr><th scope="row">주의할 점</th><td>학습 예시를 외운 것과 새 문제를 푸는 것은 다름</td><td>찾은 묶음이 사람이 원하는 분류와 같지는 않을 수 있음</td><td>보상을 잘못 주면 의도하지 않은 행동도 배울 수 있음</td></tr>
+    </tbody></table></div><p class="note">기본적인 구분을 보여주는 표입니다. 실제 시스템에서는 여러 학습 방법을 함께 사용하기도 합니다.</p></article>
+    <div class="learning-transition"><span class="pill reward">이제 강화학습에 집중해요</span><p>세 방법 중 이 앱에서 직접 체험할 것은 <b>강화학습</b>입니다. 왼쪽 로봇이 한 걸음 움직이면 어떤 경험이 생기는지 살펴봅시다.</p></div>
+    <article class="card loop-card"><h3><span class="stepno">2</span>강화학습은 한 번의 경험에서 무엇을 배울까요?</h3><p>정답 방향을 받는 대신, ‘어디에서 무엇을 했고 어떤 결과가 나왔는지’를 모읍니다.</p><div class="loop"><div><small class="pill state">상태</small><b>지금 어디에 있지?</b><span>지도 위의 현재 칸</span></div><b class="arrow">→</b><div><small class="pill action">행동</small><b>어디로 갈까?</b><span>위 · 오른쪽 · 아래 · 왼쪽</span></div><b class="arrow">→</b><div><small class="pill env">환경</small><b>움직인 결과는?</b><span>다음 칸 s′ + 보상 r</span></div></div><p class="example"><b>경험 예시:</b> 출발 칸에서 → 오른쪽으로 이동 → 빈 칸에 도착, 보상 −0.2. 이 경험을 가치 추정과 다음 선택을 개선하는 데 사용합니다.</p><p>선택하는 주체는 <strong>에이전트</strong>, 상호작용하는 대상은 <strong>환경</strong>입니다. 한 번의 이동은 <strong>스텝</strong>, 출발부터 목표·실패·시간 제한까지 이어진 한 번의 시도 전체는 <strong>에피소드</strong>입니다.</p></article>
+    <div class="cards three"><article class="card"><h3>정책 π · 어떻게 고를까?</h3><p>상태에서 행동을 고르는 규칙입니다. ‘이 칸에서는 오른쪽’도, ‘70% 확률로 오른쪽’도 정책입니다.</p></article><article class="card"><h3>가치 V · 얼마나 좋을까?</h3><p>지금 상태에서 정책을 따라갈 때 앞으로 받을 할인 누적 보상의 기댓값입니다. 당장 받은 점수와 다릅니다.</p></article><article class="card"><h3>행동 가치 Q · 이 선택은?</h3><p>지금 이 행동을 먼저 하고 이후 정책을 따를 때의 예상 누적 보상입니다. Q-learning은 최적 행동 가치를 배우는 방법입니다.</p></article></div>
+    <details class="card"><summary>한 단계 더 · MDP는 문제를 적는 틀입니다</summary><p><b>S</b> 상태, <b>A</b> 행동, <b>P</b> 다음 상태로 바뀌는 확률, <b>R</b> 보상, <b>γ</b> 미래 보상 가중치로 문제를 정합니다. 현재 상태에 필요한 정보가 충분하면 과거 전체를 다시 보지 않고도 다음 상태의 분포를 설명할 수 있습니다(마르코프 성질).</p><p>길찾기는 위치만으로 충분한 예를 쓰지만, 진자는 같은 각도라도 넘어가는 중인지 돌아오는 중인지에 따라 다음 움직임이 다릅니다. 그래서 각속도도 필요합니다.</p></details>
+    <!-- Teaching references: OpenAI Spinning Up, rl_intro2.html; algorithms/ppo.html; algorithms/sac.html. -->
+    <div class="rl-deeper" role="region" aria-labelledby="rlDeeperTitle">
+      <article class="card rl-intro"><h3 id="rlDeeperTitle"><span class="stepno">3</span>강화학습에 한 걸음 더</h3><p>앞에서 모은 경험으로 무엇을 배울까요? <b>선택의 가치를 배우기</b>, <b>선택하는 규칙을 배우기</b>, 그리고 <b>둘을 함께 배우기</b>로 이해해 봅시다.</p><p class="note">대표적인 접근을 비교하는 구분입니다. 서로 완전히 나뉘는 세 종류나 난이도 순서는 아닙니다.</p></article>
+      <div class="cards three rl-approaches">
+        <article class="card"><span class="badge">가치 기반 · Value-based</span><h4>예상 점수를 비교해요</h4><p>상태나 행동의 가치를 배웁니다. Q-learning은 행동별 Q값을 비교해 선택하고, 때로는 다른 행동도 탐험합니다.</p>
+          <figure class="rl-example"><figcaption>같은 칸에서 네 방향의 Q값을 본다면</figcaption><dl class="rl-q-values"><div><dt>↑ 위</dt><dd>1.2</dd></div><div class="rl-highlight"><dt>→ 오른쪽</dt><dd>4.8</dd></div><div><dt>↓ 아래</dt><dd>0.7</dd></div><div><dt>← 왼쪽</dt><dd>2.1</dd></div></dl><p class="rl-visual-caption">탐험하지 않는다면 → 가장 큰 Q값 선택</p></figure>
+          <p class="example"><b>대표 방법:</b> Q-learning, DQN<br>‘길찾기’ 체험은 작은 Q표를 사용합니다.</p>
+        </article>
+        <article class="card"><span class="badge">정책 기반 · Policy-based</span><h4>선택하는 규칙을 배워요</h4><p>상태에서 행동을 고르는 정책을 직접 개선합니다. 기대 누적 보상을 높이도록 행동 확률이나 연속적인 행동을 조정합니다.</p>
+          <figure class="rl-example"><figcaption>정책이 네 방향의 확률을 정한다면</figcaption><ul class="rl-probabilities"><li><span>↑ 위</span><span class="rl-prob-track" aria-hidden="true"><i class="rl-prob-ten"></i></span><b>10%</b></li><li class="rl-highlight"><span>→ 오른쪽</span><span class="rl-prob-track" aria-hidden="true"><i class="rl-prob-sixty"></i></span><b>60%</b></li><li><span>↓ 아래</span><span class="rl-prob-track" aria-hidden="true"><i class="rl-prob-ten"></i></span><b>10%</b></li><li><span>← 왼쪽</span><span class="rl-prob-track" aria-hidden="true"><i class="rl-prob-twenty"></i></span><b>20%</b></li></ul><p class="rl-visual-caption">이 확률대로 선택하면 → 오른쪽을 더 자주 선택</p></figure>
+          <p class="example"><b>핵심:</b> 행동 규칙 자체를 배웁니다.<br>확률이 가장 높은 행동만 고르는 것은 아닙니다.</p>
+        </article>
+        <article class="card"><span class="badge">함께 배우기 · Actor–Critic</span><h4>선택과 평가가 한 팀이에요</h4><p><b>Actor</b>는 정책으로 행동을 고릅니다. <b>Critic</b>은 경험으로 가치를 추정하고, 그 평가를 정책 개선에 사용합니다.</p>
+          <figure class="rl-example"><figcaption>선택하는 역할과 평가하는 역할</figcaption><div class="rl-ac-flow"><div class="rl-actor"><b>Actor · 행동 선택</b><span>“이 칸에서는 오른쪽으로!”</span></div><p class="rl-flow-arrow">↓ 행동 후 다음 상태·보상 관찰</p><div class="rl-critic"><b>Critic · 가치 추정</b><span>“앞으로 얼마나 좋을까?”</span></div><p class="rl-flow-arrow">↳ 가치 평가로 Actor의 정책 개선</p></div></figure>
+          <p class="example"><b>연결되는 방법:</b> PPO의 일반적인 구성, SAC<br>정책 학습과 가치 학습을 함께 사용합니다.</p>
+        </article>
+      </div>
+      <p class="note rl-example-note">그림의 Q값과 행동 확률은 설명용 가상 수치입니다. Q값 4.8과 확률 60%는 서로 다른 뜻이며, 현재 학습 결과를 표시한 것이 아닙니다.</p>
+      <details class="card rl-more"><summary>PPO와 SAC는 어떻게 다를까요?</summary><div class="cards two rl-detail-cards"><article class="rl-detail-item"><h4>PPO · 최근 경험으로 정책 개선</h4><p>최근 정책으로 모은 경험을 이용합니다. PPO-Clip은 정책이 크게 바뀌는 방향의 이득을 목적함수에서 줄입니다.</p><p class="note">보통 Actor와 Critic을 함께 학습합니다. 클리핑이 모든 변화나 성능을 보장하는 것은 아닙니다.</p></article><article class="rl-detail-item"><h4>SAC · 저장한 경험도 다시 활용</h4><p>이전 경험도 꺼내 정책과 Q값을 학습합니다. 보상과 행동 선택의 다양성인 ‘엔트로피’를 함께 고려합니다.</p><p class="note">모터 힘처럼 연속적인 행동에 많이 쓰입니다. 한 행동에 너무 일찍 몰리지 않도록 돕지만, 항상 더 좋은 결과를 내는 것은 아닙니다.</p></article></div><p class="example">길찾기는 네 방향 중 하나를 고릅니다. 진자는 힘의 크기를 연속적으로 정해야 합니다. PPO·SAC는 이런 진자 제어에도 사용할 수 있는 학습 방법입니다.</p></details>
+      <details class="card rl-more"><summary>다른 기준으로도 나눌 수 있어요 · 경험과 예측 모델</summary>
+        <h4>어떤 경험을 활용하나요?</h4><div class="cards two rl-detail-cards"><article class="rl-detail-item"><h5>온폴리시 · On-policy</h5><p>학습하는 정책으로 모은 최근 경험을 중심으로 배웁니다. PPO가 여기에 속합니다.</p><p class="note">경험을 딱 한 번만 쓴다는 뜻은 아닙니다. PPO도 모아 둔 한 묶음을 여러 차례 학습합니다.</p></article><article class="rl-detail-item"><h5>오프폴리시 · Off-policy</h5><p>학습할 정책과 다른 방식으로 모은 경험도 활용합니다. Q-learning과 SAC가 여기에 속합니다.</p><p class="note">다른 탐험 방식이나 이전 정책으로 모은 경험도 학습에 사용할 수 있습니다.</p></article></div>
+        <h4>환경의 변화를 미리 예측해서 계획하나요?</h4><div class="cards two rl-detail-cards"><article class="rl-detail-item"><h5>모델 프리 · Model-free</h5><p>다음 상태·보상을 예측하는 환경 모델로 계획하지 않고 경험에서 정책·가치를 배웁니다. 기본적인 Q-learning·PPO·SAC가 해당합니다.</p></article><article class="rl-detail-item"><h5>모델 기반 · Model-based</h5><p>환경의 변화·보상을 예측하는 모델을 이용합니다. 실제 행동 전에 여러 선택의 결과를 예상해 계획할 수 있습니다.</p></article></div>
+        <p class="example"><b>여기서 ‘모델’은 환경의 변화를 예측하는 모델입니다.</b> 신경망을 쓴다거나 시뮬레이터에서 학습한다고 해서 모두 모델 기반 강화학습이 되는 것은 아닙니다.</p><p class="note">분류 기준은 함께 적용할 수 있습니다. 예를 들어 SAC는 Actor–Critic이면서 오프폴리시이고, 기본 형태는 모델 프리입니다.</p>
+      </details>
+      <div class="learning-transition"><span class="pill agent">이제 직접 확인해요</span><p>먼저 <b>Q-learning</b>으로 길을 찾아봅시다. 경험이 쌓이면 각 방향의 Q값과 선택한 경로가 어떻게 달라질까요?</p></div>
+    </div>
+    <button class="primary" data-go="grid">길찾기로 직접 경험하기 →</button>
+  </section>
+
+  <section id="grid" role="tabpanel" aria-labelledby="tab-grid" hidden>
+    <div class="section-title"><div><p class="eyebrow">EXPERIMENT 01 · 실제 Q-learning</p><h2>길을 알려 주지 않아도 도착할까요?</h2></div><span class="tag">브라우저 안에서 새로 학습</span></div>
+    <p class="lead">먼저 경로를 예상하고 학습을 눌러 보세요. 칸의 화살표는 배운 행동, 숫자는 가장 큰 Q값입니다.</p>
+    <div class="workbench"><aside class="card setup"><h3>실험 조건</h3>
+      <label>지도<select id="map"><option value="maze">벽을 돌아가는 길</option><option value="risk">가까운 길과 함정</option></select></label>
+      <label>탐험 확률 ε <output id="epsOut">0.25</output><input id="epsilon" type="range" min="0" max="1" step=".05" value=".25"></label>
+      <label>미래 보상 가중치 γ <output id="gridGammaOut">0.95</output><input id="gridGamma" type="range" min="0" max=".99" step=".01" value=".95"></label>
+      <label>한 걸음의 보상<select id="stepReward"><option value="-0.2">−0.2 · 빨리 도착하기</option><option value="0.2">+0.2 · 움직이면 칭찬하기</option></select></label>
+      <p class="note">목표 +10 / 함정 −5에서 종료<br>벽·지도 밖: 제자리, 걸음 보상 적용<br>최대 80걸음 / 학습률 α = 0.3</p>
+      <p class="note">조건을 바꾸면 Q표와 기록을 지웁니다. 같은 난수 시드 7로 시작해 조건을 비교합니다.</p>
+      <div class="actions"><button id="trainOne">1회 학습</button><button class="primary" id="trainHundred">100회 학습</button><button id="gridReset">학습 초기화</button></div>
+    </aside><div class="card arena"><div class="stats"><div>학습한 시도<b id="episodes">0회</b></div><div>최근 학습 성공률<b id="success">—</b></div><div>최근 평균 보상<b id="meanReward">—</b></div></div>
+      <div class="grid-layout"><div>
+        <div class="grid-map">
+          <div id="gridBoard" class="grid-board" aria-label="길찾기 지도, 칸을 누르면 행동 가치를 확인합니다"></div>
+          <svg id="episodePaths" class="episode-paths" aria-hidden="true"></svg>
+        </div>
+        <p class="legend">S 출발 · G 목표 · ■ 벽 · × 함정 · ● 현재 위치</p>
+        <div class="episode-legend" aria-label="학습 에피소드 경로 표시">
+          <label><input id="showBestPath" type="checkbox" checked><span class="path-key best-key" aria-hidden="true"></span>최고 보상 경로</label>
+          <p id="bestPathSummary">학습하면 최고 기록이 표시됩니다.</p>
+          <label><input id="showLatestPath" type="checkbox" checked><span class="path-key latest-key" aria-hidden="true"></span>최근 학습 경로</label>
+          <p id="latestPathSummary">학습하면 마지막 시도가 표시됩니다.</p>
+        </div>
+        <p class="note">선은 실제로 학습 중 지나간 경로, 작은 원은 마지막 위치입니다. 겹치는 선은 조금 비켜 표시합니다. 제자리·반복 이동도 걸음 수에 포함됩니다.</p>
+        <details class="path-help"><summary>Q값과 경로의 보상은 어떻게 다른가요?</summary><p class="note">칸의 Q값은 앞으로 받을 할인 누적 보상의 추정치입니다. 경로의 보상 합은 그 에피소드에서 실제로 받은 점수를 할인 없이 더한 값입니다. ‘최고’는 현재 조건에서 관측한 학습 기록 중 최고이며, 이론적인 최적 경로라는 뜻은 아닙니다. 보상이 같으면 먼저 나온 기록을 유지합니다.</p></details>
+      </div><div class="q-info"><h3 id="cellTitle">출발 칸의 Q값</h3><p class="note">칸을 눌러 네 방향의 예상 점수를 비교해 보세요.</p><div id="qValues"></div><p class="note">0은 아직 못 배운 값일 수 있습니다. 동점 화살표는 정해진 순서로 표시합니다.</p></div></div>
+      <div class="actions"><button class="primary" id="playRoute">배운 정책 시험하기</button><button id="stopRoute" disabled>재생 정지</button></div><p id="gridStatus" class="feedback" role="status">아직 학습하지 않았습니다. 100회 학습으로 시작해 보세요.</p>
+      <svg id="rewardCurve" viewBox="0 0 600 120" role="img" aria-label="학습 에피소드별 누적 보상 그래프"></svg><p class="note">가로: 학습 에피소드 / 세로: 할인하지 않은 한 시도의 보상 합. 성공률과 함께 읽으세요. 시험은 탐험 없이, Q값을 바꾸지 않고 실행합니다.</p>
+      <details><summary>마지막 경험에서 Q는 어떻게 바뀌었나요?</summary><p id="updateDetail">학습 후 갱신 내역이 표시됩니다.</p><p class="formula">Q ← Q + α [ r + γ max Q(s′, a′) − Q ]</p><p class="note">목표·함정·80걸음 종료에서는 다음 가치 항을 0으로 둡니다. 이 수업 예제는 시간 제한까지 종료로 처리하는 단순화된 모형입니다.</p></details>
+    </div></div>
+    <div class="prompt"><b>생각해 볼 질문</b><p>한 걸음마다 +0.2를 주면, 목표보다 오래 돌아다니는 행동이 더 높은 점수를 받을 수도 있을까요? 보상 합과 실제 도착 여부를 함께 비교해 보세요.</p></div>
+  </section>
+
+  <section id="bandit" role="tabpanel" aria-labelledby="tab-bandit" hidden>
+    <div class="section-title"><div><p class="eyebrow">EXPERIMENT 02 · 탐험과 이용</p><h2>어느 자판기가 별을 가장 자주 줄까요?</h2></div><span class="tag">매 선택의 보상: 별 1개 또는 0개</span></div>
+    <p class="lead">세 자판기의 확률은 서로 다르고 고정되어 있습니다. 직접 눌러 표본을 모아 보세요. 첫 결과가 좋았다고 가장 좋은 선택일까요?</p>
+    <div class="cards three" id="machines"></div>
+    <div class="card"><div class="bandit-controls"><label>새로운 선택을 시도할 확률 ε <output id="banditEpsOut">0.20</output><input id="banditEpsilon" type="range" min="0" max="1" step=".05" value=".2"></label><div class="actions"><button id="banditOne">AI가 1번 선택</button><button class="primary" id="banditHundred">AI가 100번 선택</button><button id="banditReset">기록 초기화</button></div></div><p id="banditStatus" class="feedback" role="status">직접 선택하거나 AI의 선택을 관찰해 보세요.</p><p class="note">ε의 확률로 세 개 중 무작위 선택(탐험), 나머지는 지금까지 평균 보상이 가장 큰 자판기 선택(이용). 평균이 같으면 무작위로 고릅니다.</p><details><summary>실제 확률과 기댓값 확인하기</summary><p>A 25% / B 50% / C 75%. 별 1개 또는 0개를 받으므로 기댓값은 각각 0.25, 0.50, 0.75입니다. 적은 횟수의 관측 평균은 이 값과 다를 수 있습니다.</p><p>한 자판기를 고른다고 다음 자판기의 확률이 바뀌지는 않습니다. 이 예제는 상태 변화가 없는 <b>다중 선택 문제(밴딧)</b>로, 여러 단계를 계획하는 길찾기와 다릅니다.</p></details></div>
+    <div class="prompt"><b>비교 미션</b><p>초기화 → ε=0으로 100번 → 결과 기록 → 초기화 → ε=0.2로 100번. 항상 탐험하는 경우(ε=1)도 비교해 보세요. 한 번의 결과만으로 어느 전략이 항상 우수하다고 결론 내리지 마세요.</p></div>
+  </section>
+
+  <section id="future" role="tabpanel" aria-labelledby="tab-future" hidden>
+    <div class="section-title"><div><p class="eyebrow">EXPERIMENT 03 · 할인 누적 보상</p><h2>지금 3점, 세 걸음 뒤 8점?</h2></div><span class="tag">학습 전, 목표를 계산하는 실험</span></div>
+    <p class="lead">보상의 순서까지 같아야 같은 문제입니다. γ를 움직여 미래 점수를 얼마나 크게 보는지 바꿔 보세요.</p>
+    <article class="card"><label class="gamma-control">미래 보상 가중치 γ <output id="futureGammaOut">0.90</output><input id="futureGamma" type="range" min="0" max="1" step=".01" value=".9"></label><div class="cards two"><div class="return-option"><h3>선택 A · 바로 받기</h3><div class="timeline"><span>지금<b>3</b></span><span>1단계 뒤<b>0</b></span><span>2단계 뒤<b>0</b></span><span>3단계 뒤<b>0</b></span></div><p class="formula">G<sub>A</sub> = 3</p><b class="return-value">3.00점</b></div><div class="return-option"><h3>선택 B · 기다리기</h3><div class="timeline"><span>지금<b>0</b></span><span>1단계 뒤<b>0</b></span><span>2단계 뒤<b>0</b></span><span>3단계 뒤<b>8</b></span></div><p class="formula">G<sub>B</sub> = γ³ × 8</p><b class="return-value" id="futureValue">5.83점</b></div></div><p id="futureStatus" class="feedback" role="status"></p><p class="note">이 예제는 4개 보상 뒤에 종료하므로 γ=1도 계산할 수 있습니다. 무한히 +1씩 받는 경우의 합 1/(1−γ)는 γ&lt;1에서만 유한합니다.</p></article>
+    <div class="prompt"><b>설명해 보기</b><p>γ를 바꾼다고 실제 8점이 바뀌나요? 실제 보상은 같고, 에이전트가 비교하는 ‘미래 점수의 가중치’가 달라집니다.</p></div>
+  </section>
+
+  <section id="bridge" role="tabpanel" aria-labelledby="tab-bridge" hidden>
+    <div class="section-title"><div><p class="eyebrow">FROM GRID TO ROBOT</p><h2>길찾기에서 배운 말을 진자에 적용해요</h2></div></div>
+    <div class="card table-wrap"><table><thead><tr><th>개념</th><th>길찾기</th><th>회전 도립진자</th></tr></thead><tbody><tr><th>상태</th><td>현재 칸</td><td>팔·진자 각도와 각속도</td></tr><tr><th>행동</th><td>네 방향 이동</td><td>모터 힘의 방향과 크기(연속값)</td></tr><tr><th>보상</th><td>목표 +점수, 걸음·함정 벌점</td><td>높이·균형을 칭찬하고 큰 힘·과한 회전을 벌점으로</td></tr><tr><th>정책</th><td>각 칸에서 선택할 방향</td><td>센서값을 보고 모터 명령을 정하는 규칙</td></tr><tr><th>평가</th><td>새 시도에서 도착 여부·걸음 수</td><td>직립 유지·오차·힘·한계 위반을 함께 확인</td></tr></tbody></table></div>
+    <div class="cards two"><article class="card"><h3>각도만 알면 부족한 이유</h3><p>같은 기울기여도 넘어가는 중과 돌아오는 중은 다릅니다. 각속도는 대략 ‘각도 변화 ÷ 걸린 시간’입니다. 예: 0.01초 동안 0.02 rad 변하면 2 rad/s입니다.</p><p>토크는 물체를 회전시키는 효과입니다. 센서로 재고 → 제어기가 판단하고 → 모터가 움직이는 반복을 <b>피드백</b>이라 합니다. 잡음과 지연도 결과에 영향을 줍니다.</p></article><article class="card"><h3>표에서 신경망으로</h3><p>길찾기는 작은 Q표로 배울 수 있지만, 진자의 상태와 행동은 연속적입니다. 신경망으로 정책이나 가치를 표현할 수 있습니다.</p><p><b>PPO</b>는 정책을 경험으로 개선하는 방법입니다. 클리핑은 목적함수에서 큰 변화를 억제하는 장치이며, 모든 정책 변화나 실제 안전을 보장하는 제한은 아닙니다. <b>SAC</b>는 보상과 정책의 엔트로피를 함께 고려합니다.</p></article></div>
+    <article class="card"><h3>학습 점수와 실험 성공은 다릅니다</h3><p>학습은 규칙을 바꾸는 과정, 평가는 바뀐 규칙을 고정해 확인하는 과정입니다. 보상이 높아져도 목표를 달성하지 못하는 ‘꼼수’가 생길 수 있습니다. 여러 초기 조건·여러 시도로 평가하고 평균과 실패 횟수를 함께 보세요.</p><p>시뮬레이션 성공이 실물 성공을 보장하지는 않습니다. 마찰·센서 잡음·지연을 고려해야 합니다. 여기의 세 체험은 PC 교육용 예제이며, 기존 앱의 진자 학습 알고리즘과는 별개입니다.</p></article>
+    <article class="card"><h3>준비됐는지 확인해 볼까요?</h3><div id="quiz"></div><p id="quizResult" class="feedback" role="status">답을 고르면 이유를 확인할 수 있습니다.</p></article>
+    <div class="actions"><button class="primary" data-go="modeling">진자를 수학으로 표현해 보기 →</button><button id="continueLesson">활동 1 · 진자 살펴보기로 이동</button></div>
+  </section>
+
+  <section id="modeling" class="modeling-lesson" role="tabpanel" aria-labelledby="tab-modeling" tabindex="0" hidden>
+    <div class="section-title"><h2>우리 진자의 다음 움직임을 계산하려면?</h2><p class="lead">실물을 관찰하고, 변수를 정하고, 물리 법칙을 식으로 옮기는 과정을 <b>수학적 모델링</b>이라고 합니다. 먼저 그림과 식의 뜻을 읽고, 궁금하면 유도 과정을 펼쳐 보세요.</p></div>
+    <div class="model-roadmap" aria-label="모델링 순서"><span>구조와 각도</span><i aria-hidden="true">→</i><span>물리량</span><i aria-hidden="true">→</i><span>에너지</span><i aria-hidden="true">→</i><span>운동방정식</span><i aria-hidden="true">→</i><span>다음 상태</span></div>
+
+    <article class="card model-step"><h3><span class="stepno">1</span>두 움직임을 두 각도로 표현해요</h3><p>우리 장치는 모터가 <b>수평 팔</b>을 돌리고, 팔 끝에 달린 <b>진자</b>가 자유롭게 흔들리는 푸루타(Furuta) 회전 도립진자입니다. 움직일 수 있는 축은 둘이지만 모터 입력은 하나입니다. 진자는 팔의 움직임을 통해 간접적으로 움직여요.</p>
+      <div class="model-angle-key"><div><span class="pill action">팔 θ</span><p>처음 기준 방향에서 얼마나 돌았는가</p></div><div><span class="pill state">진자 α</span><p>아래를 기준으로 얼마나 기울었는가</p></div><div><span class="pill reward">직립 오차 φ</span><p>똑바로 선 자세에서 얼마나 벗어났는가</p></div></div>
+      <div class="model-equation">φ = wrap(α − π)</div><p class="note">앱 내부에서는 아래가 α = 0, 직립이 α = π입니다. 화면의 ‘기울기 오차’는 직립에서 φ = 0이 되도록 바꾼 값입니다. wrap은 한 바퀴 차이를 없애 [−π, π) 범위로 표현합니다.</p>
+      <details class="model-details"><summary>도(°), 라디안(rad), 각속도는 무엇인가요?</summary><p>한 바퀴는 360° = 2π rad, 반 바퀴는 180° = π rad입니다. 왼쪽 그림은 도로 표시하지만 운동방정식은 라디안으로 계산합니다.</p><div class="model-equation">라디안 = 도 × π / 180<br>각속도 θ̇ ≈ Δθ / Δt · 각가속도 θ̈ ≈ Δθ̇ / Δt</div><p>점 하나는 시간에 따른 변화율, 점 두 개는 그 변화율이 바뀌는 빠르기입니다. 같은 각도에서도 어느 방향으로 얼마나 빠르게 움직이는지에 따라 다음 자세가 달라져요.</p></details>
+    </article>
+
+    <article class="card model-step"><h3><span class="stepno">2</span>길이·질량·관성을 준비해요</h3><p>모터 힘이 같아도 길이와 질량, 질량이 퍼진 모양에 따라 움직임이 달라집니다. <b>관성모멘트</b>는 회전 속도를 바꾸기 어려운 정도예요. 무게가 같아도 축에서 멀리 퍼져 있으면 커집니다.</p>
+      <div class="model-table-wrap" role="region" aria-label="모델링 기호와 단위" tabindex="0"><table><thead><tr><th>기호</th><th>뜻</th><th>단위</th></tr></thead><tbody>
+        <tr><td>r</td><td>팔 회전축에서 진자 회전축까지 거리</td><td>m</td></tr><tr><td>m, l</td><td>진자 질량, 진자 축에서 무게중심까지 거리</td><td>kg, m</td></tr><tr><td>J<sub>r</sub></td><td>팔·모터의 팔 회전축 기준 관성</td><td>kg·m²</td></tr><tr><td>J<sub>p</sub></td><td>진자 무게중심 기준 횡방향 관성</td><td>kg·m²</td></tr><tr><td>g, τ</td><td>중력가속도, 모터가 팔에 주는 토크</td><td>m/s², N·m</td></tr>
+      </tbody></table></div>
+      <p class="example"><b>길이 주의:</b> l은 진자의 전체 길이가 아닙니다. 길이 L인 균일한 막대라면 l = L/2, J<sub>p</sub> = mL²/12이지만, 센서·추가 부품이 달리면 달라집니다.</p>
+      <details class="model-details"><summary>우리 장치에서는 이 값을 어떻게 구하나요?</summary><p>길이와 질량은 치수·질량 측정으로, 무게중심과 관성은 CAD의 질량 특성이나 별도 실험으로 구합니다. 모터·감속기와 마찰은 실물 응답을 기록해 보정합니다. 관성이 무게중심 기준인지 회전축 기준인지도 확인해야 합니다.</p><p>아래 유도는 <b>가는 대칭 막대, 강체, 수평 팔</b>을 가정하고 진자 길이방향 회전 관성을 무시한 교육용 모델입니다. 현재 앱의 rev11 형상·보정 계수를 그대로 전개한 식은 아니며, 실물 수치를 임의로 정하지 않습니다.</p></details>
+    </article>
+
+    <article class="card model-step"><h3><span class="stepno">3</span>움직임과 높이를 에너지로 바꿔요</h3><p>움직이는 물체에는 <b>운동에너지 T</b>, 높이 올라간 물체에는 <b>위치에너지 V</b>가 있습니다. 팔이 돌면 진자의 무게중심도 함께 움직이므로, 두 회전의 에너지를 함께 계산해야 합니다.</p>
+      <div class="model-equation">Δz = l(1 − cos α)<br>V = mgΔz = mgl(1 − cos α)</div><p class="note">Δz는 가장 아래일 때보다 높아진 거리입니다. 아래에서 V = 0, 직립에서 V = 2mgl입니다. 왼쪽의 α를 움직이면 상대 높이 Δz/l이 0에서 2까지 바뀝니다. 여기서는 팔의 높이가 일정하므로 θ만 바꿔도 V는 그대로예요.</p>
+      <details class="model-details"><summary>위치 → 속도 → 운동에너지 유도 펼치기</summary><p>팔의 바깥 방향 단위벡터를 e<sub>r</sub>, 팔의 양의 회전 접선 방향을 e<sub>t</sub>, 위쪽을 e<sub>z</sub>라 합니다. α의 양의 방향은 아래에서 e<sub>t</sub> 쪽으로 정합니다.</p>
+        <div class="model-equation model-math">e<sub>r</sub> = [cos θ, sin θ, 0]ᵀ<br>e<sub>t</sub> = [−sin θ, cos θ, 0]ᵀ<br>p = r e<sub>r</sub> + l sin α e<sub>t</sub> − l cos α e<sub>z</sub></div>
+        <p>위치를 시간으로 미분하면 속도 ṗ입니다. 병진 운동에너지 ½m|ṗ|²와 팔·진자의 회전 운동에너지를 더합니다. 식을 짧게 쓰려고 A, B, C를 묶어 정의합니다.</p>
+        <div class="model-equation model-math">A = J<sub>r</sub> + mr²<br>B = J<sub>p</sub> + ml²<br>C = mrl<br><br>T = ½(A + B sin²α)θ̇²<br>　+ C cos α · θ̇α̇ + ½Bα̇²</div>
+        <p><b>가운데 θ̇α̇ 항이 연결의 흔적입니다.</b> 팔만 움직여도 진자가 영향을 받습니다. B에 더한 ml²는 무게중심 관성을 진자 축 기준으로 옮기는 항입니다. 이미 축 기준 관성을 썼다면 다시 더하지 않습니다.</p>
+      </details>
+    </article>
+
+    <article class="card model-step"><h3><span class="stepno">4</span>에너지에서 운동방정식을 만들어요</h3><p>‘모터가 이만큼 힘을 주면 얼마나 가속될까?’를 두 축에 대해 함께 풉니다. 에너지에서 이 식을 얻는 방법이 <b>라그랑주 방법</b>입니다. 먼저 식 전체가 어떤 뜻인지 읽어 보세요.</p>
+      <div class="model-equation model-main-equation" aria-label="질량행렬 곱하기 각가속도 더하기 속도 효과 더하기 중력 더하기 마찰은 팔 토크와 진자 입력 0의 벡터입니다">M(q)q̈ + h(q, q̇) + G(q) + f(q̇) = [τ, 0]ᵀ</div>
+      <dl class="model-term-list"><div><dt>Mq̈</dt><dd>관성과 두 축의 결합 · 가속도를 바꾸는 데 필요한 토크</dd></div><div><dt>h</dt><dd>팔과 진자가 회전하며 생기는 속도에 따른 효과</dd></div><div><dt>G</dt><dd>중력에 의한 효과</dd></div><div><dt>f</dt><dd>움직임을 방해하는 마찰</dd></div><div><dt>[τ, 0]ᵀ</dt><dd>팔에만 모터 입력 · 진자 축의 직접 입력은 0</dd></div></dl>
+      <p class="example">q = [θ, α]ᵀ는 두 각도를 모은 열벡터입니다. 마지막 입력이 0이어도 진자가 멈춰 있는 것은 아닙니다. 팔과의 결합과 중력 때문에 움직입니다.</p>
+      <details class="model-details"><summary>라그랑주 식과 2×2 행렬 전개 보기</summary>
+        <div class="model-equation model-math">ℒ = T − V<br>d/dt(∂ℒ/∂q̇<sub>i</sub>) − ∂ℒ/∂q<sub>i</sub> = Q<sub>i</sub></div><p>ℒ은 두 에너지의 차이, Q<sub>i</sub>는 모터·마찰 같은 비보존 토크입니다. 위의 교육용 T와 V를 넣고 θ, α 각각에 대해 정리하면 다음 식을 얻습니다.</p>
+        <div class="model-matrix-row"><b>M =</b><div class="model-matrix" role="math" aria-label="2행 2열 질량행렬. 첫 행 A 더하기 B 사인제곱 알파, C 코사인 알파. 둘째 행 C 코사인 알파, B."><span>A + B sin²α</span><span>C cos α</span><span>C cos α</span><span>B</span></div></div>
+        <div class="model-equation model-math">h₀ = 2B sin α cos α · θ̇α̇ − C sin α · α̇²<br>h₁ = −B sin α cos α · θ̇²<br>G = [0, mgl sin α]ᵀ<br>f = [b<sub>r</sub>θ̇, b<sub>p</sub>α̇]ᵀ　(점성 마찰의 예)</div>
+        <p>마지막 f는 점성 마찰만 넣은 가장 단순한 예입니다. 실제 앱에는 쿨롱 마찰 등도 있습니다. 좌표축이나 각도의 양의 방향을 다르게 정하면 결합항의 부호도 달라지므로, 다른 자료의 식을 섞어 쓰면 안 됩니다.</p>
+      </details>
+    </article>
+
+    <article class="card model-step"><h3><span class="stepno">5</span>각가속도로 다음 상태를 계산해요</h3><p>현재 각도·각속도와 토크를 알면 위 식을 풀어 두 각가속도를 구합니다. 짧은 시간 Δt 동안 속도와 각도를 갱신하면 시뮬레이션이 됩니다.</p>
+      <div class="model-equation">x = [θ, α, θ̇, α̇]ᵀ<br>q̈ = M⁻¹([τ, 0]ᵀ − h − G − f)</div>
+      <div class="model-update"><div><span class="pill state">현재 상태</span><p>어디에 있고, 얼마나 빠른가</p></div><span aria-hidden="true">→</span><div><span class="pill action">입력 + 물리 법칙</span><p>토크로 각가속도 계산</p></div><span aria-hidden="true">→</span><div><span class="pill env">다음 상태</span><p>짧은 시간 뒤의 자세</p></div></div>
+      <details class="model-details"><summary>컴퓨터에서 시간을 잘게 나누는 방법</summary><p>현재 앱은 속도를 먼저 갱신하고 그 속도로 각도를 갱신하는 <b>반암시적 오일러</b> 방법을 사용합니다.</p><div class="model-equation">q̇<sub>k+1</sub> = q̇<sub>k</sub> + q̈<sub>k</sub> Δt<br>q<sub>k+1</sub> = q<sub>k</sub> + q̇<sub>k+1</sub> Δt</div><p>시간 간격이 너무 크면 실제 운동과 차이가 커질 수 있습니다. 물리 계산 간격과 제어기가 새 명령을 정하는 간격은 서로 다를 수 있어요.</p></details>
+    </article>
+
+    <article class="card model-step"><h3><span class="stepno">6</span>같은 플랜트를 제어와 강화학습에서 사용해요</h3><div class="cards two model-controller-cards"><div><span class="pill agent">PID · LQR · LMPC</span><p>오차나 상태로 모터 명령을 계산합니다. LQR·LMPC는 직립 근처의 작은 변화를 선형 모델로 근사해 설계할 수 있습니다.</p></div><div><span class="pill reward">강화학습</span><p>같은 물리적 움직임에 관측·행동·보상·종료 규칙을 더해 환경을 만듭니다. 정책이 경험을 이용해 행동 규칙을 배웁니다.</p></div></div><p class="example"><b>선형화는 설계를 위한 근사입니다.</b> φ = α − π가 0에 가까울 때 sin φ ≈ φ, cos φ ≈ 1을 쓸 수 있습니다. 게인 설계에 선형화를 썼다고 실험 플랜트 전체를 선형으로 바꾸는 것은 아닙니다.</p>
+      <p class="note">같은 기구라도 실험 조건은 다를 수 있습니다. 제어 실험실의 ‘원리 보기’는 마찰·센서·지연을 단순화한 조건으로, ‘실물 보정’ 조건과 모든 설정이 같은 것은 아닙니다.</p>
+      <details class="model-details"><summary>우리가 사용하는 앱의 rev11 모델과 연결하기</summary><p>앞의 A·B·C 식은 유도 과정을 배우기 위한 단순 모델입니다. 현재 앱은 MuJoCo의 rev11 CAD 모델에서 추출한 질량행렬·중력 계수와 실물 응답에 맞춘 보정값을 사용합니다.</p>
+        <div class="model-equation model-math">M₀₀(α) = c₀ + c₁ cos α + c₂ sin α<br>　+ c₃ cos 2α + c₄ sin 2α + J<br>M₀₁(α) = d₀ + d₁ cos α + d₂ sin α<br>M₁₁ = 상수</div><p>현재 계수에 결합 보정을 적용한 뒤, 마찰·속도에 따른 토크 제한·전류 분해능·센서 양자화·지연까지 더합니다. 그림의 각도를 바꾸어도 이 실제 모델의 설정은 바뀌지 않습니다.</p>
+        <div class="model-runtime"><span>현재 앱 파일의 설정</span><b id="modelRuntime">모델 설정 읽는 중</b></div>
+        <p>정책 관측은 각도 자체 대신 다음 여섯 값을 사용합니다. 사인·코사인은 한 바퀴를 도는 경계에서도 연속적인 표현을 줍니다. 실제 관측에는 센서·지연 모델이 적용됩니다.</p><div class="model-equation model-math" id="modelObservation">[cos θ, sin θ, cos α, sin α, θ̇ / 20, α̇ / 40]</div><p class="note">직립에서는 cos α = −1입니다. 관측의 속도 정규화 숫자는 안전 속도 제한과 같은 뜻이 아닙니다. PC 모델을 설명하는 내용이며 실물 검증을 뜻하지 않습니다.</p>
+        <p class="model-source">프로젝트 근거: assets/model.js · js/physics.js · s2r/export_app.py</p>
+      </details>
+    </article>
+    <article class="card model-check"><h3>모델을 이해했는지 확인해 볼까요?</h3><p>진자에 직접 모터가 없는데 왜 진자가 움직일까요?</p><div class="actions" role="group" aria-label="모델링 이해 확인"><button data-model-answer="coupling">팔과 진자의 운동이 연결되어 있어서</button><button data-model-answer="separate">숨겨진 두 번째 모터가 있어서</button></div><p id="modelCheckFeedback" class="feedback" role="status">답을 고르면 운동방정식과 연결해 설명해 드립니다.</p></article>
+    <details class="card model-references"><summary>유도 과정의 참고 자료</summary><p>Cazzolato, B. S. &amp; Prime, Z. (2011). <cite>On the Dynamics of the Furuta Pendulum.</cite> Journal of Control Science and Engineering, 528341. §2–6: 좌표 정의, 라그랑주 유도, 단순화, 선형화.</p><p>DOI: 10.1155/2011/528341</p><p class="note">설명용 식은 이 페이지에 명시한 좌표와 가는 막대 가정으로 정리했습니다. 앱의 실제 식은 프로젝트 소스가 기준입니다.</p></details>
+    <button class="primary" data-go="bridge">진자로 연결 내용 다시 보기</button>
+  </section>
+  <footer>수업 참고: Canva 「강화학습 - 고등학교 AI 수업」 4–18, 21–24장.<br>개념을 짧은 설명과 체험으로 재구성했습니다. Q-learning·밴딧 체험의 결과는 이 화면에서 계산되며 실물 성능을 뜻하지 않습니다.</footer>
+</main><script src="js/primer-core.js?v=20261126rltypes1"></script><script src="js/primer.js?v=20261126model1"></script><script src="assets/model.js"></script><script src="js/modeling-lesson.js?v=20261126model1"></script></body></html>

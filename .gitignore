@@ -8,6 +8,14 @@ dist/
 .pytest_cache/
 *.local.json
 .env
+node_modules/
+pendulum_studio/dist*/
+pendulum_studio/design/control_validation/build.log
+pendulum_studio/design/control_validation/pre-ux/
+!pendulum_studio/build/
+!pendulum_studio/build/icon.ico
+!pendulum_studio/build/icon.png
+!pendulum_studio/build/make_icon.py
 wget-log.7z
 runs/*
 !runs/README.md
