@@ -37,5 +37,8 @@
  "balQuad": 1,
  "coulBal": 0.3,
  "dob": 3.0,
- "dclip": 0.4
+ "dclip": 0.4,
+ "v1t": 8.0,
+ "v2t": 12.0,
+ "vGuardBal": 13.5
 }

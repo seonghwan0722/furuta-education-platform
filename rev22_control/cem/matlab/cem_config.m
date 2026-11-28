@@ -8,6 +8,7 @@ function g = cem_config()
 %  balance cost (balQuad=1) : z'diag(qb0..qb3)z + rb u^2 per step + z'Pz terminal  (= LMPC rev22b Q, R), planning Coulomb x coulBal
 %  dob : disturbance observer while balancing (constant input-torque error d, random-walk weight dob, |d| <= dclip),
 %        used in the observer prediction and in every rollout (tau = tau_max (u + d)); 0 = off
+%  arm-rate gates (rev22c): swing-up taper v1t->v2t (8->12 rad/s), balance guard vGuardBal 13.5 rad/s (cem_gate.m)
 %  gates (same as LMPC rev22b): capture 20 deg & 4.5 rad/s, release 40 deg, braking 0.2 swing-up / 0.33 balance,
 %             balance slew 0.3 per 10 ms, observer predicts 1 + predExtra*2ms ahead (predExtra 5 -> 20 ms total)
 %  rngMode : "xorshift" = bit-identical samples with cem.py (verification, Pi codegen), "matlab" = randn (faster batch runs)
@@ -50,6 +51,9 @@ g.balQuad = 1;
 g.coulBal = 0.3;
 g.dob = 3;
 g.dclip = 0.4;
+g.v1t = 8;
+g.v2t = 12;
+g.vGuardBal = 13.5;
 g.capAng = 0.3490658503988659;
 g.capRate = 4.5;
 g.relAng = 0.6981317007977318;

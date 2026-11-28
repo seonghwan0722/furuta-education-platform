@@ -62,6 +62,7 @@ npm.cmd start
 | `pendulum_studio/` | Electron 교육 앱 확장판: 배경지식·보상 블록·작품 저장·제어 실험실·Pi 수신기 소스 |
 | `rev22_control/` | rev22 모델 기준 PID·LQR·LMPC·CEM·PPO·SAC 재설계 (시뮬레이션만, 11/27~28) |
 | `motor_selection/` | rev11 MuJoCo 모터 사이징 스크립트 |
+| `docs/reports/motor_spec_selection/` | RMD-X6 실험 기반 모터 요구사양 산정과 가성비 모터(RMD-L-5010-35T) 선정 보고서(PDF)·역동역학 스크립트 |
 | `teammate/` | 팀원 MuJoCo SAC(`sac_rev11`)와 실기 보정, Pi 호스트 코드 |
 | `docs/` | 인수인계, 결과 표, 입출력 규약, 하드웨어 기록, `reports/`(보상 변천·RMD-X6 선정 근거) |
 | `edukit/`, `legacy/` | 이전 버전 |

@@ -19,11 +19,11 @@ def pvec(p):
 CEM_DEFAULT = dict(H=30, hold=2, K=96, iters=3, nelite=10, std0=0.6, stdmin=0.05, smooth=0.1, hsub=2,
                    w_th=20.0, w_w=0.02, w_v=0.002, w_phi=2.0, w_u=0.05, w_du=0.5, w_E=40.0, w_term=1.0, vsoft=12.0, w_vs=50.0,
                    w_brk=0.0, capAng=math.radians(20), capRate=4.5, relAng=math.radians(40),
-                   brakeMax=0.2, brakeV=1.0, brakeMaxBal=0.33, brakeVBal=4.0, slewBal=0.3, predExtra=5, armClamp=0.6, std0Bal=0.15, stdminBal=0.01, qb0=0.0, qb1=0.0, qb2=0.0, qb3=0.0, rb=0.0, Cout=0.0, balQuad=0, coulBal=1.0, dob=0.0, dclip=0.4)
+                   brakeMax=0.2, brakeV=1.0, brakeMaxBal=0.33, brakeVBal=4.0, slewBal=0.3, predExtra=5, armClamp=0.6, std0Bal=0.15, stdminBal=0.01, qb0=0.0, qb1=0.0, qb2=0.0, qb3=0.0, rb=0.0, Cout=0.0, balQuad=0, coulBal=1.0, dob=0.0, dclip=0.4, v1t=0.0, v2t=0.0, vGuardBal=0.0)
 
 KEYS = ['H', 'hold', 'K', 'iters', 'nelite', 'std0', 'stdmin', 'smooth', 'hsub', 'w_th', 'w_w', 'w_v', 'w_phi', 'w_u', 'w_du', 'w_E',
         'w_term', 'vsoft', 'w_vs', 'w_brk', 'capAng', 'capRate', 'relAng', 'brakeMax', 'brakeV', 'brakeMaxBal', 'brakeVBal', 'slewBal',
-        'predExtra', 'armClamp', 'std0Bal', 'stdminBal', 'qb0', 'qb1', 'qb2', 'qb3', 'rb', 'Cout', 'balQuad', 'coulBal', 'dob', 'dclip']
+        'predExtra', 'armClamp', 'std0Bal', 'stdminBal', 'qb0', 'qb1', 'qb2', 'qb3', 'rb', 'Cout', 'balQuad', 'coulBal', 'dob', 'dclip', 'v1t', 'v2t', 'vGuardBal']
 
 def gvec(g):
     return np.array([float(g[k]) for k in KEYS])
@@ -87,6 +87,10 @@ def gate(u, v, bal, gv):
     if u != 0 and sgu != sgv:
         if (not bal) and abs(v) > gv[24]: u = sgu * min(abs(u), gv[23])
         if bal and abs(v) > gv[26]: u = sgu * min(abs(u), gv[25])
+    if u != 0 and sgu == sgv:
+        if (not bal) and gv[43] > gv[42] and gv[42] > 0:      # swing-up arm-rate taper (same as LMPC rev22b v1/v2)
+            u = u * max(0.0, 1.0 - max(0.0, abs(v) - gv[42]) / (gv[43] - gv[42]))
+        if bal and gv[44] > 0 and abs(v) > gv[44]: u = 0.0   # balance arm-rate guard (LQR/PID vGuard)
     return u
 
 # --------------------------------------------------------------------------- rollout cost
