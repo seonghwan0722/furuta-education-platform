@@ -1,0 +1,50 @@
+{
+  "name": "pendulum-studio",
+  "version": "0.3.0-classroom.2",
+  "description": "강화학습과 PID·LQR·LMPC를 비교하는 회전 도립 진자 학습 앱",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "test": "node --test tests/control-core.test.cjs tests/imu-device.test.cjs"
+  },
+  "author": "Pendulum Studio",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "^26.18.0"
+  },
+  "optionalDependencies": {
+    "serialport": "12.0.0"
+  },
+  "build": {
+    "appId": "cc.pendulumstudio.classroom",
+    "productName": "Pendulum Studio Classroom",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Pendulum Studio Classroom",
+      "artifactName": "PendulumStudio-Classroom-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": true
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.ico"
+    }
+  },
+  "allowScripts": {
+    "electron@33.2.1": true
+  }
+}

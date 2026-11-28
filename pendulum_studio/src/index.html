@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net data:; script-src 'self'">
+<title>Pendulum Studio</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nanum-gothic@5/700.css">
+<link rel="stylesheet" href="css/app.css?v=20261126usb1">
+<link rel="stylesheet" href="css/imu-level.css?v=20261128imu1">
+</head>
+<body>
+
+<!-- ───────── 상단 메뉴 ───────── -->
+<header class="menubar">
+  <div class="mb-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+      <circle cx="11" cy="4.5" r="3.2" fill="#fff"/>
+      <rect x="9.8" y="6.5" width="2.4" height="9" rx="1.2" fill="#fff" opacity=".92"/>
+      <rect x="3" y="15" width="16" height="3.4" rx="1.7" fill="#fff" opacity=".75"/>
+    </svg>
+    Pendulum Studio
+  </div>
+  <input class="mb-title" id="projName" value="회전 도립 진자 수업" aria-label="작품 이름" maxlength="200">
+  <button class="mb-item" id="mNew">새로 만들기</button>
+  <button class="mb-item" id="mOpen" title=".pendulum 수업 또는 이전 .json 작품 불러오기">불러오기</button>
+  <button class="mb-item" id="mSave" title="수업 저장 (.pendulum): 규칙·학습된 정책·최근 8개 실험 기록">저장하기</button>
+  <button class="mb-item ico" id="mUndo" title="되돌리기 (Ctrl+Z)" aria-label="되돌리기"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M7.5 4.5l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8.5h7a4.5 4.5 0 0 1 0 9H8.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="mb-item ico" id="mRedo" title="다시 실행 (Ctrl+Y)" aria-label="다시 실행"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M12.5 4.5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 8.5H9a4.5 4.5 0 0 0 0 9h2.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="mb-item" id="mHelp" aria-haspopup="dialog" aria-controls="helpDialog">도움말</button>
+  <button class="mb-item" id="mControl">제어 실험실</button>
+  <input type="file" id="fileIn" accept=".pendulum,.json" hidden>
+  <div class="mb-spacer"></div>
+  <div class="mb-mode" id="modeSeg" role="group" aria-label="만드는 방법">
+    <button data-m="guide" aria-pressed="true">따라 하기</button>
+    <button data-m="free" aria-pressed="false">자유롭게 만들기</button>
+  </div>
+  <button class="mb-conn" id="mConn"><span class="dot"></span><span id="connName">키트 연결하기</span></button>
+</header>
+<p class="project-notice" id="projectNotice" role="status" aria-live="polite" hidden></p>
+
+<!-- ───────── 활동 순서 (학습지와 짝) ───────── -->
+<nav class="guide" aria-label="활동 순서">
+  <span class="gl0">활동 순서</span>
+  <button class="gstep" data-step="0"><i>0</i>배경지식</button>
+  <button class="gstep" data-step="1"><i>1</i>살펴보기</button>
+  <button class="gstep" data-step="2"><i>2</i>점수 규칙 만들기</button>
+  <button class="gstep" data-step="3"><i>3</i>가르치고 시험하기</button>
+  <span class="ghint" id="guideHint"></span>
+  <label class="chk" id="wroteBox"><input type="checkbox" id="wrote">학습지에 예상을 적었어요</label>
+</nav>
+
+<section id="primerPanel" class="primer-panel" aria-label="활동 0 배경지식" hidden>
+  <iframe id="primerFrame" title="배경지식과 강화학습 체험" sandbox="allow-scripts allow-same-origin"></iframe>
+</section>
+<div class="body">
+  <!-- ───────── 왼쪽: 실행 화면 · 시작하기 · 보조 창 ───────── -->
+  <section class="leftcol">
+    <section class="card stage" data-stage="a"></section>
+
+    <div class="card runbar">
+      <button class="go" id="btnStart">▶ 시작하기</button>
+      <button class="stop" id="btnStop" disabled>■ 정지하기</button>
+      <span class="runmsg" id="runMsg"></span>
+      <div class="seg env" id="envSeg" role="group" aria-label="실행 위치">
+        <button data-env="sim" aria-pressed="true">시뮬레이션</button>
+        <button data-env="kit" aria-pressed="false">실제 키트</button>
+      </div>
+    </div>
+
+    <section class="card sub">
+      <div class="tabs" id="subTabs">
+        <button data-sub="res" aria-pressed="true">결과</button>
+        <button data-sub="kit" aria-pressed="false">키트 상태</button>
+        <button data-sub="help" aria-pressed="false">블록 도움말</button>
+      </div>
+      <div class="subpane on" data-pane="res">
+        <div class="learnrow">
+          <span class="lstate" id="learnState">모델없음</span>
+          <div class="bar"><div id="trainBar"></div></div>
+          <span class="muted" id="trainMsg"></span>
+        </div>
+        <div class="banner" id="resBanner" hidden></div>
+        <div class="metrics" id="metrics">
+          <div>세우는 데 걸린 시간<b id="mUp">-</b></div>
+          <div>서 있을 때 모터 힘<b id="mForce">-</b></div>
+          <div>팔이 돌아간 정도<b id="mArm">-</b></div>
+        </div>
+        <div class="logwrap">
+          <table>
+            <thead><tr><th title="기록을 누르면 그 시도가 그래프와 결과의 비교 대상이 됩니다">기록 <small>(눌러서 비교)</small></th><th>규칙</th><th>시뮬레이션</th><th>키트</th><th class="num">힘</th><th class="num">팔</th></tr></thead>
+            <tbody id="log"><tr><td colspan="6" class="muted">아직 기록이 없습니다. 시작하기를 눌러 보세요.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="subpane" data-pane="kit">
+        <p class="kitline"><span class="dot" id="kitDot"></span><b id="kitState">키트가 연결되지 않았습니다</b></p>
+        <p class="muted" id="kitNote">USB 케이블로 키트를 연결한 뒤 아래 버튼을 누르세요.</p>
+        <div class="kitbtns"><button class="big alt" id="kitConnect">키트 연결하기</button><button class="big alt" id="kitCheck" disabled title="모터를 움직이지 않고 모터 응답·온도·진자 센서를 읽습니다">키트 점검</button><button class="big alt" id="kitCal" disabled title="팔 마찰·관성, 진자 주기, 진자 영점을 잽니다 (모터가 움직입니다)">키트 맞추기</button></div>
+        <p class="kitcheck" id="kitCheckOut"></p>
+        <p class="kitcheck" id="kitCalOut"></p>
+        <p class="muted">키트는 스스로 멈춥니다: 너무 빨리 돌 때, 진자가 계속 돌 때, 연결이 끊겼을 때. 이 안전 동작은 끌 수 없습니다.</p>
+      </div>
+      <div class="subpane" data-pane="help">
+        <p class="helpname" id="helpName">블록을 눌러 보세요</p>
+        <p class="muted" id="helpText">블록을 누르면 여기에 설명이 나옵니다.</p>
+      </div>
+    </section>
+  </section>
+
+  <!-- ───────── 오른쪽: 살펴보기 · 블록 · 그래프 · 예시 규칙 ───────── -->
+  <section class="rightcol">
+    <div class="etabs" id="mainTabs">
+      <button data-tab="intro" aria-pressed="true">살펴보기</button>
+      <button data-tab="blocks" aria-pressed="false">블록</button>
+      <button data-tab="graphs" aria-pressed="false">그래프</button>
+      <button data-tab="examples" aria-pressed="false">예시 규칙</button>
+      <span class="modelnote" id="modelNote"></span>
+    </div>
+    <div class="work">
+      <div class="mainpane on" data-pane="intro">
+        <div class="intro">
+          <section class="card runcard">
+            <div class="runtext">
+              <h2><span class="stepno">1</span>미리 배운 에이전트를 실행해 봅시다</h2>
+              <p class="muted">세우는 방법은 아무도 알려 주지 않았습니다. 여러 번 해 보면서 보상(점수)으로 배웠습니다. 왼쪽 실행 화면에서 움직임을 보세요.</p>
+              <p id="preResult" class="rule" hidden></p>
+            </div>
+            <div class="runside">
+              <button class="big" id="runPre">미리 배운 에이전트 실행하기</button>
+              <p class="sheet">학습지 2쪽: 실행 결과와, 내 예상과 달랐던 점을 적습니다.</p>
+            </div>
+          </section>
+          <section class="card">
+            <h2><span class="stepno">2</span>키트를 살펴봅시다</h2>
+            <p class="muted">왼쪽 실행 화면에 적힌 번호와 짝을 이룹니다. 실행 화면을 끌면 돌려 볼 수 있습니다.</p>
+            <ul class="parts">
+              <li><i>1</i><div><b>모터</b><span>받침 안에 있고, 팔을 돌리는 힘을 냅니다. 에이전트의 <em class="pill action">행동</em>입니다.</span></div></li>
+              <li><i>2</i><div><b>팔</b><span>모터가 돌리는 가로 막대입니다.</span></div></li>
+              <li><i>3</i><div><b>진자</b><span>팔 끝에 달려 자유롭게 도는 막대입니다. 이것을 거꾸로 세우는 것이 목표입니다.</span></div></li>
+              <li><i>4</i><div><b>각도 센서</b><span>진자가 얼마나 기울었는지 잽니다. 에이전트가 보는 <em class="pill state">상태</em>입니다.</span></div></li>
+            </ul>
+          </section>
+          <section class="card">
+            <h2><span class="stepno">3</span>강화학습의 일곱 가지 말</h2>
+            <svg class="loop" viewBox="0 0 400 178" role="img" aria-label="에이전트는 상태를 보고 정책에 따라 행동하고, 환경에서 보상을 받습니다. 가치는 앞으로 받을 보상의 예상입니다.">
+              <rect x="2" y="6" width="170" height="166" rx="10" fill="#E3EEFA" stroke="#14212B" stroke-width="1.5"/>
+              <rect x="12" y="15" width="62" height="20" rx="10" fill="#A7CFF1" stroke="#14212B" stroke-width="1.2"/><text x="43" y="29.5" font-size="12" font-weight="800" text-anchor="middle">에이전트</text>
+              <text x="80" y="29" font-size="10.5" fill="#444">배우는 인공지능</text>
+              <rect x="12" y="46" width="150" height="54" rx="7" fill="#fff" stroke="#14212B"/>
+              <rect x="20" y="53" width="42" height="18" rx="9" fill="#FFDC91" stroke="#14212B"/><text x="41" y="66.5" font-size="11.5" font-weight="800" text-anchor="middle">정책</text>
+              <text x="20" y="90" font-size="10.5">상태를 보고 행동을 고르는 방법</text>
+              <rect x="12" y="108" width="150" height="54" rx="7" fill="#fff" stroke="#14212B"/>
+              <rect x="20" y="115" width="42" height="18" rx="9" fill="#FFDC91" stroke="#14212B"/><text x="41" y="128.5" font-size="11.5" font-weight="800" text-anchor="middle">가치</text>
+              <text x="20" y="152" font-size="10.5">앞으로 받을 보상의 예상</text>
+              <rect x="272" y="6" width="126" height="166" rx="10" fill="#EAF2DC" stroke="#14212B" stroke-width="1.5"/>
+              <rect x="282" y="15" width="42" height="20" rx="10" fill="#D8E6BC" stroke="#14212B" stroke-width="1.2"/><text x="303" y="29.5" font-size="12" font-weight="800" text-anchor="middle">환경</text>
+              <text x="282" y="62" font-size="10.5" fill="#444">에이전트가</text><text x="282" y="77" font-size="10.5" fill="#444">움직이는 곳</text>
+              <text x="282" y="112" font-size="11.5" font-weight="600">진자 키트,</text><text x="282" y="128" font-size="11.5" font-weight="600">시뮬레이션</text>
+              <g font-size="9.5" text-anchor="middle" fill="#444">
+                <rect x="201" y="14" width="42" height="18" rx="9" fill="#F9CCCF" stroke="#14212B"/><text x="222" y="27.5" font-size="11.5" font-weight="800" fill="#14212B">행동</text>
+                <path d="M178 40 H265 m-6 -4 l6 4 -6 4" fill="none" stroke="#14212B" stroke-width="1.6"/><text x="222" y="54">모터를 움직인다</text>
+                <rect x="201" y="68" width="42" height="18" rx="9" fill="#FFC59E" stroke="#14212B"/><text x="222" y="81.5" font-size="11.5" font-weight="800" fill="#14212B">상태</text>
+                <path d="M266 94 H179 m6 -4 l-6 4 6 4" fill="none" stroke="#14212B" stroke-width="1.6"/><text x="222" y="108">진자 높이, 빠르기</text>
+                <rect x="201" y="122" width="42" height="18" rx="9" fill="#FFDC91" stroke="#14212B"/><text x="222" y="135.5" font-size="11.5" font-weight="800" fill="#14212B">보상</text>
+                <path d="M266 148 H179 m6 -4 l-6 4 6 4" fill="none" stroke="#14212B" stroke-width="1.6"/><text x="222" y="162">점수</text>
+              </g>
+            </svg>
+            <dl class="words">
+              <dt><span class="pill agent">에이전트</span></dt><dd>배우는 인공지능</dd>
+              <dt><span class="pill env">환경</span></dt><dd>에이전트가 움직이는 곳 (진자 키트, 시뮬레이션)</dd>
+              <dt><span class="pill state">상태</span></dt><dd>지금 어떤지 (진자 높이, 빠르기)</dd>
+              <dt><span class="pill action">행동</span></dt><dd>에이전트가 하는 일 (모터 힘)</dd>
+              <dt><span class="pill reward">보상</span></dt><dd>잘했는지 알려 주는 점수</dd>
+              <dt><span class="pill policy">정책</span></dt><dd>상태를 보고 행동을 고르는 방법</dd>
+              <dt><span class="pill value">가치</span></dt><dd>앞으로 받을 보상의 예상</dd>
+            </dl>
+            <p class="muted">실행 화면 아래 네 칸(상태·행동·보상·가치)에서 실제 값을 볼 수 있습니다. 학습지 2쪽 그림과 같습니다.</p>
+            <button class="big alt" id="toBlocks">점수 규칙 만들러 가기</button>
+          </section>
+        </div>
+      </div>
+
+      <div class="mainpane" data-pane="blocks">
+        <aside class="rail" id="rail"></aside>
+        <div class="palette" id="palette"></div>
+        <div class="boardhost" id="boardHost"></div>
+      </div>
+
+      <div class="mainpane" data-pane="graphs">
+        <div class="graphs">
+          <div class="glegend">
+            <span><i class="sw cur"></i>이번</span>
+            <span id="gPrev" hidden><i class="sw prev"></i>비교</span>
+            <span class="muted" id="gNote"></span>
+          </div>
+          <div class="ggrid">
+            <section class="card graph">
+              <div class="hd">배우면서 받은 점수<span>세대가 지날수록 오릅니다</span></div>
+              <div class="chart" id="chLearn"></div>
+            </section>
+            <section class="card graph">
+              <div class="hd">진자 높이<span>100 이 똑바로 선 상태</span></div>
+              <div class="chart" id="chHeight"></div>
+            </section>
+            <section class="card graph">
+              <div class="hd">모터 힘<span>0 = 쉼, 100 = 가장 세게</span></div>
+              <div class="chart" id="chForce"></div>
+            </section>
+            <section class="card graph">
+              <div class="hd">팔이 돌아간 정도<span>처음 자리에서 몇 바퀴</span></div>
+              <div class="chart" id="chArm"></div>
+            </section>
+          </div>
+          <p class="sheet">학습지 3쪽: 결과와 그래프 모양을 옮겨 적습니다. 그래프 위에 마우스를 올리면 그 시각의 값이 보입니다.</p>
+        </div>
+      </div>
+
+      <div class="mainpane" data-pane="examples">
+        <div class="examples" id="examples"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<dialog id="controlDialog" class="control-dialog" aria-label="PID LQR LMPC 제어 실험실"><iframe id="controlFrame" title="제어 실험실" src="about:blank"></iframe></dialog>
+<dialog id="helpDialog" class="help-dialog" aria-labelledby="helpTitle" aria-describedby="helpSummary">
+  <header class="help-header"><h2 id="helpTitle">Pendulum Studio 도움말</h2><button type="button" data-help-close aria-label="도움말 닫기">닫기 <span aria-hidden="true">×</span></button></header>
+  <p id="helpSummary" class="help-summary">궁금한 주제를 골라 사용 방법을 확인하세요. 도움말을 닫으면 보고 있던 화면으로 돌아갑니다.</p>
+  <div class="help-tabs" role="tablist" aria-label="도움말 주제">
+    <button type="button" id="helpStartTab" role="tab" data-help-tab="start" aria-controls="helpStartPanel" aria-selected="true" tabindex="0">사용 순서</button>
+    <button type="button" id="helpBlocksTab" role="tab" data-help-tab="blocks" aria-controls="helpBlocksPanel" aria-selected="false" tabindex="-1">블록 편집</button>
+    <button type="button" id="helpFilesTab" role="tab" data-help-tab="files" aria-controls="helpFilesPanel" aria-selected="false" tabindex="-1">저장·불러오기</button>
+    <button type="button" id="helpExploreTab" role="tab" data-help-tab="explore" aria-controls="helpExplorePanel" aria-selected="false" tabindex="-1">다른 실험</button>
+  </div>
+  <div class="help-body">
+    <section id="helpStartPanel" class="help-panel" role="tabpanel" aria-labelledby="helpStartTab" data-help-panel="start" tabindex="0">
+      <div class="help-intro"><span class="pill agent">처음이라면</span><h3>예상하고, 한 가지를 바꾸고, 결과를 비교해요.</h3><p>상단의 ‘활동 순서’를 따라가면 됩니다. 오른쪽 탭은 지금 활동에 필요한 도구를 여는 곳이에요.</p></div>
+      <ol class="help-steps">
+        <li><span class="help-step">0</span><div><h3>배경지식</h3><p>인공지능이 배우는 방법과 강화학습의 말을 알아봅니다. 길찾기·밴딧 예제로 경험과 보상을 연결하고, 수학적 모델링으로 움직임을 설명해 보세요.</p></div></li>
+        <li><span class="help-step">1</span><div><h3>살펴보기</h3><p>진자와 센서를 살펴보고 미리 배운 에이전트가 어떻게 움직이는지 관찰합니다. 상태·행동·보상·가치가 무엇을 뜻하는지 연결해 보세요.</p></div></li>
+        <li><span class="help-step">2</span><div><h3>점수 규칙 만들기</h3><p>무엇을 잘한 행동으로 볼지 정합니다. ‘따라 하기’에서 시작하거나 ‘자유롭게 만들기’에서 점수 블록을 조립하세요. 결과가 어떻게 달라질지 먼저 적어 봅니다.</p></div></li>
+        <li><span class="help-step">3</span><div><h3>가르치고 시험하기</h3><p>도움말을 닫고 ‘시작하기’를 누르면 현재 규칙과 조건에 맞춰 학습·시험합니다. 결과 기록을 눌러 비교 대상을 고르고, 그래프에서 움직임과 힘의 차이를 확인하세요.</p></div></li>
+      </ol>
+      <div class="help-callout"><b>같은 조건에서 비교하면 이유를 찾기 쉬워요.</b><p>한 번에 한 가지 점수 규칙만 바꾸고, 바꾸기 전 예상과 실제 결과를 함께 적어 보세요.</p></div>
+    </section>
+    <section id="helpBlocksPanel" class="help-panel" role="tabpanel" aria-labelledby="helpBlocksTab" data-help-panel="blocks" tabindex="0" hidden>
+      <div class="help-intro"><span class="pill reward">점수 규칙</span><h3>블록은 ‘어떤 행동에 점수를 줄지’ 표현하는 도구예요.</h3><p>오른쪽 ‘블록’ 탭에서 조립하고, ‘예시 규칙’ 탭에서 출발점을 찾아보세요.</p></div>
+      <div class="help-card-grid">
+        <section class="help-card"><h3>블록을 가져와 연결하기</h3><p>검색이나 범주에서 블록을 찾아 끌어옵니다. 드래그가 어렵다면 넣을 숫자·조건 칸 또는 ‘이 안쪽에 추가’를 선택한 뒤 꾸러미의 ‘추가’를 누르세요. ‘점수 끝 선택’과 ‘시작 끝 선택’도 사용할 수 있습니다.</p></section>
+        <section class="help-card"><h3>뜻이 궁금한 블록 누르기</h3><p>블록을 누르면 왼쪽 아래 ‘블록 도움말’에 설명이 나옵니다. 블록 이름과 설명을 읽고 어떤 상태에 점수를 주는지 확인하세요.</p></section>
+        <section class="help-card"><h3>지우거나 되돌리기</h3><p>휴지통에 끌면 이동 중인 묶음이 삭제됩니다. ‘선택 삭제’는 선택한 블록과 그 안쪽만 지웁니다. 칸을 교체하면 기존 블록은 조립소 아래에 보관합니다. ‘되돌리기’로 복구하고, 이동 중 <kbd>Esc</kbd>로 취소하세요.</p><p class="help-shortcuts"><kbd>Ctrl</kbd> + <kbd>Z</kbd> 되돌리기 · <kbd>Ctrl</kbd> + <kbd>Y</kbd> 다시 실행 · 블록 선택 후 <kbd>Ctrl</kbd> + <kbd>D</kbd> 복사</p></section>
+        <section class="help-card"><h3>예시에서 시작하기</h3><p>‘예시 규칙’에서 설명을 읽고 ‘이 규칙 불러오기’를 선택합니다. 불러온 규칙을 그대로 관찰한 뒤 한 가지 값만 바꿔 비교해 보세요.</p></section>
+      </div>
+      <section class="help-card"><h3>문제 표시 읽기</h3><p>빈 조건, 잘못된 숫자, 0으로 나누기, 지원하지 않는 시작 순서는 ‘수정 필요’로 알려 줍니다. 목록을 누르면 문제 블록으로 이동합니다. 입력을 끝내려면 Enter, 취소하려면 Esc를 누르세요. ‘참고’는 보상 의도나 단위를 생각해 보라는 안내이며 학습 성공을 보장하는 판정은 아닙니다.</p><p>시작 묶음은 조건 → 학습 → 시험 순서로 만듭니다. 같은 규칙으로 이미 배운 정책은 다시 사용합니다. 따로 놓인 블록은 실행되지 않으며, 미완성 규칙도 숫자 입력을 마치면 수업 파일로 저장할 수 있습니다.</p></section>
+      <div class="help-callout"><b>규칙을 바꾸면 배우는 목표도 달라져요.</b><p>새 규칙과 이전 실험의 결과를 구분해 보관하려면 작품 이름을 바꾸어 수업 파일로 저장하세요.</p></div>
+    </section>
+    <section id="helpFilesPanel" class="help-panel" role="tabpanel" aria-labelledby="helpFilesTab" data-help-panel="files" tabindex="0" hidden>
+      <div class="help-intro"><span class="help-file-type">.pendulum</span><h3>수업을 이어 할 때 사용하는 파일이에요.</h3><p>상단에서 작품 이름을 정하고 ‘저장하기’를 누릅니다. 다음 시간에는 ‘불러오기’로 저장한 수업을 엽니다.</p></div>
+      <section class="help-card"><h3>한 파일에 담기는 내용</h3><dl class="help-file-list">
+        <dt>규칙과 조건</dt><dd>작품 이름, 점수·실행 블록과 배치, 따라 하기 조건, 만드는 방법</dd>
+        <dt>학습된 정책</dt><dd>현재 점수 규칙과 학습 조건에 맞는 정책이 있을 때 그 정책과 학습 시간</dd>
+        <dt>실험 결과</dt><dd>최근 최대 8개 실험 기록과 그래프, 선택한 비교 기록</dd>
+        <dt>활동 진행</dt><dd>활동 번호, 보고 있던 탭, 진행 상태와 예상 작성 여부</dd>
+      </dl></section>
+      <div class="help-card-grid">
+        <section class="help-card"><h3>파일을 불러오면</h3><p>규칙·정책·기록을 복원합니다. 자동으로 실행하지 않으며 시뮬레이션에서 이어갑니다. 저장된 정책도 시뮬레이션에서 다시 확인합니다.</p><p>이전에 저장한 <code>.json</code> 작품도 열 수 있습니다. 다음 저장부터 <code>.pendulum</code>을 사용하세요.</p></section>
+        <section class="help-card"><h3>별도로 보관하는 기록</h3><p>활동 0의 길찾기·밴딧 체험 기록과 제어 실험실 기록은 이 수업 파일에 들어가지 않습니다.</p><p>제어 실험실에서는 실험 기록을 CSV로, 학습 노트를 JSON으로 따로 받을 수 있습니다.</p></section>
+      </div>
+      <div class="help-callout"><b>‘새로 만들기’ 전에는 저장해 두세요.</b><p>새 수업을 만들면 현재 블록·정책·실험 기록이 초기화됩니다. 작품 이름에 바꾼 조건을 적어 두면 파일을 구분하기 쉬워요.</p></div>
+    </section>
+    <section id="helpExplorePanel" class="help-panel" role="tabpanel" aria-labelledby="helpExploreTab" data-help-panel="explore" tabindex="0" hidden>
+      <div class="help-intro"><span class="pill env">다른 실험</span><h3>작은 예제로 익히고, 같은 진자에서 방법을 비교해요.</h3><p>각 화면은 상단의 활동 버튼과 메뉴로 다시 열 수 있습니다.</p></div>
+      <section class="help-card"><div class="help-card-title"><span class="help-step">0</span><h3>활동 0 · 배경지식</h3></div><p>지도학습·비지도학습·강화학습의 차이를 알아보고, 길찾기와 밴딧에서 직접 조건을 바꾸어 봅니다. ‘진자로 연결’ 다음 ‘수학적 모델링’에서는 실제 움직임을 식과 모델로 표현하는 과정을 살펴봅니다.</p><p class="help-location">여는 곳: 상단 활동 순서 → 0 배경지식</p><p>실행 중이거나 키트가 연결된 동안에는 배경지식을 열 수 없습니다. 실험을 마치고 키트 연결을 끊은 뒤 이용하세요.</p></section>
+      <section class="help-card"><div class="help-card-title"><span class="pill agent">PID · LQR · LMPC</span><h3>제어 실험실</h3></div><p>같은 진자에 대해 사람이 정한 제어 규칙을 비교하는 PC 시뮬레이션입니다. PID는 지금·누적·변화에 반응하고, LQR은 오차와 힘의 비용을 절충하며, LMPC는 미래를 예측해 매번 다시 계획합니다.</p><p class="help-location">여는 곳: 상단 메뉴 → 제어 실험실</p><p>살펴보기 → 설정 → 그래프 → 실험 노트 순서로 진행합니다. ‘강화학습으로 돌아가기’를 누르면 본 화면으로 돌아옵니다.</p></section>
+      <div class="help-callout"><b>배우는 방법과 제어 규칙을 연결해 보세요.</b><p>강화학습은 경험과 보상으로 정책을 배웁니다. 제어 실험실에서는 게인이나 비용 기준을 바꾸어 움직임을 비교합니다.</p></div>
+    </section>
+  </div>
+  <footer class="help-footer"><p><kbd>Tab</kbd>으로 이동 · <kbd>←</kbd> <kbd>→</kbd>로 주제 선택 · <kbd>Esc</kbd>로 닫기</p><button type="button" class="big" data-help-close>도움말 닫기</button></footer>
+</dialog>
+<div class="safe">
+  <span>팔이 너무 빨리 돌면 모터가 자동으로 멈춥니다. 이 안전 동작은 끌 수 없습니다.</span>
+  <span class="alert" id="alertLine"></span>
+</div>
+
+<!-- ───────── 키트 연결 ───────── -->
+<div class="modal-back" id="calModal">
+  <div class="modal cal" role="dialog" aria-label="키트 맞추기">
+    <header>키트 맞추기</header>
+    <div class="calbody">
+      <p>이 키트의 <b>팔 마찰·관성</b>, <b>진자 흔들림 주기</b>, <b>진자 영점</b>을 잽니다. 키트마다 조금씩 다른 값을 알아 두는 단계입니다.</p>
+      <p class="calwarn">약 40초 동안 모터가 움직입니다: 팔이 90°씩 세 번 돌고, 세게 돌았다 멈추기를 여섯 번 한 뒤, 잠긴 채 진자가 흔들립니다.
+        키트 주변을 비우고 손을 떼 주세요. 받침 수평은 이것과 따로 실행할 때마다 잽니다.</p>
+      <p class="muted" id="calLast"></p>
+      <p class="calprog" id="calProg"></p>
+      <table class="caltable" id="calTable" hidden></table>
+    </div>
+    <footer>
+      <button class="big alt" id="calLater">나중에</button>
+      <button class="big" id="calGo">맞추기 시작</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal-back" id="devModal">
+  <div class="modal device-modal" role="dialog" aria-modal="true" aria-label="키트 연결하기">
+    <header>키트 연결하기<button id="devClose" aria-label="닫기">×</button></header>
+    <div class="device-intro"><span class="pill">USB 연결</span><h2>배운 정책을 진자 키트로</h2><p>정책을 Pi에 보내면 Pi 안에서 실행하고, 움직임과 결과를 이 화면으로 받습니다.</p></div>
+    <ol class="device-steps"><li><b>1 · 연결</b><span>아래에서 Pi의 포트를 선택</span></li><li><b>2 · 수평과 준비</b><span>받침 수평 조정 → 키트 점검</span></li><li><b>3 · 직접 시작</b><span>시뮬레이션 확인 → 실제 키트 시작</span></li></ol>
+    <p id="devConnected" class="device-connected" role="status" hidden></p>
+    <div id="devLevelPanel" hidden></div>
+    <div class="grid" id="devGrid"></div>
+    <details class="device-help"><summary>포트가 보이지 않거나 연결이 안 되나요?</summary><ul><li>Pi에서 키트 대기 프로그램이 실행 중이어야 합니다. COM 포트가 있다고 Pi 연결이 확인된 것은 아닙니다.</li><li>Pi 5의 USB-C 직결은 USB 직렬 장치 모드 설정과 PC 포트의 전원 출력 확인이 필요합니다. 일반 USB-A 단자끼리 케이블로 잇는 방식은 지원하지 않습니다.</li><li>같은 케이블로 Pi 전원도 공급한다면 케이블을 빼지 말고 ‘정지하기’를 먼저 누르세요. Pi 전원이 끊기면 앱의 정지 명령도 전달되지 않습니다.</li><li>USB-시리얼 어댑터를 쓰면 Pi의 UART 또는 Pi 쪽 어댑터와 배선을 확인하세요. 충전 전용 케이블과 Bluetooth 포트는 구분해야 합니다.</li><li>115200 bps · 규약 v2. 다른 직렬 터미널을 닫고 ‘다시 찾기’를 누르세요.</li></ul></details>
+    <p class="device-action-note">연결 후 IMU 각도 확인은 모터를 움직이지 않습니다. ‘키트 맞추기’와 ‘실제 키트 → 시작하기’를 누르면 팔이 움직이며, 정책 실행 전에도 기존 수평·영점 측정을 위해 회전합니다.</p>
+    <footer>
+      <span class="note" id="devNote" role="status" aria-live="polite"></span>
+      <button class="big alt" id="devDisconnect" hidden>연결 끊기</button>
+      <button class="big alt" id="devRefresh">다시 찾기</button>
+      <button class="big" id="devConnect" disabled>연결</button>
+    </footer>
+  </div>
+</div>
+
+<template id="stageTpl">
+  <div class="stagehead">
+    <span class="pill env">환경</span><span class="where">대기 중</span>
+    <div class="phase"><span class="ph">흔들어 올리기</span><span class="ph">에너지 모으기</span><span class="ph">균형 잡기</span></div>
+    <button class="bigbtn" aria-pressed="false" title="실행 화면만 크게 봅니다"><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>크게 보기</span></button>
+  </div>
+  <div class="view">
+    <svg viewBox="0 0 800 580" role="img" aria-label="진자 키트를 비스듬히 위에서 본 화면">
+      <polygon class="floor" fill="#E6ECEB"/>
+      <ellipse class="shadow" rx="14" ry="7" fill="#14212B" opacity=".18"/>
+      <g class="base"></g>
+      <g class="tower"></g>
+      <polyline class="orbit" fill="none" stroke="#8FA2AB" stroke-width="2" stroke-dasharray="6 6"/>
+      <g class="rodg">
+        <line class="ghost" stroke="#3b6de4" stroke-width="3" stroke-dasharray="9 9"/>
+        <line class="rodO" stroke="#4A4640" stroke-width="10" stroke-linecap="round"/>
+        <line class="rod" stroke="#D6D2CB" stroke-width="6" stroke-linecap="round"/>
+        <circle class="bob" r="10" fill="#C2410C" stroke="#4A4640" stroke-width="2"/>
+      </g>
+      <g class="armg">
+        <line class="armO" stroke="#4A4640" stroke-width="10" stroke-linecap="round"/>
+        <line class="arm" stroke="#D6D2CB" stroke-width="6" stroke-linecap="round"/>
+        <line class="holder" stroke="#4A90D9" stroke-width="17" stroke-linecap="round"/>
+        <circle class="sensor" r="10" fill="#F4F2EE" stroke="#4A4640" stroke-width="2"/>
+        <circle class="pivot" r="6" fill="#D6D2CB" stroke="#4A4640" stroke-width="2"/>
+      </g>
+      <g class="nums"></g>
+    </svg>
+    <div class="gauge" aria-hidden="true">
+      <div class="gt"><span class="gtop">꼭대기</span><div class="gfill"></div><div class="gpeak" hidden><span>최고</span></div></div>
+      <span class="gl">진자 높이</span>
+    </div>
+  </div>
+  <div class="terms">
+    <div class="tm"><span class="hd"><span class="pill state">상태</span>기울기</span><span class="val"><b class="deg">180°</b><span class="spd">0.0바퀴/초</span></span></div>
+    <div class="tm"><span class="hd"><span class="pill action">행동</span>모터 힘</span><span class="val"><div class="mid"><div class="ubar"></div></div></span></div>
+    <div class="tm"><span class="hd"><span class="pill reward">보상</span>지금 점수</span><span class="val"><b class="rw">0</b></span></div>
+    <div class="tm"><span class="hd"><span class="pill value">가치</span>앞으로 예상</span><span class="val"><div class="bar"><div class="vbar"></div></div></span></div>
+  </div>
+  <div class="stagefoot">
+    <div class="bar"><div class="tbar"></div></div>
+    <span><span class="time">0.0</span> / <span class="tend">10.0</span>초</span>
+    <span class="res"></span>
+  </div>
+</template>
+
+<script src="assets/model.js?v=20261125q"></script>
+<script src="assets/policies.js?v=20261125q"></script>
+<script src="js/physics.js?v=20261125q"></script>
+<script src="js/control-core.js?v=20261126control1"></script>
+<script src="js/blockdefs.js?v=20261126blocks2"></script>
+<script src="js/block-checks.js?v=20261126blocks2"></script>
+<script src="js/reward.js?v=20261126blocks2"></script>
+<script src="js/policy.js?v=20261125q"></script>
+<script src="js/learn.js?v=20261126blocks2"></script>
+<script src="js/device.js?v=20261128imu1"></script>
+<script src="js/imu-level.js?v=20261128imu1"></script>
+<script src="js/charts.js?v=20261125q"></script>
+<script src="js/stage.js?v=20261125q"></script>
+<script src="js/examples.js?v=20261126blocks2"></script>
+<script src="js/project.js?v=20261126project1"></script>
+<script src="js/blocks.js?v=20261126blocks2"></script>
+<script src="js/app.js?v=20261128imu1"></script>
+</body>
+</html>

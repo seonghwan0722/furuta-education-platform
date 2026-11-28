@@ -1,0 +1,215 @@
+회전형 역진자 기반 AI 제어 교구 — 10분 최종 발표 대본
+
+2026-11-26 | 본문 12장 600초 + 질의응답 부록 3장
+
+Canva 수정 초안과 동기화한 대본입니다. Canva 변경의 영구 저장은 승인 대기 중입니다.
+
+읽는 속도에 따른 실제 시간은 리허설로 조정합니다.
+
+
+
+[01쪽]
+권장 발표 시간 20초 | 누적 0–20초
+
+발표 대본
+안녕하세요. 제품개발설계 4조의 회전형 역진자 기반 AI 제어 교구를 발표하겠습니다. 저희는 기구와 제어 알고리즘뿐 아니라, 학생이 보상을 바꾸고 움직임을 비교하는 앱까지 연결했습니다. 오늘은 팀 전체의 설계, 실물 검증, 교육용 확장 순서로 말씀드리겠습니다. 오른쪽은 CAD 시각화이며 빈칸에는 완성 장치 사진을 넣을 예정입니다.
+
+출처: 연구노트 및 mujoco_crosscheck/multibody/me3_6.png
+사진 P01: 앞쪽45° / 베이스·암·진자 끝까지 사진을 넣은 뒤 촬영 안내를 삭제합니다. 시험 사진에는 로그명과 시각을 함께 표시합니다.
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[02쪽]
+권장 발표 시간 35초 | 누적 20–55초
+
+발표 대본
+이전 발표에서 정리한 고객 요구 14개와 공학 사양 21개를 바탕으로, 학생이 보상을 바꾸고 동작을 설명하는 교구를 만들었습니다. 기구·전장, 제어와 모델 검증, 팀원의 실기 식별과 정책 개선, 교육 앱과 배포가 연결된 결과물입니다. 추가 조정 15분, 스윙업 18/20회, 직립 60초는 설계 목표입니다. 오늘은 이를 달성했다고 가정하지 않고, 마지막에 실제 확인한 범위와 대조하겠습니다.
+
+출처
+연구노트, 두 프로젝트 저장소
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/README.md
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[03쪽]
+권장 발표 시간 65초 | 누적 55–120초
+
+발표 대본
+하드웨어는 개발 과정에서 중요한 변경이 있었습니다. 초기에는 Teensy와 직결 BLDC, FOC를 고려했지만, 연구실에서 보유한 RMD 모터를 활용하여 제어 검증에 집중하는 방향으로 바꿨습니다. 최종 시제품은 Raspberry Pi 5에서 CAN을 통해 RMD에 전류 명령을 보내는 구조입니다. RMD에는 드라이버와 암 엔코더가 내장되어 있고, 별도의 AS5600이 진자 각도를 읽습니다. 전원은 48볼트이며 CAN 속도는 1메가비트입니다. 오른쪽은 실제 Pi와 CAN HAT 연결 사진입니다. 아래 두 칸에는 전원을 끈 배선 전체와 엔코더·슬립링의 근접 사진을 넣을 예정입니다. 설계 선택의 이유는 보유 장비를 활용해 제어 검증에 집중하는 것이었습니다. 대신, 감속기의 마찰과 추가 관성, 백래시를 반영해야 했습니다. 따라서 이 변경은 단순 부품 교체가 아니라 모델 식별과 제어기 재설계로 이어졌습니다.
+
+출처
+2026-11-17 확정 구성, Pi–RMD 시험 기록
+
+사진 P02: 전원 OFF, 단자·연결선이 보이게 사진을 넣은 뒤 촬영 안내를 삭제합니다. 시험 사진에는 로그명과 시각을 함께 표시합니다.
+사진 P03: AS5600·자석·진자축·슬립링을 가까이 사진을 넣은 뒤 촬영 안내를 삭제합니다. 시험 사진에는 로그명과 시각을 함께 표시합니다.
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[04쪽]
+권장 발표 시간 65초 | 누적 120–185초
+
+발표 대본
+이 구조도는 어떤 조건에서 무엇을 바꾸고 무엇을 측정했는지를 보여 줍니다. 입력은 매달린 시작 자세와 초기 속도, 목표는 스윙업과 직립입니다. 가운데 제어기는 전류 명령을 RMD에 보내고 센서 피드백을 받습니다. 저희가 바꾼 변수는 게인, 보상 가중치, 전류 상한과 모델 파라미터입니다. 측정 출력은 각도·각속도·전류, 포착 시각과 연속 유지 시간입니다. 마찰, 영점, 지연과 CAN 누락은 결과를 바꾸는 불확실성입니다. 따라서 한 시험 안에서는 조건을 고정하고 같은 지표로 비교했습니다. PID·LQR·LMPC는 스윙업 후 직립 제어로 전환하고, PPO·SAC는 정책 하나로 두 동작을 수행합니다. 다음 실물 결과는 MATLAB 100헤르츠·1.5암페어와 팀원 50헤르츠·1.2암페어를 분리해 설명합니다.
+
+출처
+배포 규약과 팀원 s2r/app 문서
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/matlab_furuta/REV11_HARDWARE_RESULTS_20261120.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/s2r_env.py
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[05쪽]
+권장 발표 시간 55초 | 누적 185–240초
+
+발표 대본
+대표적인 설계 개선은 실물 응답을 학습 환경에 반영한 과정입니다. 초기 전류 시험에서 0.1과 0.3암페어로는 거의 움직이지 않아, 정지마찰과 행동 스케일을 다시 검토했습니다. 팀원은 전류 펄스와 자유진동으로 추가 관성을 약 0.023에서 0.025 킬로그램 제곱미터로 식별했습니다. 팔 펄스 126구간으로 진자 결합항을 CAD의 0.87배로, 실기 28회로 전류 응답을 명령의 약 0.95배로 보정했습니다. 보정 후에도 기존 정책의 첫 시도 포착은 시뮬 86퍼센트와 실물 46퍼센트로 달랐습니다. 이 값은 전체 시험 통과율과 다른 지표입니다. 모델을 한 번 맞췄다고 끝내지 않고, 온도·마찰·센서 조건을 포함한 추가 검증이 필요하다고 판단했습니다.
+
+출처
+실기보정 README, s2r/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/README.md
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/teammate/
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[06쪽]
+권장 발표 시간 60초 | 누적 240–300초
+
+발표 대본
+먼저 MATLAB 계열의 실물 결과입니다. 진자가 아래로 매달린 상태에서 20초 동안 구동했고, 직립 오차 5도와 필터 각속도 0.5라디안 매초를 5초 연속 만족하는지를 판정했습니다. PID는 2회 중 2회, LQR은 1회 중 1회가 통과했고, 최신 LMPC와 PPO 기록은 각각 3회 중 1회입니다. SAC는 두 체크포인트에서 각각 3회 중 3회 통과했습니다. 오른쪽은 조건을 만족한 최장 연속 시간이며, 시험 전체 시간이나 평균 시간이 아닙니다. 예를 들어 SAC의 한 체크포인트는 15.52초입니다. 이 표가 말해 주는 것은 다섯 방식 모두 실물 성공 사례가 있다는 점입니다. 버전과 표본 수가 달라 이 숫자만으로 보편적인 성능 순위를 주장할 수는 없습니다. 아래에는 같은 영상에서 매달림, 상승, 직립 장면을 시간과 로그명과 함께 배치해 실제 동작을 보여주겠습니다.
+
+출처
+PID·REV11 실물 시험 기록, 11/20–23
+
+사진 P04a: 같은 영상·구도 / 로그명 / t = __ s 사진을 넣은 뒤 촬영 안내를 삭제합니다. 시험 사진에는 로그명과 시각을 함께 표시합니다.
+사진 P04b: 같은 영상·구도 / 로그명 / t = __ s 사진을 넣은 뒤 촬영 안내를 삭제합니다. 시험 사진에는 로그명과 시각을 함께 표시합니다.
+사진 P04c: 같은 영상·구도 / 로그명 / t = __ s 사진을 넣은 뒤 촬영 안내를 삭제합니다. 시험 사진에는 로그명과 시각을 함께 표시합니다.https://github.com/seonghwan0722/furuta-education-platform/blob/main/matlab_furuta/PID_HARDWARE_RESULTS_20261120.md
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/matlab_furuta/REV11_HARDWARE_RESULTS_20261120.md
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[07쪽]
+권장 발표 시간 55초 | 누적 300–355초
+
+발표 대본
+다음은 팀원이 같은 날 같은 키트에서 수행한 PPO와 SAC 비교입니다. 앞 표와 달리 시험은 12초, 전류 상한은 1.2암페어, 주기는 50헤르츠입니다. 정책을 번갈아 다섯 번씩 실행했습니다. 새로 보정한 SAC는 세 시드가 각각 5회 모두 통과했고, 선택한 PPO 시드도 5회 모두 통과했습니다. 유지가 시작된 시각의 중앙값은 PPO가 1.94초였으며, SAC 세 시드는 2.20에서 2.46초였습니다. 특히 7초부터 12초까지 평균 절대 전류는 PPO가 0.20암페어, SAC가 0.36에서 0.57암페어였습니다. 이 조건에서는 선택된 PPO 정책이 더 작은 전류로 유지한 것입니다. 다만 SAC는 세 시드, PPO는 선택한 한 시드이므로 전체 알고리즘의 우열로 일반화하지 않습니다. 기존 SAC에 보상을 연결한 브리지 정책도 별도 기준으로 남겼습니다.
+
+출처
+s2r 2단계 실기 본선 (2026-11-24)
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/summary_numbers.json
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[08쪽]
+권장 발표 시간 60초 | 누적 355–415초
+
+발표 대본
+학생 보상에 맞춰 정책을 바꾸는 앱에는 SAC 바탕 정책과 CEM 추가 조정을 사용했습니다. 정상 보상 조정의 채택 수는 SAC 31/33, PPO 13/22였습니다. 실물에서도 팔 제자리 같은 보상은 성공 사례를 얻었지만, 힘 아주 아끼기는 시뮬 시험을 통과하고도 세 번 모두 실패했습니다. 처음 직립을 지나친 뒤 회전을 계속한 기록입니다. 아직 하나의 원인으로 확정하지 않았습니다. 이 결과를 바탕으로, 높은 학생 점수만으로 전송을 결정하지 않고 완전정지 시작과 변동 조건을 포함한 고정 시험으로 평가하도록 보완했습니다. 현재 앱의 40칸 시험은 후보를 거르는 절차이며 실물 성공의 보증은 아닙니다. 팔 제자리와 표의 바탕 정책도 서로 다른 가중치를 사용했으므로 전류 감소를 단일 보상의 인과효과로 단정하지 않습니다.
+
+출처
+팀원 학생 보상 실험, 2026-11-24
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/PPO_vs_SAC_발표자료.md
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[09쪽]
+권장 발표 시간 60초 | 누적 415–475초
+
+발표 대본
+이제 학생이 사용하는 화면입니다. Pendulum Studio는 블록으로 보상을 구성하는 Electron 앱입니다. 따라 하기에서는 미리 학습한 SAC 정책 9개를 고르고, 자유 만들기에서는 점수 규칙을 바꾼 뒤 CEM으로 정책을 추가 조정합니다. 화면을 조작하고 동작만 보는 것이 아니라, 이전 시도와 결과를 비교하는 흐름입니다. 학생이 만든 보상 점수가 높다는 이유만으로 실제 교구에 보내지는 않습니다. 보상과 별개인 고정 시험으로 평가합니다. 최신 앱에서는 8조건과 5시작을 조합한 40칸을 검사하고, 완전히 매달려 멈춘 시작도 포함했습니다. 37칸 이상을 통과하고 시뮬 스윙업을 확인해야 키트로 전송할 수 있습니다. 이 절차는 후보를 거르는 과정이며, 실물 안전이나 성공의 보증은 아닙니다. 앱에서 정책을 보내 SSH 경로로 실제 교구를 실행한 기록도 확보했습니다. 전송 경로의 세부 검증은 보고서에 정리했습니다.
+
+출처
+Pendulum Studio app/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/README.md
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[10쪽]
+권장 발표 시간 45초 | 누적 475–520초
+
+발표 대본
+제어 실험실은 PID, LQR, LMPC의 개념을 비교하는 로컬 확장판입니다. PID는 지금·누적·변화하는 오차를, LQR은 Q와 R로 오차와 힘 사용의 절충을, LMPC는 예측 구간과 입력 제한을 바꿔 볼 수 있습니다. 같은 초기 조건에서 한 항목씩 바꾸고 예상·관찰·설명을 기록합니다. PC 계산 검사와 실제 앱 화면은 확인했습니다. 실물 제어기로 검증한 결과나 학생 이해도가 향상됐다는 결과와는 구분합니다.
+
+출처
+Pendulum Studio · 11/26 제어 실험실 확장
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/kit/README.md
+로컬 확장: app/design/CONTROL_LAB.md
+사진 P05: 노트북 앱 화면과 제작 장치를 한 장에 촬영. 학생 수업 검증으로 표기하지 않음. 사진을 넣은 뒤 촬영 안내를 삭제합니다. 시험 사진에는 로그명과 시각을 함께 표시합니다.
+최신 화면: app/design/control_validation/ux/lmpc-1100.png
+로컬 버전 0.3.0-classroom.2, PC 핵심 검증 및 패키지 실행 확인. Pi 구동·학생 평가 미수행.
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[11쪽]
+권장 발표 시간 55초 | 누적 520–575초
+
+발표 대본
+처음의 설계 목표와 대조하면 구현한 것과 더 시험할 것이 분명해집니다. 보상 추가 조정은 PC에서 구현했지만 교실 PC 조건의 15분 목표는 별도 확인해야 합니다. 정책별 소수 반복 성공으로 고정 정책 20회 중 18회를 달성했다고 할 수 없으며, 20초 시험은 60초 유지 검증을 대신하지 않습니다. 앱에서 Pi로 올려 실행하는 SSH 경로는 실물에서 확인했습니다. 원가는 구 구성의 추정치가 있어도 현재 RMD와 Pi 기준 BOM을 다시 산정해야 합니다. 다음 단계는 가드와 독립 차단을 먼저 확인하고, 같은 정책의 반복·장시간 시험과 학생 평가로 요구사항을 검증하는 것입니다.
+
+출처
+app/kit/README.md 및 v0.2.0 릴리스
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/kit/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/releases/tag/v0.2.0
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[12쪽]
+권장 발표 시간 25초 | 누적 575–600초
+
+발표 대본
+저희는 기구·전장, 실측으로 보정한 비선형 모델, 다섯 제어 방식과 교육 앱을 연결했습니다. 이번 결과의 의미는 성공 사례뿐 아니라 시뮬과 실물의 차이, 보상 조정의 실패를 다음 설계와 시험에 반영했다는 점입니다. 남은 성능 목표와 교육 효과를 같은 기준으로 검증하겠습니다. 감사합니다.
+
+출처
+팀 통합 결과
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/matlab_furuta/REV11_HARDWARE_RESULTS_20261120.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/README.md
+구성 참고: 제공 수업 영상 00:00–06:18, 요구사항과 결과 대조 06:30–07:50. 이 영상은 우리 실물 시험 증거가 아님.
+
+
+[13쪽]
+질의응답용 부록 · 본 발표 10분에 포함하지 않음
+
+기존 MATLAB 포팅 환경은 PPO가 11~13분에 12/16을 처음 넘고 SAC는 25분 내 통과하지 못했습니다. 팀원 보정 환경에서는 바탕 정책 선택의 중단 규칙까지 SAC가 2~4.5분, PPO가 약29분과 한 시드45분 실패였습니다. 관측, 환경, 평가, 병렬수, 활성화함수와 조율이 다르므로 두 환경 간 수치를 알고리즘 속도 배율로 합산하지 않습니다. Pendulum Studio는 빠른 바탕 정책 확보와 추가 조정 성능을 근거로 SAC+CEM 경로를 사용합니다.
+
+출처
+STABILITY.md 및 팀원 summary_numbers.json
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/docs/results/STABILITY.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/PPO_vs_SAC_발표자료.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/summary_numbers.json
+
+
+[14쪽]
+질의응답용 부록 · 본 발표 10분에 포함하지 않음
+
+질의응답용 부록
+
+정지대기 후 매달림 시작, 평가시간, 속도추정과 전류상한을 표본과 함께 관리합니다. 팀원 시뮬128칸에 완전정지 시작이 없었던 한계를 확인한 뒤 앱40칸에는 해당 시작을 추가했습니다.
+
+출처
+실험 규약 비교
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/matlab_furuta/REV11_HARDWARE_RESULTS_20261120.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/README.md
+
+
+[15쪽]
+질의응답용 부록 · 본 발표 10분에 포함하지 않음
+
+질의응답용 부록
+
+기존 프로젝트와 팀원 저장소를 함께 참조합니다. 제어·실물·재현 자료와 팀원의 보정 환경·정책·교육 앱 구현을 해당 저장소에서 확인할 수 있습니다.
+
+출처
+두 저장소와 원본 시험 기록
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/matlab_furuta/REV11_HARDWARE_RESULTS_20261120.md
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/matlab_furuta/PID_HARDWARE_RESULTS_20261120.md
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/docs/results/RESULTS_tables.md
+https://github.com/seonghwan0722/furuta-education-platform/blob/main/docs/results/STABILITY.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/s2r/summary_numbers.json
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/README.md
+https://github.com/sjh030619-boop/furuta-pendulum-rl/blob/main/app/kit/README.md

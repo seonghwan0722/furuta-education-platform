@@ -1,0 +1,13 @@
+2026-11-26 / 0.3.0-classroom.2
+PASS: 9 control-core mathematical and nonlinear simulation checks.
+PASS: browser UI comparison, sticky run controls, colored records, keyboard tabs,
+      draft/result conditions separated, run/stop and locked settings, quiz,
+      CSV export, notes persistence and original SAC playback.
+PASS: 1440x1000, 1100x720, 760x900 layouts; no horizontal document overflow.
+VISUAL: 1100x720 compact layout keeps pendulum and key metrics above execution dock.
+PASS: source Electron hidden run, all 3 controllers and original SAC playback.
+PASS: packaged Electron hidden run from dist-ux/win-unpacked, all 3 controllers
+      and original SAC playback; no renderer errors.
+BUILD: NSIS setup 0.3.0-classroom.2 and unpacked Windows executable produced.
+SCOPE: PC simulation and application packaging. No Pi or real motor execution.
+LIMITS: Installer install/uninstall not exercised; student usability study not performed.

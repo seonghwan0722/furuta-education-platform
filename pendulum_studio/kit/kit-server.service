@@ -1,0 +1,27 @@
+# Pendulum Studio 키트 대기 프로그램을 부팅 때 띄우는 systemd 예시. 아직 설치하지 않았습니다.
+# 아래 User, WorkingDirectory, ExecStart는 기존 Pi 설치 예시값입니다. 그대로 설치하기 전에 실제 경로와 포트를 확인하세요.
+# 통합 저장소의 pendulum_studio/ 배치에는 기본 ../pi_host가 없으므로 기존 백엔드의 --host-dir 경로도 확인해야 합니다.
+# Pi 5 USB-C 직결은 /dev/ttyUSB0 예시를 복사하지 말고 USB_SETUP.md의 setup_usb_serial.py 생성기 절차를 우선하세요.
+# 생성기는 실제 키트 폴더·백엔드·포트로 서비스 파일을 만들며, 조회와 적용 단계가 구분되어 있습니다.
+# 포트(--serial)를 실제 연결 방법에 맞게 고친 뒤:
+#   sudo cp kit-server.service /etc/systemd/system/ && sudo systemctl enable --now kit-server
+# 끄기: sudo systemctl disable --now kit-server      기록 보기: journalctl -u kit-server -f
+# 대기 중에는 can0 을 열지 않습니다. 실행(R/B)·점검(C)·보정(G) 명령에서 엽니다.
+[Unit]
+Description=Pendulum Studio kit server (protocol v2)
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/rev11_s2r
+Environment=OPENBLAS_NUM_THREADS=1
+Environment=OMP_NUM_THREADS=1
+Environment=MKL_NUM_THREADS=1
+ExecStart=/usr/bin/python3 /home/pi/rev11_s2r/kit/kit_server.py --serial /dev/ttyUSB0
+Restart=on-failure
+RestartSec=2
+KillSignal=SIGTERM
+TimeoutStopSec=8
+
+[Install]
+WantedBy=multi-user.target

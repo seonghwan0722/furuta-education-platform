@@ -3,6 +3,36 @@
 > 이 문서 하나만 읽고 작업을 이어갈 수 있게 썼다. 더 자세한 근거는 각 절의 "원본" 파일을 연다.
 > 숫자는 모두 원본 문서에서 옮겼고, 이 문서를 쓰면서 새로 실험한 것은 없다. `[확인 필요]`는 자료끼리 다르거나 근거가 없는 항목이다.
 
+## 최신 기구·제어 자료 기준 갱신 — 2026-11-28
+
+사용자가 기본 기구 모델을 **`Furuta_rev22_modeling_20261125.zip`의 rev22**로 변경했다고 알렸다. 이후 기구 형상·조립 설명·센서 장착 검토는 이 자료를 최신 기준으로 참고한다. 아래 11/17 하드웨어 표의 rev11 기구 수치는 과거 검증 당시 기록이며 rev22 실측값이 아니다.
+
+- 원본 확인값(SHA-256): `105e6e934e16d37f311ea39817628c6f4f7e51f1339bf8a21f4e44b2cc42667c`.
+- 포함 파일: `Furuta_rev22.f3d`, `Furuta_rev22.step`, `Furuta_rev22_capture.png`, `STL_print/rev22_pend_axle_arm_PLA.stl`, `STL_print/rev22_pend_rod_PLA.stl`.
+- 동봉 설명 이미지에서 확인한 사항: Ø12 ㄱ자 구조, 볼 중심 134 mm 표기, 45° 맞대기와 접시머리 M3 체결, Ø8 꽂이와 M3 인서트, 끝단 M6 인서트와 M6×16 무두볼트. **볼 중심 치수는 조립체 무게중심 거리와 같다고 가정하지 않는다.**
+- STEP 내 최상위 제품명에는 `Furuta_Pendulum_rev18_full` / `Furuta_rev21` 문자열이 남아 있다. 원본을 임의로 바꾸지 않았으며, 파일명만으로 모든 내부 명칭이 갱신됐다고 판단하지 않는다.
+- **rev22 수치 모델·제어기·학습 정책은 이미 원격 저장소에 있다.** 사용자가 알려 준 [저장소의 `rev22_control`](https://github.com/seonghwan0722/furuta-education-platform/tree/main/rev22_control)을 확인했다. PR #3으로 `main`의 `cc641f80e62bf0bff11da54ffdccb9ddaff72f48`에 병합됐으며, 아래 자료는 `67698f95efabda6c2728d57aa8992d5b429dfef0` 기준으로 검토했다. 로컬 작업본 `003bf7f`만 보고 rev22 자료가 없다고 판단하면 안 된다.
+- 현재 **로컬 앱**의 `pendulum_studio/src/assets/model.js`·`model.json`, 고전 제어기 내보내기, 기본 학습 정책은 여전히 **rev11 동역학 기준**이다. `design/rev22*.png`의 존재는 물리 모델 반영을 뜻하지 않는다. 실행 화면 역시 STEP를 불러온 형상이 아니라 개략 SVG다. 원격에 rev22 제어기가 준비된 것과 로컬 앱에 연결된 것은 구분한다.
+- 이번 확인에서는 Plant·게인·정책을 변경하거나 재학습하지 않았다. 이후 적용은 **기존 rev22 설계·정책을 먼저 재사용하여 연결하는 작업**으로 시작한다. 처음부터 설계·학습 자료가 없는 것으로 취급하지 않는다.
+- MPU-9250 수평 안내용 센서는 **회전하지 않는 베이스에 평행하게 고정**한다. 센서와 베이스의 축 대응·장착 오차는 rev22 실물에서 확인해야 한다.
+
+### 원격 rev22 자료와 적용 시 확인할 차이
+
+| 구분 | 확인한 원본과 내용 |
+|---|---|
+| 수치 모델 | `rev22_control/model/massprops_rev22.json`, `coeffs.json`, `furuta_rev22_inertial.xml`. STEP 형상과 가정한 밀도로 질량·무게중심·관성을 계산했다. 진자 약 39.2 g, 암 약 122.9 g이며 **rev22 실측 질량은 아니다**. |
+| PID·LQR | `rev22_control/code/ctrl.py`, `specs.py`, `matlab/job_rev22_classic.m`, `REV22_PID_LQR_LMPC_결과.md`. rev22 플랜트로 재설계되어 있다. 보고서의 반올림 계수를 복사하기보다 코드의 상태 순서·부호·입력 정규화를 함께 가져온다. |
+| LMPC | `rev22_control/matlab/furuta_lmpc_rev22b_step.m`. 최종 rev22b와 초기 공칭 LMPC는 설정이 다르므로 초기 결과 표만 보고 구현하지 않는다. |
+| PPO·SAC | `rev22_control/rl/policies/`에 Python·MATLAB 학습 정책이 있고, `rl/REV22_PPO_SAC_결과.md`와 `rl/results/`에 평가 기록이 있다. PPO·SAC는 단일 게인 대신 신경망 가중치와 관측·행동 변환을 함께 적용해야 한다. |
+
+- 원격 rev22 제어 기준은 **100 Hz, 출력 정규화 u → 1.5u A → 3.15u N·m**이다. 현재 로컬 앱의 rev11 경로는 **50 Hz, 2.52 N·m(1.2 A)** 기준이므로 숫자나 정책 파일만 바꾸면 호환되지 않는다.
+- rev22 RL 관측은 `[cos φ, sin φ, wrap θ, θ̇_f, φ̇_f] / [1, 1, π, 10, 10]`의 **5차원**이다(θ: 암, φ: 진자). 로컬 앱의 기존 **6차원** 정책 경로와 어댑터를 맞춰야 한다. 고전 제어기 상태 순서는 `[암 기준점 오차, 진자 직립 오차, 암 각속도, 진자 각속도]`이며 RL 관측과 다르다.
+- LQR 코드의 적용식은 `u = -(D['K'] @ z)`이다. 보고서의 양수 계수 `[1.490, 21.21, 0.904, 2.361]`는 유효 피드백 계수 `-D['K']`에 해당하므로 부호를 다시 뒤집지 않는다. LMPC rev22b의 내부 설계 모델은 공칭 평가 플랜트와 의도적으로 다르다. 내부 관성 alpha는 코드에서 약 `0.0220090044`이나 결과 보고서 §7에는 `0.0224`로 기재되어 있어 문서 불일치가 있다. 적용 시 실행 코드·설계 설정을 기준으로 대조한다.
+- 원격 보고서는 **PC 경량 시뮬레이션·MuJoCo 검증**이다. rev22 실물·Pi·Simscape fixed MIL 검증 완료로 표현하지 않는다. 공칭 조건과 마찰·영점 오차를 추가한 조건의 결과도 구분한다.
+- rev22 모델은 PLA 채움률 100% 등의 밀도 가정, 기존 11/23 실측 암 관성·마찰을 사용했다. 실물 적용 전 조립체 질량·주기·영점 등을 확인해 모델 가정과 대조한다. 이는 기존 rev22 설계 자료가 없다는 뜻이 아니다.
+
+원본: [rev22 개요](https://github.com/seonghwan0722/furuta-education-platform/blob/67698f95efabda6c2728d57aa8992d5b429dfef0/rev22_control/README.md), [PID·LQR·LMPC 결과](https://github.com/seonghwan0722/furuta-education-platform/blob/67698f95efabda6c2728d57aa8992d5b429dfef0/rev22_control/REV22_PID_LQR_LMPC_결과.md), [PPO·SAC 결과](https://github.com/seonghwan0722/furuta-education-platform/blob/67698f95efabda6c2728d57aa8992d5b429dfef0/rev22_control/rl/REV22_PPO_SAC_결과.md).
+
 ---
 
 ## 0. 먼저 지킬 것 (AI 작업 규칙)
@@ -12,7 +42,7 @@
 3. 전류 한계·방향, 속도 한계, watchdog 검증값처럼 안전에 걸린 값은 **실측 근거 없이 확정하지 않는다.** 특히 사용자는 11/20에 "스윙업 속도 한계(암 15 · 진자 25 rad/s)는 낮추지 말라"고 지시했다.
 4. 결과마다 **어디까지 확인했는지** 적는다: PC 시뮬레이션 / 코드 생성 / Pi 실물.
 5. 기존 Simulink 블록 배치와 배선은 유지하고, 큰 변경은 **새 파일**로 저장한다.
-6. 하드웨어 문서가 여러 세대 섞여 있다. **§2의 최종 하드웨어(11/17)가 기준**이다. Teensy·SimpleFOC·GL35·12/24 V가 나오는 문서는 옛 자료다.
+6. 하드웨어 문서가 여러 세대 섞여 있다. **최신 기구는 위 rev22 기준 갱신을 먼저 읽고**, §2의 11/17 표는 당시 구성·검증 이력으로 참고한다. Teensy·SimpleFOC·GL35·12/24 V가 나오는 문서는 옛 자료다.
 7. 학번·이메일·Pi 접속 정보(`deployment/pi/connection.local.json`)는 커밋하거나 외부에 올리지 않는다.
 
 ---

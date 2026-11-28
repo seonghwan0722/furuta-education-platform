@@ -1,0 +1,209 @@
+/* Shared classroom visual language: match app.css and the activity 0 workspace. */
+:root{
+  color-scheme:light;--ink:#14212B;--muted:#51606E;--faint:#7b8a99;
+  --blue:#3b6de4;--blue-dark:#2c56c0;--blue-soft:#e9efff;--blue-border:#c5d3f6;
+  --line:#D7DEE3;--line-strong:#b9c4cc;--surface:#fff;--ground:#EEF2F5;--paper:#F7F9FB;
+  --orange:#C2410C;--radius:12px;
+  font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;
+  font-size:14px;color:var(--ink);background:var(--ground);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{display:flex;flex-direction:column;line-height:1.6}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;color:inherit;background:#fff;border:1px solid var(--line-strong);border-radius:8px;min-height:36px;padding:6px 12px;font-size:13px;font-weight:700;line-height:1.4}
+button:hover:not(:disabled){background:#f3f6f9;border-color:#8296aa}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+a{color:var(--blue-dark);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3,p{margin:0}h1{font-size:13px}h2{font-size:16px;line-height:1.5}h3{font-size:14px;line-height:1.5}
+p{word-break:keep-all;overflow-wrap:break-word}[hidden]{display:none!important}
+/* Same compact blue menu bar and numbered activity guide as reinforcement learning. */
+.appHeader{height:48px;flex:0 0 48px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--blue);color:#fff}
+.brand,.headerActions{display:flex;align-items:center;gap:10px;min-width:0}
+.brand>b{font-size:16px;white-space:nowrap}.brand svg{flex:none}
+.workspaceName{font-size:13px;color:#eef3ff;border-left:1px solid #ffffff5c;padding-left:14px;margin-left:4px;white-space:nowrap}
+.headerActions{gap:14px}
+.methods{display:flex;gap:2px;background:#ffffff22;padding:3px;border:1px solid #ffffff40;border-radius:9px}
+.methods button{min-height:28px;padding:3px 16px;border:0;border-radius:6px;background:transparent;color:#fff;font-size:12px}
+.methods button:hover:not(:disabled){background:#ffffff24}.methods button[aria-pressed=true]{background:#fff;color:var(--blue-dark)}
+.quiet{color:#fff;background:transparent;border-color:#ffffff55;min-height:32px;font-size:12px;white-space:nowrap}
+.quiet:hover:not(:disabled){background:#ffffff24;border-color:#ffffff99}
+.learningFlow{height:40px;flex:0 0 40px;display:flex;align-items:center;gap:6px;padding:0 14px;background:var(--blue-soft);border-bottom:1px solid var(--blue-border)}
+.flowLabel{font-size:12px;color:var(--muted);margin-right:7px;white-space:nowrap}
+.learningFlow button{min-height:28px;height:28px;display:flex;align-items:center;gap:7px;padding:0 11px;background:transparent;border:1px solid transparent;border-radius:99px;font-size:12px;color:#425b78;white-space:nowrap}
+.learningFlow i{width:19px;height:19px;border-radius:50%;background:#d6e2fb;color:var(--blue-dark);font-size:11px;font-style:normal;display:grid;place-items:center}
+.learningFlow button[aria-current=step]{background:#fff;border-color:var(--blue);color:var(--blue-dark)}
+.learningFlow button[aria-current=step] i{background:var(--blue);color:#fff}
+.flowHint{font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap}
+/* Left is always the running experiment; only the right learning pane scrolls. */
+.labLayout{flex:1;min-height:0;display:grid;grid-template-columns:clamp(470px,35vw,660px) minmax(0,1fr);gap:10px;padding:10px}
+.leftColumn{min-width:0;min-height:0;display:flex;flex-direction:column;gap:10px;overflow-y:auto;scrollbar-width:thin}
+.rightColumn{min-width:0;min-height:0;display:flex;flex-direction:column}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;min-width:0}
+.visual{display:flex;flex-direction:column;flex:1;min-height:220px;padding:0;overflow:hidden}
+.stageHead{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:8px 10px;flex-shrink:0}
+.tag{margin-left:auto;border-radius:99px;padding:1px 8px;color:var(--muted);background:var(--ground);font-size:11.5px;white-space:nowrap}
+.stageContext{padding:8px 10px;display:flex;align-items:center;gap:8px;flex-shrink:0;font-size:12px;background:var(--paper)}
+#methodDescription{color:var(--muted)}#clock{margin-left:auto;white-space:nowrap;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.sceneView{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:var(--paper);overflow:hidden}
+#scene{display:block;width:100%;height:100%;min-height:0;object-fit:contain}
+.legend{display:flex;flex-wrap:wrap;gap:5px 16px;align-items:center;padding:6px 10px;font-size:11.5px;color:var(--muted);flex-shrink:0}
+.legend>span{display:inline-flex;align-items:center;gap:6px}.legend i{height:7px;width:7px;border-radius:50%}.pendulumDot{background:var(--blue)}.armDot{background:var(--orange)}
+.stageFoot{padding:8px 10px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);flex-shrink:0;min-height:34px}
+.executionDock{padding:8px 10px;flex-shrink:0}.runActions{display:flex;align-items:center;gap:8px}.runActions>button{height:40px}.runActions .primary{min-width:112px}
+.primary{background:var(--blue);border-color:var(--blue);color:#fff}.primary:hover:not(:disabled){background:var(--blue-dark);border-color:var(--blue-dark)}
+.secondary{background:#fff}.stopButton{color:var(--muted)}.stopButton:not(:disabled){color:#B42318;border-color:#f1b4ad;background:#fff5f4}
+.speedControl{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;white-space:nowrap}
+.speedControl select{height:32px;padding:0 8px;border-radius:8px;border:1px solid var(--line-strong);background:#fff;font-size:12px}
+.setupRow{display:flex;align-items:center;gap:7px;margin-top:7px;border-top:1px solid var(--line);padding-top:6px;min-width:0}
+.smallLabel{font-size:10.5px;color:var(--muted);white-space:nowrap}.setupRow p{font-size:11.5px;color:var(--muted);flex:1;min-width:0;line-height:1.4}
+.textButton{min-height:28px;padding:3px 6px;background:transparent;border:0;border-radius:6px;color:var(--blue-dark);font-size:12px;white-space:nowrap}
+.textButton:hover:not(:disabled){background:var(--blue-soft)}
+.resultSummary{padding:0;flex-shrink:0;overflow:hidden}.summaryHead{display:flex;align-items:center;gap:10px;padding:6px 10px;border-bottom:1px solid var(--line);font-size:13px}
+.summaryHead .textButton{margin-left:auto}.runState{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted)}
+.statusDot{width:6px;height:6px;background:#8fa2ab;border-radius:50%}.is-running .statusDot{background:var(--blue)}.is-running #clock{color:var(--blue-dark);font-weight:700}
+progress{display:block;width:calc(100% - 20px);height:4px;margin:10px 10px 0;appearance:none;border:0;border-radius:99px;overflow:hidden;background:#e5ebf2;accent-color:var(--blue)}
+progress::-webkit-progress-bar{background:#e5ebf2}progress::-webkit-progress-value{background:var(--blue)}progress::-moz-progress-bar{background:var(--blue)}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:10px;gap:8px}.metrics>div{min-width:0;padding:0 8px;border-left:1px solid var(--line)}.metrics>div:first-child{border-left:0;padding-left:0}
+.metrics span{font-size:11.5px;color:var(--muted);display:block}.metrics b{font-size:21px;line-height:1.45;font-variant-numeric:tabular-nums;display:block;margin:3px 0}.metrics small{font-size:10.5px;color:var(--muted);line-height:1.4;display:block}
+.statusMessage{border-top:1px solid var(--line);padding:7px 10px;background:var(--paper);font-size:11.5px;color:var(--muted);line-height:1.5;max-height:72px;overflow:auto}
+/* Main-workspace tabs: same size, colors and corner treatment as the block editor. */
+.workspaceTabs{display:flex;align-items:end;gap:4px;min-height:34px;flex-shrink:0}
+.workspaceTabs button{border:0;height:34px;min-height:34px;padding:0 16px;background:#dde5ee;color:#5b6b7b;border-radius:10px 10px 0 0;font-size:13px;white-space:nowrap}
+.workspaceTabs button:hover{background:#d1dcea}.workspaceTabs button[aria-selected=true]{background:var(--blue);color:#fff}
+.workspace{flex:1;min-height:0;overflow:hidden;border:1px solid var(--blue-border);border-radius:0 12px 12px 12px;background:var(--ground)}
+.tabPanel{height:100%;min-height:0;overflow:auto;padding:14px;scrollbar-gutter:stable}
+.tabPanel:focus-visible{outline-offset:-3px}.tabPanel>.card{margin-bottom:12px}.tabPanel>.card:last-child{margin-bottom:0}
+.sectionHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.sectionHead>div{min-width:0}
+.sectionTitle{display:flex;align-items:center;gap:9px}.stepNo{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+.eyebrow{font-size:11.5px;color:var(--muted);margin-bottom:4px;font-weight:600}.lead,.lessonCard p:not(.eyebrow){font-size:13px;color:var(--muted);margin-top:8px}.hint{font-size:12px;color:var(--muted);line-height:1.55}.subtleLabel{font-size:11.5px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--ink);border-radius:99px;padding:2px 10px;font-size:11.5px;font-weight:800;line-height:1.4;white-space:nowrap}.pill.agent{background:#A7CFF1}.pill.state{background:#FFC59E}.pill.action{background:#F9CCCF}.pill.reward{background:#FFDC91}
+.learningBridge{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:8px 10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.learningBridge .pill{justify-self:start;color:var(--ink)}
+.rule{margin-top:12px;padding:10px 12px;background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:8px;color:#344860;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.controlLoop{display:flex;align-items:stretch;gap:8px;margin:14px 0 8px}.controlLoop>div{flex:1;min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px}.controlLoop b{display:block;font-size:13px;margin:8px 0 3px}.controlLoop p{font-size:12px;color:var(--muted)}.loopArrow{align-self:center;flex:none;color:var(--muted)}
+.loopReturn{font-size:12px;color:var(--muted);background:var(--paper);padding:7px 10px;border-radius:6px;text-align:center}
+.practiceSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}.practiceSteps b{font-size:13px}.practiceSteps p{font-size:12px;color:var(--muted);margin-top:4px}.cardActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+/* Method lessons: the same quiet classroom cards, with optional mathematical depth. */
+.controller-lesson{margin-bottom:12px;min-width:0}
+.lesson-detail-group{display:grid;gap:12px;min-width:0}
+.theory-card{container-type:inline-size;overflow-wrap:break-word}
+.theory-card>.pill{margin-bottom:10px}
+.theory-card h3{font-size:15px;line-height:1.6}
+.theory-card h4{font-size:13px;line-height:1.6;margin:8px 0 4px}
+.theory-card p{font-size:13px;color:var(--muted);line-height:1.8;margin-top:8px}
+.theory-card p b{color:var(--ink)}
+.theory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,185px),1fr));gap:10px;margin:14px 0 10px}
+.theory-grid>div{min-width:0;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--paper)}
+.theory-grid p{font-size:12.5px}
+.theory-steps{list-style:none;counter-reset:theory-step;display:grid;gap:0;margin:14px 0;padding:0}
+.theory-steps li{counter-increment:theory-step;position:relative;padding:0 0 16px 36px;min-width:0}
+.theory-steps li:last-child{padding-bottom:0}
+.theory-steps li::before{content:counter(theory-step);position:absolute;left:0;top:0;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:var(--blue-soft);color:var(--blue-dark);font-size:12px;font-weight:700;border:1px solid var(--blue-border)}
+.theory-steps li:not(:last-child)::after{content:'';position:absolute;left:11px;top:28px;bottom:4px;border-left:1px solid var(--blue-border)}
+.theory-steps li>b{display:block;font-size:13px;line-height:24px}
+.theory-steps li>p{margin-top:3px}
+.theory-equation{margin:12px 0;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:8px;color:#263c59;font-size:14px;line-height:2;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.theory-equation sub{font-size:75%}
+.theory-card .theory-note{font-size:12px;color:var(--muted);padding:10px 12px;background:var(--paper);border-radius:8px;line-height:1.75}
+.theory-grid .theory-note{padding:8px 0 0;border-top:1px solid var(--line);border-radius:0;margin-top:10px}
+.theory-details{border-top:1px solid var(--line);margin-top:16px;padding-top:10px}
+.theory-details summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--blue-dark);padding:4px 0;line-height:1.6}
+.theory-details[open] summary{margin-bottom:12px}
+.theory-details p{font-size:12.5px}
+.theory-table-wrap{margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow-x:auto;max-width:100%;scrollbar-width:thin}
+.theory-table-wrap table{min-width:430px;font-size:12px;line-height:1.65;table-layout:fixed}
+.theory-table-wrap th,.theory-table-wrap td{white-space:normal;word-break:keep-all;overflow-wrap:break-word;padding:10px 12px;vertical-align:top}
+.theory-table-wrap th{position:static;color:var(--ink)}
+.theory-table-wrap td:first-child{font-weight:600;color:#344860}
+.theory-table-wrap td:not(:first-child){color:var(--muted)}
+.theory-table-wrap tr:last-child th{border-bottom:0}
+/* Standalone concept examples. Their controls never alter experiment settings. */
+.control-explainer{min-width:0;margin:16px 0 0;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+.explainer-label{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;font-size:11px;color:var(--muted)}
+.control-explainer h4{font-size:14px;margin:8px 0 0;line-height:1.65}
+.control-explainer p{font-size:12.5px}
+.explainer-choices{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.explainer-choices button{min-height:32px;padding:6px 10px;font-size:12px;font-weight:600}
+.explainer-choices button[aria-pressed=true]{color:var(--blue-dark);background:var(--blue-soft);border-color:var(--blue)}
+.explainer-plot-wrap{max-width:100%;overflow-x:auto;margin:12px 0;border-radius:8px;scrollbar-width:thin}
+.explainer-plot{display:block;width:100%;min-width:440px;height:auto;margin:0;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--muted)}
+.explainer-plot text{font-family:inherit;font-size:18px;fill:#42556b}
+.explainer-plot .cost-total{fill:var(--ink);font-weight:700;font-size:20px}
+.explainer-keys{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--muted);line-height:1.6}
+.explainer-keys>span{display:inline-flex;align-items:center;gap:6px}
+.explainer-keys i{display:inline-block;flex:none;width:10px;height:10px;border-radius:3px;border:1px solid #14212b18}
+.key-current{background:var(--blue)}.key-area{background:#D8E6BC}.key-slope{background:var(--orange)}.key-other{background:#8FA2AB}
+.explainer-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+.explainer-values>div{min-width:0;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:#fff}
+.explainer-values span{display:block;color:var(--muted);font-size:11.5px}
+.explainer-values b{display:block;font-size:17px;color:var(--ink);margin-top:5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.control-explainer .explainer-feedback{padding:10px 12px;color:#344860;background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:8px;line-height:1.8}
+.control-explainer .explainer-footnote{font-size:11.5px;line-height:1.75;margin-top:10px;color:var(--muted)}
+.explainer-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:14px 0 4px}
+.explainer-inputs label{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;font-size:12px;font-weight:600}
+.explainer-inputs output{font-variant-numeric:tabular-nums;color:var(--blue-dark)}
+.explainer-inputs input{grid-column:1/-1;width:100%;margin:3px 0;accent-color:var(--blue);min-height:20px}
+.cost-candidates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.cost-candidates>div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;font-size:12px}
+.cost-candidates b,.cost-candidates span{display:block}.cost-candidates span{color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.mpc-cycle{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:14px 0 8px}
+.mpc-command{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin:14px 0;padding:10px 12px;border:1px solid var(--blue-border);border-radius:8px;background:#fff;font-size:12px;color:var(--muted)}
+.mpc-command b{font-size:18px;color:var(--blue-dark);font-variant-numeric:tabular-nums}
+@container (max-width:440px){
+  .control-explainer{padding:10px}.explainer-inputs{grid-template-columns:1fr;gap:12px}
+  .explainer-values{grid-template-columns:1fr;gap:5px}.explainer-values>div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px}.explainer-values b{margin:0;font-size:15px}
+  .theory-equation{font-size:12.5px;padding:10px}.theory-grid{grid-template-columns:1fr}
+}
+/* The physical kit shares the lesson's tabs, cards and experiment records. */
+.experimentTarget{display:flex;gap:4px;padding:4px;background:var(--paper);border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+.experimentTarget button{flex:1;border-color:transparent;background:transparent;font-size:12px;min-height:33px}
+.experimentTarget button[aria-pressed=true]{background:var(--blue-soft);border-color:var(--blue-border);color:var(--blue-dark);font-weight:700}
+.kitControl{border:1px solid var(--blue-border);border-radius:10px;padding:12px;background:#f7faff;margin-bottom:12px}
+.kitControlHead{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.kitControlHead b{font-size:12px}
+.kitControlActions{display:flex;gap:8px;margin:10px 0}.kitControlActions button{font-size:12px;flex:1;min-height:33px;padding:6px 8px}
+.kitProcedure{font-size:12px;line-height:1.75;color:var(--ink);padding-left:18px;margin:10px 0;border-top:1px solid var(--line);padding-top:10px}
+.kitProcedure li+li{margin-top:4px}.kitControl>.hint{font-size:11.5px;line-height:1.7;margin-top:8px}
+.kitSteps summary{font-size:11.5px;font-weight:600;color:var(--blue-dark);cursor:pointer;line-height:1.75}.kitSteps>.hint{font-size:11.5px;line-height:1.7}
+.simulationOnly{opacity:.6}.executionDock{flex-shrink:0}
+/* Settings keep their original IDs, values and ranges; details reveal advanced options. */
+.settingsIntro{margin-bottom:14px}.presets{display:flex;gap:6px;margin:14px 0}.presets button{flex:1;min-height:32px;font-size:12px;background:var(--paper)}.presets button[aria-pressed=true]{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-dark)}
+.rangeField{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 14px;align-items:center;margin-top:18px;font-size:13px;font-weight:600}.rangeField output{font-size:13px;font-weight:700;color:var(--blue-dark);font-variant-numeric:tabular-nums;white-space:nowrap}.rangeField input{grid-column:1/-1;width:100%;margin:5px 0;accent-color:var(--blue)}
+.rangeField+.hint{margin-top:3px}.conditions{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}.conditions>.hint{margin-top:4px}.conditions h3{font-size:14px}
+.numberField{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;font-size:13px;font-weight:600}.numberField>div{display:flex;align-items:center;gap:6px}.numberField input{width:88px;padding:7px 9px;border:1px solid var(--line-strong);border-radius:8px}
+.advanced{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}.advanced summary,.reference summary{cursor:pointer;font-size:13px;font-weight:600;padding:3px 0}.advanced[open] summary{margin-bottom:10px}.check{display:flex;align-items:start;gap:6px;font-size:13px;margin:10px 0}.check input{margin-top:4px;accent-color:var(--blue)}
+.selectField{display:block;font-size:13px;font-weight:600;margin:12px 0}.selectField select{display:block;width:100%;border:1px solid var(--line-strong);border-radius:8px;background:white;padding:8px 10px;margin-top:6px;font-size:13px}
+.reference{border:1px solid var(--line);border-radius:12px;padding:12px 16px;background:#fff;color:var(--muted)}.referenceBody{font-size:12px;line-height:1.75}.referenceBody p{margin-top:12px}#formula{background:var(--paper);border-radius:8px;padding:10px;font-family:ui-monospace,monospace;overflow-wrap:anywhere}
+/* Results and records use the same quiet cards and restrained blue emphasis. */
+.comparisonCard{display:flex;align-items:center;justify-content:space-between;gap:12px}.comparisonCard .secondary{flex-shrink:0}.comparisonCard .hint{margin-top:4px}
+.textLink{font-size:12px;white-space:nowrap}.graphGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.graphGrid>div{min-width:0}.graphGrid h3{font-size:13px}.graphGrid h3 span{color:var(--muted);font-size:12px;font-weight:400}.graphGrid .hint{margin:4px 0 8px}
+.chart{position:relative;width:100%;height:200px}.chart.compact{height:180px;margin-top:12px}.chartsvg{display:block;overflow:hidden;font-family:inherit}.ctip{position:absolute;z-index:2;pointer-events:none;white-space:nowrap;background:#fff;border:1px solid var(--line);box-shadow:0 3px 12px #14212b16;border-radius:6px;padding:6px 8px;font-size:11px;color:var(--ink)}
+.chartLegend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:11.5px;color:var(--muted);padding-top:12px;border-top:1px solid var(--line);margin-top:10px}.legend-item{display:inline-flex;align-items:center;gap:6px}.legend-swatch{display:inline-block;width:10px;height:10px;flex:none;border-radius:3px;vertical-align:middle}
+#detailText{font-size:13px;color:var(--muted)}.components{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:12px}.components:empty{display:none}.component{padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:12px;color:var(--muted)}.component b{display:block;font-size:18px;font-variant-numeric:tabular-nums;color:var(--ink);margin-top:3px}
+.countBadge{display:inline-block;font-size:11px;font-weight:500;color:var(--muted);margin-left:6px;white-space:nowrap}
+.tableScroll{overflow:auto;max-height:310px;border:1px solid var(--line);border-radius:8px}table{width:100%;min-width:580px;border-collapse:collapse;font-size:11.5px;text-align:left}th,td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}th{background:var(--paper);font-weight:600;color:var(--muted);position:sticky;top:0;z-index:1}tr:last-child td{border-bottom:0}tr.selected{background:#f0f4ff}td input{accent-color:var(--blue);vertical-align:middle;margin:0 7px 0 0}.status-badge{display:inline-block;padding:1px 5px;border-radius:5px;font-size:11px}.status-badge.complete{color:#137b64;background:#e5f5ed}.status-badge.stopped{color:#964b24;background:#fff0e4}
+.emptyState{display:flex;align-items:center;justify-content:center;gap:12px;padding:24px 12px;color:var(--muted);text-align:left}.emptyState>span{font-size:24px;color:#8fa2ab}.emptyState b{font-size:13px;color:var(--ink)}.emptyState p,.recordNote{font-size:11.5px;color:var(--muted);margin-top:4px}.recordNote{border-top:1px solid var(--line);padding-top:10px;margin-top:12px;line-height:1.6}
+/* Workbook: progressive, readable fields instead of cramped parallel textareas. */
+.autosave{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;white-space:nowrap;color:var(--muted)}.autosave i{width:5px;height:5px;border-radius:50%;background:#137b64}
+.mission{padding:12px 14px;background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:8px;margin:14px 0}.mission h3{font-size:14px}.mission ol{padding-left:20px;font-size:13px;color:var(--muted);margin:8px 0 0}.mission li+li{margin-top:5px}
+.noteGrid{display:grid;gap:14px}.noteGrid label{display:grid;grid-template-columns:80px minmax(0,1fr);gap:6px 10px;align-items:center}.noteStep{border:1px solid var(--line);border-radius:99px;background:#D8E6BC;font-size:11.5px;font-weight:700;padding:2px 8px;text-align:center}.noteGrid label:nth-child(2) .noteStep{background:#A7CFF1}.noteGrid label:nth-child(3) .noteStep{background:#FFDC91}.noteGrid b{font-size:13px}.noteGrid textarea{grid-column:1/-1;resize:vertical;width:100%;min-height:90px;max-height:280px;border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;line-height:1.6;font-size:13px;color:var(--ink);background:var(--paper)}
+.noteFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0}.noteFooter .secondary{flex-shrink:0}.quizSection{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}.quizSection h3{margin:4px 0 10px}#quiz{display:flex;flex-wrap:wrap;gap:8px}#quiz button{text-align:left;font-size:12px;font-weight:500}#feedback{font-size:12px;color:var(--blue-dark);margin-top:10px}#feedback:empty{display:none}
+@media(max-width:1200px){
+  .labLayout{grid-template-columns:440px minmax(0,1fr)}.flowHint{display:none}.graphGrid{grid-template-columns:1fr;gap:18px}.chart{height:190px}
+  .practiceSteps{grid-template-columns:1fr;gap:10px}.practiceSteps>div{display:grid;grid-template-columns:65px minmax(0,1fr);gap:8px}.practiceSteps p{margin:0}
+  .controlLoop{gap:5px}.controlLoop>div{padding:8px}.controlLoop b{font-size:12px}.controlLoop p{font-size:11.5px}.workspaceTabs button{padding:0 14px}
+  .metrics>div{padding:0 4px}.metrics small{font-size:10px}.metrics span{font-size:11px}.noteFooter{align-items:start;flex-direction:column}
+}
+@media(max-width:900px){
+  .labLayout{grid-template-columns:380px minmax(0,1fr)}.appHeader{padding:0 10px;gap:8px}.headerActions{gap:8px}.methods button{padding:3px 10px}.workspaceName{display:none}
+  .learningFlow{padding:0 10px;gap:2px}.learningFlow button{padding:0 8px}.workspaceTabs button{padding:0 10px;font-size:12px}.tabPanel{padding:10px}
+  .controlLoop{flex-direction:column}.controlLoop>div{display:grid;grid-template-columns:auto 1fr;gap:4px 8px}.controlLoop b{margin:0}.controlLoop p{grid-column:2}.loopArrow{transform:rotate(90deg);line-height:1}
+  .comparisonCard{align-items:start;flex-direction:column}.sectionHead{flex-wrap:wrap}.stageContext{gap:6px}#methodDescription{font-size:11px}.speedControl{gap:4px}
+}
+@media(max-width:720px){
+  html,body{height:auto;min-height:100%;overflow:auto}.appHeader{flex-wrap:wrap;height:auto;min-height:88px;padding:8px 10px}.headerActions{width:100%;justify-content:space-between}.brand{width:100%}.workspaceName{display:inline}.learningFlow{overflow-x:auto;flex-shrink:0;min-height:40px}.flowLabel{display:none}
+  .labLayout{display:flex;flex-direction:column;padding:10px}.leftColumn{overflow:visible}.visual{flex:none;height:360px;min-height:360px}.resultSummary{flex:none}.rightColumn{min-height:500px}.workspace{overflow:visible}.tabPanel{height:auto;overflow:visible}.workspaceTabs{margin-top:6px}
+  .controlLoop{flex-direction:row}.controlLoop>div{display:block}.controlLoop b{margin:8px 0 3px}.loopArrow{transform:none}.graphGrid{grid-template-columns:1fr}
+}
+@media(max-height:680px) and (min-width:721px){.leftColumn{overflow-y:auto}.visual{flex:1 0 250px}.resultSummary{flex-shrink:0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
