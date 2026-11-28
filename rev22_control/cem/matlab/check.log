@@ -1,0 +1,2 @@
+nom: 343.4 s sim, 572.4 ms/step | identical u for first 600 of 600 steps | max|du| 0 | max|dx| 0 | passed 0 reach NaN s
+hw: 342.2 s sim, 570.4 ms/step | identical u for first 600 of 600 steps | max|du| 0 | max|dx| 4.98e-06 | passed 0 reach NaN s

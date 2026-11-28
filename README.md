@@ -4,11 +4,15 @@
 
 > **처음 보는 사람·AI는 [docs/handoff/HANDOFF_다른AI용.md](docs/handoff/HANDOFF_다른AI용.md)부터 읽으세요.** 최종 하드웨어, 실행 방법, 결과, 문서 간 충돌, 다음 할 일이 한 문서에 있습니다.
 
-## 2026-11-26 교육 앱·발표자료 확장
+## 2026-11-28 통합: 교육 앱 확장 + rev22 제어 자료
 
 - [Pendulum Studio Classroom](pendulum_studio/README.md): 활동0 배경지식·길찾기, 보상 블록, `.pendulum` 작품 저장, PID·LQR·LMPC 제어 실험실을 포함한 소스입니다. [팀원 원본 저장소](https://github.com/sjh030619-boop/furuta-pendulum-rl)를 바탕으로 확장했습니다.
 - [10분 최종발표·최종설계보고서·A0 포스터](docs/deliverables/20261126/README.md): 편집 가능 파일과 대본입니다. 저장된 PPTX와 후속 Canva 수정 대본의 버전 차이를 함께 기록했습니다.
 - [고등학교 수업자료 1·2·3](docs/lessons/README.md): 총 60장 구성 원고와 Canva 교정 상태입니다.
+- [rev22 제어기·정책·평가](rev22_control/README.md): PID·LQR·LMPC·CEM·PPO·SAC 재설계·재학습 자료입니다. PR #3의 자료를 유지하고 PR #2의 앱 확장을 함께 포함했습니다.
+- [MPU-9250 수평 안내](pendulum_studio/kit/IMU_SETUP.md): 연결 직후 베이스의 앞뒤·좌우·전체 기울기를 표시하는 기능과 설치·검증 안내입니다.
+
+**통합 범위:** 현재 앱의 rev11·50 Hz·1.2 A 경로와 rev22 자료의 100 Hz·1.5 A 경로는 별개입니다. rev22 제어 자료를 앱에 연결하는 이식 작업은 남아 있습니다. rev22 평가 기록은 PC 시뮬레이션 결과이며 기존 실물 결과와 구분합니다. `docs/deliverables/20261126/`은 11월 26일 산출물 스냅샷입니다.
 
 새 USB-C 직결과 자동 스윙업 후 PID·LQR·LMPC 전환은 **소스 구현 단계이며 Pi 설치·실물 실행은 미검증**입니다. 아래의 기존 실물 기록과 구분합니다. 이번 소스 확장은 이전 배포 설치 파일에 자동 반영되지 않습니다.
 
@@ -56,8 +60,10 @@ npm.cmd start
 | `python_handoff/` | MATLAB 없이 정책 평가·재검증·학습 (numpy 정책 `policies/*.npz`) |
 | `rl_blocklab/` | 교육용 블록 보상 설계 앱 (localhost:8770) |
 | `pendulum_studio/` | Electron 교육 앱 확장판: 배경지식·보상 블록·작품 저장·제어 실험실·Pi 수신기 소스 |
+| `rev22_control/` | rev22 모델 기준 PID·LQR·LMPC·CEM·PPO·SAC 재설계 (시뮬레이션만, 11/27~28) |
+| `motor_selection/` | rev11 MuJoCo 모터 사이징 스크립트 |
 | `teammate/` | 팀원 MuJoCo SAC(`sac_rev11`)와 실기 보정, Pi 호스트 코드 |
-| `docs/` | 인수인계, 결과 표, 입출력 규약, 하드웨어 기록 |
+| `docs/` | 인수인계, 결과 표, 입출력 규약, 하드웨어 기록, `reports/`(보상 변천·RMD-X6 선정 근거) |
 | `edukit/`, `legacy/` | 이전 버전 |
 
 ## 빠른 실행 (Windows)

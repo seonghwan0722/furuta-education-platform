@@ -1,0 +1,3 @@
+# truth = ident08 (pessimistic), design ident09, 43 starts. Final config: gam08 40/43, hwlike 40/43, hwlike_d20 39/43 (all fails = arm >= 15 rad/s)
+vsoft 10.5            : gam08 43/43 (peak arm 14.2)  hwlike 43/43 (14.1)  hwlike_d20 40/43 (15.4)
+vsoft 10, w_vs 200    : gam08 43/43 (14.4)           hwlike 41/43 (16.5)  hwlike_d20 39/43 (16.0)
