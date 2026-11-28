@@ -1,2 +1,4 @@
-nom: 343.4 s sim, 572.4 ms/step | identical u for first 600 of 600 steps | max|du| 0 | max|dx| 0 | passed 0 reach NaN s
-hw: 342.2 s sim, 570.4 ms/step | identical u for first 600 of 600 steps | max|du| 0 | max|dx| 4.98e-06 | passed 0 reach NaN s
+nom: 352.8 s sim, 588.0 ms/step | identical u for first 600 of 600 steps | max|du| 0 | max|dx| 0 | passed 0 reach NaN s
+hw: 367.6 s sim, 612.7 ms/step | identical u for first 600 of 600 steps | max|du| 0 | max|dx| 8.44e-07 | passed 0 reach NaN s
+gate: max|u_matlab - u_python| = 0 over 4000 points
+(Octave 8.4.0, rev22c, 2026-11-28)

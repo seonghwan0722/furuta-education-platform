@@ -25,7 +25,16 @@ tb.P0 = C0["p"]   # TrainEnv dynamics read the module global P0
 
 
 # PPO reward variants (rev22): base = run12 (hold 0.3, wUp 0.01, vUp 0.01)
-PPO_RW = {"wup": dict(wUp=0.05), "rwdef": dict(hold=3.0, wUp=0.05, vUp=0.2)}
+_RD = dict(hold=3.0, wUp=0.05, vUp=0.2)
+PPO_RW = {"wup": dict(wUp=0.05), "rwdef": _RD, "w1": dict(_RD, wUp=1.0), "w1s": dict(_RD, wUp=1.0), "w3s": dict(_RD, wUp=3.0), "w1sg": dict(_RD, wUp=1.0)}
+# cfg overrides: std0 = exploration std (run12: 0.15), dr_gam = +-fraction randomization of the coupling term gam
+PPO_CFG = {"w1s": dict(std0=0.07), "w3s": dict(std0=0.07), "w1sg": dict(std0=0.07, dr_gam=0.2)}
+PPO_RW.update(lr2=_RD, lr2w=dict(_RD, wUp=0.5), lr2g=_RD, sacinit=_RD, sacinitg=_RD)
+PPO_CFG.update(lr2=dict(lrA=2e-4), lr2w=dict(lrA=2e-4), lr2g=dict(lrA=2e-4, dr_gam=0.2),
+               sacinit=dict(init_npz="ck/py_sac_r22_s1/ck_0100.npz", criticWarmup=40, std0=0.1),
+               sacinitg=dict(init_npz="ck/py_sac_r22_s1/ck_0100.npz", criticWarmup=40, std0=0.1, dr_gam=0.2))
+for _k, _v in json.loads(os.environ.get("PPO_VAR", "{}")).items(): PPO_RW[_k] = dict(_RD, **_v.get("rw", {})); PPO_CFG[_k] = _v.get("cfg", {})
+WSTAT = [0.0, 0.0]
 
 
 def save_ck(algo, it, net, d1, d2):
@@ -40,8 +49,20 @@ def save_ck(algo, it, net, d1, d2):
 
 class Env(tb.TrainEnv):
     def __init__(self, n, dr, rng, bank, mix):
-        self.bank, self.mix = bank, mix
+        self.bank, self.mix = bank, mix; self.gamS = np.ones(n)
         super().__init__(n, dr, rng)
+
+    def reset_some(self, m):
+        super().reset_some(m); k = int(m.sum())
+        if k and self.dr.get("gam", 0): self.gamS[m] = 1 + self.dr["gam"] * (2 * self.rng.random(k) - 1)
+
+    def accel(self, x, tau):   # tb.TrainEnv.accel with per-env coupling gam * gamS
+        p = tb.P0; s = np.sin(x[1]); c = np.cos(x[1]); v = x[2]; w = x[3]; gam = p["gam"] * self.gamS
+        d = self.alpha + p["beta"] * s ** 2; b = gam * c
+        f = tau - 2 * p["beta"] * s * c * v * w + gam * s * w ** 2 - self.eta * v - self.coul * np.sign(v)
+        g = p["beta"] * s * c * v ** 2 - p["eta_theta"] * w + p["delta"] * s - self.coulTh * np.tanh(w / 0.05)
+        det = d * p["beta2"] - b ** 2
+        return np.stack([(p["beta2"] * f - b * g) / det, (d * g - b * f) / det])
 
     def sample_x0(self, k, mix=None):
         r = self.rng; mix = self.mix; cp = np.cumsum(mix) / sum(mix); kind = np.minimum(np.searchsorted(cp, r.random(k), side="right"), len(mix) - 1)
@@ -71,6 +92,8 @@ def evaluate(policy):
         for k in range(N):
             env.step(policy(env.observe())); X[:, :, k + 1] = env.plant.state()
         res.append(sum(m["passed"] for m in metrics(X, np.arange(N + 1) * 0.01)))
+        up = np.abs(np.degrees(wrap(X[1, :, -1000:]))).max(1) < 10      # upright for the last 10 s
+        WSTAT[len(res) - 1] = float(np.median(np.abs(X[3, up, -1000:]).max(1))) if up.any() else float("nan")   # median peak pendulum rate
     return res
 
 
@@ -187,11 +210,14 @@ def run_ppo(variant, seedOff, log):
     seed = 300 + seedOff; torch.manual_seed(seed); rng = np.random.default_rng(seed)
     actor = nn.Sequential(tb.mlp([5, 64, 64, 1], nn.Tanh), nn.Tanh()); critic = tb.mlp([5, 128, 128, 1], nn.Tanh)
     A, Cn = I["actor"], I["critic"]
-    scratch = variant == "scratch"
+    scratch = variant == "scratch"; _o = dict(PPO_CFG.get(variant, {})); _g = _o.pop("dr_gam", 0); cfg.update(_o)
     if scratch:
         cfg["lrA"] = 1e-4; cfg["std0"] = 0.3; cfg["mix"] = [0.35, 0.30, 0.0, 0.25, 0.10]           # sp_default_cfg lr, no expert bank
     else:
         for i, l in zip((0, 2, 4), ("fc1", "fc2", "fc3")): load_lin(actor[0][i], A[l + "_Weights"], A[l + "_Bias"])
+    if cfg.get("init_npz"):   # actor from an existing MatlabPolicyNP file (e.g. the rev22 SAC mean network: same 5-64-64-1 tanh shape)
+        Z = np.load(os.path.join(OUT, cfg["init_npz"]))
+        for i, l in zip((0, 2, 4), ("1", "2", "3")): load_lin(actor[0][i], Z["W" + l], Z["b" + l])
     ck = sorted(k for k in Cn if k.endswith("_Weights")); cb = sorted(k for k in Cn if k.endswith("_Bias"))
     # MATLAB auto-named critic layers fc_1, fc_2, v (or similar): order by layer creation = input->output
     names = list(dict.fromkeys(k.rsplit("_", 1)[0] for k in Cn))
@@ -199,7 +225,7 @@ def run_ppo(variant, seedOff, log):
         for i, l in zip((0, 2, 4), names): load_lin(critic[i], Cn[l + "_Weights"], Cn[l + "_Bias"])
     logStd = torch.tensor(math.log(cfg["std0"]), requires_grad=True)
     oa = torch.optim.Adam(actor.parameters(), cfg["lrA"]); os_ = torch.optim.Adam([logStd], cfg["lrA"]); oc = torch.optim.Adam(critic.parameters(), cfg["lrC"])
-    nE, T = cfg["nEnv"], cfg["horizon"]; rw = dict(cfg["rw"]); rw.update(PPO_RW.get(variant, {})); dr = drcfg(cfg["dr"]); maxSteps = int(round(cfg["episodeSeconds"] / 0.01))
+    nE, T = cfg["nEnv"], cfg["horizon"]; rw = dict(cfg["rw"]); rw.update(PPO_RW.get(variant, {})); dr = drcfg(cfg["dr"]); dr["gam"] = _g; maxSteps = int(round(cfg["episodeSeconds"] / 0.01))
     gamma, lam, clip, mb = cfg["gamma"], cfg["lambda"], cfg["clip"], cfg["miniBatch"]
     env = Env(nE, dr, rng, bank, cfg["mix"]); epT = np.zeros(nE)
 
@@ -258,7 +284,7 @@ if __name__ == "__main__":
     BUDGET = float(os.environ.get("BUDGET", "0")); EVAL_DT = float(os.environ.get("EVAL_DT", "60")); EV = [0.0, EVAL_DT]
     if BUDGET: cfg_iters = 10 ** 9
     path = os.path.join(OUT, f"log_{RUN}.csv"); fh = open(path, "w", newline=""); w = csv.writer(fh)
-    w.writerow(["iter", "pass_d1", "pass_d2", "train_s", "alpha_or_std"])
+    w.writerow(["iter", "pass_d1", "pass_d2", "train_s", "alpha_or_std", "wpk_d1", "wpk_d2"])
     def log(it, d1, d2, ts, x):
-        w.writerow([it, d1, d2, round(ts, 1), round(x, 4)]); fh.flush(); print(algo, variant, s, it, d1, d2, round(ts, 1), flush=True)
+        w.writerow([it, d1, d2, round(ts, 1), round(x, 4), round(WSTAT[0], 3), round(WSTAT[1], 3)]); fh.flush(); print(algo, variant, s, it, d1, d2, round(ts, 1), "wpk %.2f %.2f" % tuple(WSTAT), flush=True)
     (run_sac if algo == "sac" else run_ppo)(variant, s, log)
