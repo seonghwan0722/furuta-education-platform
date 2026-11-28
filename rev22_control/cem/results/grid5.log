@@ -1,0 +1,12 @@
+== "coulBal":0.5,"dob":10,"predExtra":0
+lowc20 0 16 nan hold10 16 sat 0.0 rms nan regen 0.75 arm 13.4 pend 16.7 t 44.2
+nom20 13 16 9.08 hold10 16 sat 0.1 rms 0.37 regen 0.35 arm 10.4 pend 17.7 t 47.2
+nom10 16 16 1.57 hold10 16 sat 0.0 rms 0.27 regen 0.31 arm 10.4 pend 17.7 t 47.1
+== "coulBal":0.5,"dob":3
+lowc20 10 16 9.63 hold10 16 sat 0.0 rms 0.38 regen 0.8 arm 13.1 pend 17.3 t 42.4
+nom20 16 16 4.2 hold10 16 sat 0.0 rms 0.45 regen 0.36 arm 10.3 pend 17.7 t 47.5
+nom10 16 16 1.6 hold10 16 sat 0.0 rms 0.31 regen 0.3 arm 10.2 pend 17.8 t 47.5
+== "coulBal":1,"predExtra":0,"w_du":2
+lowc20 0 16 nan hold10 16 sat 0.0 rms nan regen 0.74 arm 13.4 pend 16.9 t 43.1
+nom20 16 16 1.71 hold10 16 sat 0.1 rms 0.32 regen 0.34 arm 10.4 pend 17.9 t 48.9
+nom10 16 16 1.76 hold10 16 sat 0.0 rms 0.28 regen 0.31 arm 10.4 pend 18.0 t 46.6

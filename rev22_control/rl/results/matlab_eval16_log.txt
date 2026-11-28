@@ -1,0 +1,145 @@
+MLEVAL ppo_rev22_run12/ck_0010 10 ms: 106/123 meanReach 7.48
+MLEVAL ppo_rev22_run12/ck_0010 15 ms: 0/123 meanReach NaN
+MLEVAL ppo_rev22_run12/ck_0010 20 ms: 0/123 meanReach NaN
+MLEVAL ppo_rev22_run12/ck_0300 10 ms: 0/123 meanReach NaN
+MLEVAL ppo_rev22_run12/ck_0300 15 ms: 0/123 meanReach NaN
+MLEVAL ppo_rev22_run12/ck_0300 20 ms: 0/123 meanReach NaN
+MLEVAL ppo_rev22_rwdef/ck_0090 10 ms: 114/123 meanReach 3.51
+MLEVAL ppo_rev22_rwdef/ck_0090 15 ms: 39/123 meanReach 7.65
+MLEVAL ppo_rev22_rwdef/ck_0090 20 ms: 54/123 meanReach 8.80
+MLEVAL ppo_rev22_rwdef/ck_0100 10 ms: 117/123 meanReach 3.44
+MLEVAL ppo_rev22_rwdef/ck_0100 15 ms: 14/123 meanReach 6.90
+MLEVAL ppo_rev22_rwdef/ck_0100 20 ms: 18/123 meanReach 5.60
+MLEVAL ppo_rev22_wup/ck_0020 10 ms: 115/123 meanReach 3.77
+MLEVAL ppo_rev22_wup/ck_0020 15 ms: 0/123 meanReach NaN
+MLEVAL ppo_rev22_wup/ck_0020 20 ms: 0/123 meanReach NaN
+MLEVAL sac_rev22_v3/ck_0050 10 ms: 123/123 meanReach 2.19
+MLEVAL sac_rev22_v3/ck_0050 15 ms: 123/123 meanReach 2.41
+MLEVAL sac_rev22_v3/ck_0050 20 ms: 123/123 meanReach 2.35
+MLEVAL sac_rev22_v3/ck_0150 10 ms: 123/123 meanReach 2.04
+MLEVAL sac_rev22_v3/ck_0150 15 ms: 121/123 meanReach 2.03
+MLEVAL sac_rev22_v3/ck_0150 20 ms: 120/123 meanReach 2.03
+MLEVAL sac_rev22_v3/ck_0200 10 ms: 123/123 meanReach 2.03
+MLEVAL sac_rev22_v3/ck_0200 15 ms: 123/123 meanReach 1.97
+MLEVAL sac_rev22_v3/ck_0200 20 ms: 123/123 meanReach 2.92
+MLEVAL ppo_rev22_rwdef_s2/ck_0200 10 ms: 100/123 meanReach 8.22
+MLEVAL ppo_rev22_rwdef_s2/ck_0200 15 ms: 0/123 meanReach NaN
+MLEVAL ppo_rev22_rwdef_s2/ck_0200 20 ms: 0/123 meanReach NaN
+EVAL it 10 d1 pass 14/16 d2 pass 0  maxHoldErr 3.15 maxArm 11.10/11.29 maxReach 16.74
+EVAL it 20 d1 pass 14/16 d2 pass 0  maxHoldErr 3.10 maxArm 10.96/11.14 maxReach 8.97
+EVAL it 30 d1 pass 14/16 d2 pass 0  maxHoldErr 3.72 maxArm 10.80/10.87 maxReach 5.27
+EVAL it 40 d1 pass 14/16 d2 pass 0  maxHoldErr 1.90 maxArm 10.78/10.85 maxReach 15.09
+EVAL it 50 d1 pass 12/16 d2 pass 0  maxHoldErr 1.81 maxArm 10.70/10.77 maxReach 17.92
+EVAL it 60 d1 pass 9/16 d2 pass 0  maxHoldErr 1.74 maxArm 10.68/10.74 maxReach 16.73
+EVAL it 70 d1 pass 9/16 d2 pass 0  maxHoldErr 1.75 maxArm 10.64/10.69 maxReach 18.36
+EVAL it 80 d1 pass 7/16 d2 pass 0  maxHoldErr 1.72 maxArm 10.59/10.62 maxReach 14.30
+EVAL it 90 d1 pass 6/16 d2 pass 0  maxHoldErr 2.21 maxArm 11.94/11.91 maxReach 19.51
+EVAL it 100 d1 pass 4/16 d2 pass 0  maxHoldErr 1.68 maxArm 11.93/11.72 maxReach 19.87
+EVAL it 110 d1 pass 6/16 d2 pass 0  maxHoldErr 1.67 maxArm 9.71/10.20 maxReach 17.45
+EVAL it 120 d1 pass 6/16 d2 pass 0  maxHoldErr 1.65 maxArm 10.57/10.04 maxReach 19.86
+EVAL it 130 d1 pass 1/16 d2 pass 0  maxHoldErr 1.56 maxArm 9.48/10.67 maxReach 16.42
+EVAL it 140 d1 pass 1/16 d2 pass 0  maxHoldErr 1.60 maxArm 9.55/10.83 maxReach 4.46
+EVAL it 150 d1 pass 1/16 d2 pass 0  maxHoldErr 1.47 maxArm 10.27/9.76 maxReach 19.71
+EVAL it 160 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.67/9.42 maxReach NaN
+EVAL it 170 d1 pass 1/16 d2 pass 0  maxHoldErr 1.65 maxArm 10.17/9.80 maxReach 1.30
+EVAL it 180 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.09/10.42 maxReach NaN
+EVAL it 190 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.34/10.75 maxReach NaN
+EVAL it 200 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.38/10.38 maxReach NaN
+EVAL it 210 d1 pass 1/16 d2 pass 0  maxHoldErr 1.49 maxArm 9.72/9.77 maxReach 18.81
+EVAL it 220 d1 pass 2/16 d2 pass 0  maxHoldErr 1.54 maxArm 10.00/9.50 maxReach 12.48
+EVAL it 230 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.41/9.82 maxReach NaN
+EVAL it 240 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.85/10.07 maxReach NaN
+EVAL it 250 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.36/9.40 maxReach NaN
+EVAL it 260 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.96/9.61 maxReach NaN
+EVAL it 270 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.35/10.87 maxReach NaN
+EVAL it 280 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.34/10.58 maxReach NaN
+EVAL it 290 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.49/9.61 maxReach NaN
+EVAL it 300 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.51/10.12 maxReach NaN
+EVAL it 10 d1 pass 14/16 d2 pass 0  maxHoldErr 4.47 maxArm 11.04/11.11 maxReach 11.02
+EVAL it 20 d1 pass 14/16 d2 pass 0  maxHoldErr 2.48 maxArm 11.13/11.16 maxReach 5.34
+EVAL it 30 d1 pass 14/16 d2 pass 0  maxHoldErr 4.23 maxArm 12.00/11.14 maxReach 3.52
+EVAL it 40 d1 pass 13/16 d2 pass 0  maxHoldErr 4.92 maxArm 11.13/11.22 maxReach 4.42
+EVAL it 50 d1 pass 14/16 d2 pass 0  maxHoldErr 2.60 maxArm 12.20/11.27 maxReach 5.89
+EVAL it 60 d1 pass 13/16 d2 pass 0  maxHoldErr 2.17 maxArm 11.35/11.73 maxReach 6.07
+EVAL it 70 d1 pass 14/16 d2 pass 0  maxHoldErr 2.12 maxArm 11.25/11.34 maxReach 4.89
+EVAL it 80 d1 pass 15/16 d2 pass 0  maxHoldErr 2.60 maxArm 11.29/10.91 maxReach 6.55
+EVAL it 90 d1 pass 16/16 d2 pass 10  maxHoldErr 2.19 maxArm 11.62/10.96 maxReach 5.65
+EVAL it 100 d1 pass 16/16 d2 pass 3  maxHoldErr 2.22 maxArm 11.96/10.97 maxReach 7.16
+EVAL it 110 d1 pass 15/16 d2 pass 1  maxHoldErr 2.47 maxArm 11.36/10.83 maxReach 3.82
+EVAL it 120 d1 pass 14/16 d2 pass 0  maxHoldErr 2.13 maxArm 10.94/11.01 maxReach 7.78
+EVAL it 130 d1 pass 14/16 d2 pass 0  maxHoldErr 2.11 maxArm 10.89/11.97 maxReach 7.53
+EVAL it 140 d1 pass 14/16 d2 pass 0  maxHoldErr 2.14 maxArm 10.83/10.97 maxReach 10.05
+EVAL it 150 d1 pass 14/16 d2 pass 0  maxHoldErr 2.06 maxArm 10.86/10.91 maxReach 7.70
+EVAL it 160 d1 pass 14/16 d2 pass 0  maxHoldErr 2.00 maxArm 10.85/10.91 maxReach 7.69
+EVAL it 170 d1 pass 14/16 d2 pass 0  maxHoldErr 1.94 maxArm 10.69/10.76 maxReach 15.28
+EVAL it 180 d1 pass 13/16 d2 pass 0  maxHoldErr 1.81 maxArm 10.59/10.64 maxReach 19.02
+EVAL it 190 d1 pass 10/16 d2 pass 0  maxHoldErr 1.76 maxArm 11.86/11.09 maxReach 16.99
+EVAL it 200 d1 pass 11/16 d2 pass 0  maxHoldErr 1.73 maxArm 11.98/11.82 maxReach 13.33
+EVAL it 210 d1 pass 10/16 d2 pass 0  maxHoldErr 1.67 maxArm 10.58/10.60 maxReach 10.72
+EVAL it 220 d1 pass 6/16 d2 pass 0  maxHoldErr 1.63 maxArm 10.60/10.66 maxReach 12.18
+EVAL it 230 d1 pass 3/16 d2 pass 0  maxHoldErr 1.61 maxArm 10.57/10.60 maxReach 11.36
+EVAL it 240 d1 pass 7/16 d2 pass 0  maxHoldErr 1.69 maxArm 12.00/11.89 maxReach 16.98
+EVAL it 250 d1 pass 8/16 d2 pass 0  maxHoldErr 1.57 maxArm 11.99/10.60 maxReach 14.66
+EVAL it 260 d1 pass 4/16 d2 pass 0  maxHoldErr 1.57 maxArm 12.03/11.90 maxReach 14.02
+EVAL it 270 d1 pass 1/16 d2 pass 0  maxHoldErr 1.53 maxArm 12.04/11.87 maxReach 15.92
+EVAL it 280 d1 pass 2/16 d2 pass 0  maxHoldErr 1.55 maxArm 12.06/12.00 maxReach 7.82
+EVAL it 290 d1 pass 8/16 d2 pass 0  maxHoldErr 1.67 maxArm 12.06/11.89 maxReach 19.68
+EVAL it 300 d1 pass 5/16 d2 pass 0  maxHoldErr 1.54 maxArm 12.01/11.96 maxReach 19.90
+EVAL it 10 d1 pass 14/16 d2 pass 0  maxHoldErr 3.49 maxArm 11.11/11.31 maxReach 7.86
+EVAL it 20 d1 pass 14/16 d2 pass 0  maxHoldErr 3.01 maxArm 11.12/11.25 maxReach 3.96
+EVAL it 30 d1 pass 14/16 d2 pass 0  maxHoldErr 2.37 maxArm 11.05/11.13 maxReach 3.35
+EVAL it 40 d1 pass 14/16 d2 pass 0  maxHoldErr 2.24 maxArm 11.08/11.15 maxReach 5.40
+EVAL it 50 d1 pass 14/16 d2 pass 0  maxHoldErr 3.02 maxArm 11.24/11.18 maxReach 7.14
+EVAL it 60 d1 pass 14/16 d2 pass 0  maxHoldErr 3.60 maxArm 11.26/11.32 maxReach 3.58
+EVAL it 70 d1 pass 15/16 d2 pass 0  maxHoldErr 3.02 maxArm 11.98/11.25 maxReach 13.45
+EVAL it 80 d1 pass 14/16 d2 pass 0  maxHoldErr 2.19 maxArm 11.07/12.23 maxReach 5.53
+EVAL it 90 d1 pass 14/16 d2 pass 0  maxHoldErr 2.28 maxArm 11.07/11.37 maxReach 8.05
+EVAL it 100 d1 pass 15/16 d2 pass 0  maxHoldErr 3.20 maxArm 12.12/11.25 maxReach 17.93
+EVAL it 110 d1 pass 15/16 d2 pass 0  maxHoldErr 2.21 maxArm 12.08/11.13 maxReach 7.23
+EVAL it 120 d1 pass 14/16 d2 pass 0  maxHoldErr 2.20 maxArm 10.82/10.90 maxReach 7.36
+EVAL it 130 d1 pass 14/16 d2 pass 0  maxHoldErr 2.18 maxArm 10.66/10.74 maxReach 7.31
+EVAL it 140 d1 pass 13/16 d2 pass 0  maxHoldErr 2.14 maxArm 10.60/10.67 maxReach 13.69
+EVAL it 150 d1 pass 14/16 d2 pass 0  maxHoldErr 2.11 maxArm 10.77/10.85 maxReach 12.60
+EVAL it 160 d1 pass 14/16 d2 pass 0  maxHoldErr 2.03 maxArm 10.72/10.81 maxReach 8.51
+EVAL it 170 d1 pass 14/16 d2 pass 0  maxHoldErr 2.00 maxArm 10.78/10.85 maxReach 14.52
+EVAL it 180 d1 pass 14/16 d2 pass 0  maxHoldErr 1.84 maxArm 10.79/10.85 maxReach 7.20
+EVAL it 190 d1 pass 14/16 d2 pass 0  maxHoldErr 1.81 maxArm 10.62/10.70 maxReach 7.04
+EVAL it 200 d1 pass 12/16 d2 pass 1  maxHoldErr 1.74 maxArm 10.71/10.77 maxReach 19.92
+EVAL it 10 d1 pass 14/16 d2 pass 0  maxHoldErr 3.33 maxArm 11.10/11.30 maxReach 10.19
+EVAL it 20 d1 pass 15/16 d2 pass 0  maxHoldErr 4.19 maxArm 11.28/11.60 maxReach 6.97
+EVAL it 30 d1 pass 14/16 d2 pass 0  maxHoldErr 2.17 maxArm 10.86/10.96 maxReach 10.37
+EVAL it 40 d1 pass 14/16 d2 pass 0  maxHoldErr 2.17 maxArm 10.83/10.92 maxReach 9.68
+EVAL it 50 d1 pass 13/16 d2 pass 0  maxHoldErr 2.19 maxArm 10.82/10.90 maxReach 15.32
+EVAL it 60 d1 pass 12/16 d2 pass 0  maxHoldErr 1.79 maxArm 10.43/10.47 maxReach 18.31
+EVAL it 70 d1 pass 13/16 d2 pass 0  maxHoldErr 1.95 maxArm 11.74/11.78 maxReach 16.75
+EVAL it 80 d1 pass 6/16 d2 pass 0  maxHoldErr 1.73 maxArm 9.69/11.54 maxReach 12.07
+EVAL it 90 d1 pass 9/16 d2 pass 0  maxHoldErr 1.69 maxArm 10.14/10.31 maxReach 18.05
+EVAL it 100 d1 pass 7/16 d2 pass 0  maxHoldErr 1.71 maxArm 10.86/9.84 maxReach 17.90
+EVAL it 110 d1 pass 6/16 d2 pass 0  maxHoldErr 2.27 maxArm 10.60/10.23 maxReach 16.95
+EVAL it 120 d1 pass 2/16 d2 pass 0  maxHoldErr 1.67 maxArm 10.13/9.97 maxReach 12.97
+EVAL it 130 d1 pass 3/16 d2 pass 0  maxHoldErr 1.70 maxArm 9.63/10.63 maxReach 19.19
+EVAL it 140 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.77/10.05 maxReach NaN
+EVAL it 150 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.37/10.19 maxReach NaN
+EVAL it 160 d1 pass 1/16 d2 pass 0  maxHoldErr 1.61 maxArm 9.88/9.96 maxReach 2.19
+EVAL it 170 d1 pass 1/16 d2 pass 0  maxHoldErr 1.58 maxArm 10.72/9.63 maxReach 8.18
+EVAL it 180 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.73/9.71 maxReach NaN
+EVAL it 190 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.52/9.80 maxReach NaN
+EVAL it 200 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.98/9.79 maxReach NaN
+EVAL it 210 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.51/10.24 maxReach NaN
+EVAL it 220 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.90/9.64 maxReach NaN
+EVAL it 230 d1 pass 1/16 d2 pass 1  maxHoldErr 0.00 maxArm 10.82/9.77 maxReach 0.00
+EVAL it 240 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.75/10.14 maxReach NaN
+EVAL it 250 d1 pass 1/16 d2 pass 1  maxHoldErr 0.00 maxArm 10.45/10.06 maxReach 0.00
+EVAL it 260 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.20/10.61 maxReach NaN
+EVAL it 270 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.16/10.49 maxReach NaN
+EVAL it 280 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 11.00/10.59 maxReach NaN
+EVAL it 290 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 10.22/10.61 maxReach NaN
+EVAL it 300 d1 pass 0/16 d2 pass 0  maxHoldErr NaN maxArm 9.97/11.38 maxReach NaN
+EVAL it 25 d1 pass 16/16 d2 pass 2 maxArm 7.99
+EVAL it 50 d1 pass 16/16 d2 pass 16 maxArm 7.45
+EVAL it 75 d1 pass 16/16 d2 pass 14 maxArm 8.41
+EVAL it 100 d1 pass 15/16 d2 pass 13 maxArm 7.47
+EVAL it 125 d1 pass 15/16 d2 pass 13 maxArm 7.45
+EVAL it 150 d1 pass 16/16 d2 pass 16 maxArm 7.65
+EVAL it 175 d1 pass 16/16 d2 pass 14 maxArm 7.53
+EVAL it 200 d1 pass 16/16 d2 pass 16 maxArm 7.94

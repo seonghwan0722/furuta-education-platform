@@ -1,0 +1,278 @@
+{
+ "arm": {
+  "mass_kg": 0.12285286829810912,
+  "com_m": [
+   0.0007019051840676064,
+   -0.0014142255907121672,
+   -0.024882699104207436
+  ],
+  "inertia_about_com_kgm2": [
+   [
+    7.685427831326072e-05,
+    3.0258891626262124e-07,
+    -1.665384989018142e-06
+   ],
+   [
+    3.0258891626262124e-07,
+    7.693549312696734e-05,
+    5.015649477579725e-07
+   ],
+   [
+    -1.665384989018142e-06,
+    5.015649477579725e-07,
+    4.3759596072904264e-05
+   ]
+  ],
+  "parts": [
+   {
+    "name": "688ZZ_inner",
+    "mass_g": 3.6
+   },
+   {
+    "name": "688ZZ_outer",
+    "mass_g": 3.6
+   },
+   {
+    "name": "AS5600_chip",
+    "mass_g": 0.042
+   },
+   {
+    "name": "CSK_M3x8_lid_1",
+    "mass_g": 0.625
+   },
+   {
+    "name": "CSK_M3x8_lid_2",
+    "mass_g": 0.625
+   },
+   {
+    "name": "CSK_M3x8_lid_3",
+    "mass_g": 0.625
+   },
+   {
+    "name": "CSK_M3x8_lid_4",
+    "mass_g": 0.625
+   },
+   {
+    "name": "Grove_AS5600_PCB",
+    "mass_g": 2.351
+   },
+   {
+    "name": "Grove_connector",
+    "mass_g": 0.683
+   },
+   {
+    "name": "Grove_plug_placeholder",
+    "mass_g": 0.595
+   },
+   {
+    "name": "Grove_switch",
+    "mass_g": 0.083
+   },
+   {
+    "name": "INS_drum_cradle_1",
+    "mass_g": 0.304
+   },
+   {
+    "name": "INS_drum_cradle_2",
+    "mass_g": 0.304
+   },
+   {
+    "name": "INS_drum_cradle_3",
+    "mass_g": 0.304
+   },
+   {
+    "name": "INS_drum_cradle_4",
+    "mass_g": 0.304
+   },
+   {
+    "name": "INS_drum_lid_1",
+    "mass_g": 0.304
+   },
+   {
+    "name": "INS_drum_lid_2",
+    "mass_g": 0.304
+   },
+   {
+    "name": "INS_drum_lid_3",
+    "mass_g": 0.304
+   },
+   {
+    "name": "INS_drum_lid_4",
+    "mass_g": 0.304
+   },
+   {
+    "name": "SHCS_M3x8_cartridge_1",
+    "mass_g": 0.918
+   },
+   {
+    "name": "SHCS_M3x8_cartridge_2",
+    "mass_g": 0.918
+   },
+   {
+    "name": "SHCS_M3x8_cartridge_3",
+    "mass_g": 0.918
+   },
+   {
+    "name": "SHCS_M3x8_cartridge_4",
+    "mass_g": 0.918
+   },
+   {
+    "name": "SHCS_M4x16_drum_hub_motor_1",
+    "mass_g": 2.629
+   },
+   {
+    "name": "SHCS_M4x16_drum_hub_motor_2",
+    "mass_g": 2.629
+   },
+   {
+    "name": "SHCS_M4x16_drum_hub_motor_3",
+    "mass_g": 2.629
+   },
+   {
+    "name": "SHCS_M4x16_drum_hub_motor_4",
+    "mass_g": 2.629
+   },
+   {
+    "name": "SHCS_M4x16_drum_hub_motor_5",
+    "mass_g": 2.629
+   },
+   {
+    "name": "bearing_cartridge_rev16f",
+    "mass_g": 7.132
+   },
+   {
+    "name": "cable_AS5600_4C_placeholder",
+    "mass_g": 1.47
+   },
+   {
+    "name": "drum_rev16d",
+    "mass_g": 51.161
+   },
+   {
+    "name": "hub_rev16g",
+    "mass_g": 22.843
+   },
+   {
+    "name": "lid_rev16d_body",
+    "mass_g": 6.886
+   },
+   {
+    "name": "lid_rev16d_logo_black",
+    "mass_g": 0.048
+   },
+   {
+    "name": "lid_rev16d_logo_black",
+    "mass_g": 0.035
+   },
+   {
+    "name": "lid_rev16d_logo_black",
+    "mass_g": 0.034
+   },
+   {
+    "name": "lid_rev16d_logo_black",
+    "mass_g": 0.025
+   },
+   {
+    "name": "lid_rev16d_logo_blue",
+    "mass_g": 0.036
+   },
+   {
+    "name": "lid_rev16d_logo_blue",
+    "mass_g": 0.02
+   },
+   {
+    "name": "slipring_drive_adapter_rev16c",
+    "mass_g": 0.461
+   }
+  ]
+ },
+ "pend": {
+  "mass_kg": 0.039236347398595425,
+  "com_m": [
+   0.044512779482738844,
+   -0.049436449945906014,
+   -0.07457956385741847
+  ],
+  "inertia_about_com_kgm2": [
+   [
+    0.00015376124434275648,
+    1.2918519287234309e-05,
+    2.5332620026977515e-05
+   ],
+   [
+    1.2918519287234309e-05,
+    0.0001510456634180032,
+    -2.813472465281384e-05
+   ],
+   [
+    2.5332620026977515e-05,
+    -2.813472465281384e-05,
+    2.7149262771534716e-05
+   ]
+  ],
+  "parts": [
+   {
+    "name": "Ering_E6",
+    "mass_g": 0.301
+   },
+   {
+    "name": "magnet_8x2_diametric_N35",
+    "mass_g": 0.754
+   },
+   {
+    "name": "magnet_holder_Al_D10x8_M4",
+    "mass_g": 1.553
+   },
+   {
+    "name": "shim_8x10x0.3",
+    "mass_g": 0.061
+   },
+   {
+    "name": "rev22_pend_axle_arm_PLA",
+    "mass_g": 9.246
+   },
+   {
+    "name": "rev22_pend_rod_PLA",
+    "mass_g": 8.605
+   },
+   {
+    "name": "rev22_ball_knob_bakelite_M6x25_red",
+    "mass_g": 11.182
+   },
+   {
+    "name": "rev22_INS_M6_OD8x12_ball",
+    "mass_g": 3.124
+   },
+   {
+    "name": "rev22_SET_M6x16_ball",
+    "mass_g": 3.551
+   },
+   {
+    "name": "rev22_INS_M3_spigot",
+    "mass_g": 0.304
+   },
+   {
+    "name": "rev22_CSK_M3x8_corner",
+    "mass_g": 0.555
+   }
+  ]
+ },
+ "pivot_m": [
+  0,
+  0,
+  -0.003000000000000002
+ ],
+ "pend_axis": [
+  0.6691306063588589,
+  -0.7431448254773938,
+  0.0
+ ],
+ "ball_center_m": [
+  0.05353044850870871,
+  -0.0594515860381915,
+  -0.13718052815058582
+ ],
+ "arm_radius_ball_m": 0.08,
+ "ball_drop_m": 0.13418052815058581,
+ "assumptions": "densities: PLA 1.24 g/cm3 (100% infill), bakelite 1.40, brass 8.5, steel 7.85, Al 2.70, NdFeB 7.5, PCB 1.85, plastic 1.4, cable 1.9; 688ZZ 3.6 g catalogue (whole bearing on arm body); motor rotor/slipring rotor not in CAD -> covered by measured armature"
+}

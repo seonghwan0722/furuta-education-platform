@@ -1,0 +1,107 @@
+[
+ {
+  "armature": 0.0,
+  "case": "5deg",
+  "peak_u_unsat": 0.172,
+  "peak_w": 2.33,
+  "min_tau": 0.02
+ },
+ {
+  "armature": 0.0,
+  "case": "10deg",
+  "peak_u_unsat": 0.3439,
+  "peak_w": 4.97,
+  "min_tau": 0.02
+ },
+ {
+  "armature": 0.0,
+  "case": "15deg",
+  "peak_u_unsat": 0.5159,
+  "peak_w": 7.97,
+  "min_tau": 0.025
+ },
+ {
+  "armature": 0.0,
+  "case": "tap 2rad/s",
+  "peak_u_unsat": 0.4446,
+  "peak_w": 6.27,
+  "min_tau": 0.02
+ },
+ {
+  "armature": 0.0,
+  "case": "tap 4rad/s",
+  "peak_u_unsat": 0.8893,
+  "peak_w": 12.71,
+  "min_tau": 0.03
+ },
+ {
+  "armature": 0.001,
+  "case": "5deg",
+  "peak_u_unsat": 0.2897,
+  "peak_w": 2.24,
+  "min_tau": 0.03
+ },
+ {
+  "armature": 0.001,
+  "case": "10deg",
+  "peak_u_unsat": 0.5794,
+  "peak_w": 4.7,
+  "min_tau": 0.07
+ },
+ {
+  "armature": 0.001,
+  "case": "15deg",
+  "peak_u_unsat": 0.8691,
+  "peak_w": 7.61,
+  "min_tau": 0.1
+ },
+ {
+  "armature": 0.001,
+  "case": "tap 2rad/s",
+  "peak_u_unsat": 0.7491,
+  "peak_w": 5.78,
+  "min_tau": 0.07
+ },
+ {
+  "armature": 0.001,
+  "case": "tap 4rad/s",
+  "peak_u_unsat": 1.4982,
+  "peak_w": 11.59,
+  "min_tau": 0.15
+ },
+ {
+  "armature": 0.01,
+  "case": "5deg",
+  "peak_u_unsat": 0.5333,
+  "peak_w": 2.08,
+  "min_tau": 0.2
+ },
+ {
+  "armature": 0.01,
+  "case": "10deg",
+  "peak_u_unsat": 1.0666,
+  "peak_w": 4.25,
+  "min_tau": 0.5
+ },
+ {
+  "armature": 0.01,
+  "case": "15deg",
+  "peak_u_unsat": 1.5999,
+  "peak_w": 6.91,
+  "min_tau": 1.0
+ },
+ {
+  "armature": 0.01,
+  "case": "tap 2rad/s",
+  "peak_u_unsat": 1.3632,
+  "peak_w": 5.05,
+  "min_tau": 0.5
+ },
+ {
+  "armature": 0.01,
+  "case": "tap 4rad/s",
+  "peak_u_unsat": 2.7265,
+  "peak_w": 10.33,
+  "min_tau": null
+ }
+]
