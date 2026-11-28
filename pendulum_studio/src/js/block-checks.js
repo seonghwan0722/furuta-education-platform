@@ -20,7 +20,8 @@
       if (a && b && a !== b && a !== 'number' && b !== 'number')
         add('warn', 'unit-mismatch', id, '서로 다른 단위(' + a + ', ' + b + ')를 함께 계산하거나 비교하고 있어요. 같은 기준으로 바꾼 값인지 확인하세요.', slot, live);
     }
-    function visit(id, expected, domain, depth, live) {
+    function visit(id, expected, domain, depth, live, loopDepth) {
+      loopDepth = loopDepth || 0;
       if (depth > LIMIT) { add('error', 'too-deep', id, '블록은 40단계까지만 중첩할 수 있어요. 계산이나 조건을 단순하게 나눠 주세요.', null, live); return unknown(); }
       var b = B[id], d = b && OWN.call(defs, b.type) && defs[b.type];
       if (!d) { add('error', 'missing-block', id, '연결된 블록을 읽을 수 없어요. 이 연결을 다시 만들어 주세요.', null, live); return unknown(); }
@@ -40,7 +41,7 @@
       var args = specs.map(function (spec, index) {
         var s = slots[index];
         if (!s) { add('error', 'missing-slot', id, '입력 칸을 읽을 수 없어요. 블록을 다시 넣어 주세요.', index, live); return unknown(); }
-        if (s.block != null) return visit(s.block, spec.s === 'bool' ? 'bool' : 'val', domain, depth + 1, live);
+        if (s.block != null) return visit(s.block, spec.s === 'bool' ? 'bool' : 'val', domain, depth + 1, live, loopDepth);
         if (spec.s === 'bool') { add('error', 'empty-condition', id, '비어 있는 육각 칸에 판단 블록을 넣어 주세요. 빈칸은 거짓이라는 뜻이 아니에요.', index, live); return unknown(); }
         if (typeof s.v !== 'number' || !Number.isFinite(s.v)) { add('error', 'invalid-number', id, '숫자 칸에는 유한한 숫자를 넣어 주세요. 빈칸·문자·무한대는 사용할 수 없어요.', index, live); return unknown(); }
         return { constant: true, value: s.v, state: false, unit: 'number' };
@@ -48,13 +49,21 @@
       var children = [];
       bodies.forEach(function (body, index) {
         if (!Array.isArray(body)) { add('error', 'bad-body', id, '조건 안쪽 블록 묶음을 읽을 수 없어요.', null, live); return; }
-        if (!body.length) add('warn', 'empty-branch-' + index, id, (index ? '아니면' : '참일 때') + ' 안쪽이 비어 있어요. 이 경우에는 점수가 더해지거나 빠지지 않아요.', null, live);
-        body.forEach(function (child) { children.push(visit(child, 'stack', domain, depth + 1, live)); });
+        if (!body.length) add('warn', 'empty-branch-' + index, id, (b.type === 'repeat' ? '반복' : index ? '아니면' : '참일 때') + ' 안쪽이 비어 있어요. 이 경우에는 점수가 더해지거나 빠지지 않아요.', null, live);
+        body.forEach(function (child) { children.push(visit(child, 'stack', domain, depth + 1, live, loopDepth + (b.type === 'repeat' ? 1 : 0))); });
       });
       delete activePath[id];
       var state = !!(d.read || d.test) || args.concat(children).some(function (a) { return a.state; });
       if (b.type === 'true' || b.type === 'false' || OWN.call(d, 'literal')) state = false;
       var result = { constant: false, state: state, unit: d.unit || '' };
+      if (['loop_index', 'break_loop', 'continue_loop'].indexOf(b.type) >= 0 && !loopDepth)
+        add('error', 'outside-loop', id, '이 블록은 반복 안쪽에서만 사용할 수 있어요.', null, live);
+      if (domain === 'run' && b.type === 'get_var') add('error', 'reward-variable-in-run', id, '이 변수는 매 순간 점수 계산에 쓰는 값이에요. 시작하기의 학습 조건에는 고정 숫자를 넣어 주세요.', null, live);
+      if (b.type === 'repeat' && args[0]) {
+        if (args[0].constant && (!Number.isInteger(args[0].value) || args[0].value < 0 || args[0].value > 20))
+          add('error', 'repeat-range', id, '반복 횟수는 0~20 사이 정수로 정해 주세요. 0이면 안쪽을 건너뜁니다.', 0, live);
+        if (!args[0].constant) add('warn', 'dynamic-repeat', id, '반복에 들어갈 때 횟수를 한 번 읽어요. 결과가 0~20 사이 정수가 되도록 정해 주세요.', 0, live);
+      }
       if (b.type === 'plus' || b.type === 'minus') {
         if (live && domain === 'reward') scoreCount++;
         if (b.type === 'minus' && args[0] && args[0].constant && args[0].value < 0)
@@ -107,6 +116,27 @@
     if (Object.keys(B).length > 1000) add('error', 'too-many-blocks', null, '블록은 1,000개까지 사용할 수 있어요. 사용하지 않는 블록을 정리해 주세요.');
     var reward = M && M.scripts && M.scripts.reward, run = M && M.scripts && M.scripts.run;
     var rewardNodes = Array.isArray(reward) ? reward.map(function (id) { return visit(id, 'stack', 'reward', 1, true); }) : [];
+    // Definite assignment is a teaching hint; each evaluation initializes A~D to 0.
+    function reads(id, assigned, depth) {
+      var b = B[id]; if (!b || depth > LIMIT) return;
+      if (b.type === 'get_var' && !assigned[b.f.variable]) add('warn', 'variable-before-set', id, '이 경로에서 먼저 정하지 않은 변수는 0이에요. 위쪽에 변수 정하기를 놓아 의도를 보여 주세요.');
+      (b.s || []).forEach(function (s) { if (s.block != null) reads(s.block, assigned, depth + 1); });
+    }
+    function assignments(list, assigned, depth) {
+      if (depth > LIMIT) return assigned;
+      (list || []).forEach(function (id) {
+        var b = B[id]; if (!b) return;
+        reads(id, assigned, depth);
+        if (b.type === 'set_var' || b.type === 'change_var') assigned[b.f.variable] = true;
+        if (b.type === 'if' || b.type === 'ifelse') {
+          var yes = assignments(b.bodies[0], Object.assign({}, assigned), depth + 1);
+          var no = assignments(b.bodies[1], Object.assign({}, assigned), depth + 1);
+          Object.keys(yes).forEach(function (key) { if (no[key]) assigned[key] = true; });
+        } else if (b.type === 'repeat') assignments(b.bodies[0], Object.assign({}, assigned), depth + 1);
+      });
+      return assigned;
+    }
+    if (!issues.some(function (issue) { return issue.level === 'error'; })) assignments(reward, {}, 1);
     if (!scoreCount) add('error', 'empty-reward', null, '매 순간 점수 매기기 아래에 점수 더하기 또는 빼기를 연결해 주세요.');
     else if (!rewardNodes.some(function (a) { return a.state; })) add('warn', 'constant-reward', reward[0], '점수가 진자의 상태나 행동에 따라 달라지지 않아요. 무엇을 잘했을 때 점수를 줄지 키트 값이나 조건을 연결해 보세요.');
     if (!Array.isArray(run) || !run.length) add('error', 'empty-run', null, '시작하기 아래에 학습하기 또는 시험하기 블록을 연결해 주세요.');

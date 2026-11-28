@@ -33,11 +33,33 @@
     return {
       kind: "basic", smooth: smooth, effort: effort, ok: true,
       text: text, label: "빠르기 " + WORD[smooth] + ", 힘 " + WORD[effort],
-      key: "s" + smooth + "e" + effort, fn: fn
+      key: "s" + smooth + "e" + effort, fn: fn,
+      debug: function (phi, w, v, u) {
+        var values = [1 - 0.3 * phi * phi, -ws * w * w - 0.002 * v * v, -we * u * u, 0.5 * Math.exp(-11.111111 * phi * phi) * Math.exp(-0.25 * w * w)];
+        var labels = ['직립 목표', '속도 감점', '지령 감점', '직립 보너스'], total = 0;
+        return { value: fn(phi, w, v, u), issues: [], events: values.map(function (x, i) { total += x; return { id: null, kind: 'score', label: labels[i], value: x, total: total, vars: {} }; }) };
+      }
     };
   }
 
   /* ── 블록 계산 ── */
+  var MAX_STEPS = 2048;
+  function context(v) {
+    if (!v.ctx) v.ctx = { vars: { A: 0, B: 0, C: 0, D: 0 }, loops: [], signal: null, steps: 0 };
+    return v.ctx;
+  }
+  function event(v, item) {
+    var ctx = context(v);
+    if (!ctx.events) return;
+    item.total = ctx.total || 0; item.vars = Object.assign({}, ctx.vars);
+    item.loop = ctx.loops.length ? ctx.loops[ctx.loops.length - 1] : null;
+    ctx.events.push(item);
+  }
+  function spend(v, errors, id) {
+    if (++context(v).steps <= MAX_STEPS) return true;
+    fault(errors, id, 'execution-budget', '한 순간의 계산이 너무 많아요. 반복 횟수나 안쪽 블록 수를 줄여 주세요.');
+    return false;
+  }
   function fault(errors, id, code, message) {
     if (errors && !errors.some(function (e) { return e.id === id && e.code === code; })) errors.push({ level: 'error', code: code, id: id, message: message });
   }
@@ -54,11 +76,24 @@
     return slot && slot.block != null ? boolOf(M, slot.block, v, depth, errors) : false;
   }
   function valOf(M, id, v, depth, errors) {
+    var value = rawValOf(M, id, v, depth, errors);
+    event(v, { id: id, kind: 'value', value: value });
+    return value;
+  }
+  function rawValOf(M, id, v, depth, errors) {
     var b = M.B[id];
     if (!b || (depth || 0) > 40) return 0;
     var d = PS.DEFS[b.type];
     if (!d) return 0;
+    if (!spend(v, errors, id)) return 0;
     try {
+      if (b.type === 'get_var') return finite(context(v).vars[b.f.variable], errors, id);
+      if (b.type === 'loop_index') {
+        var loops = context(v).loops;
+        if (!loops.length) { fault(errors, id, 'outside-loop', '이번 반복 번호는 반복 안에서 사용하세요.'); return 0; }
+        return loops[loops.length - 1];
+      }
+      if (b.type === 'choose') return numOf(M, b.s[boolSlot(M, b.s[0], v, (depth || 0) + 1, errors) ? 1 : 2], v, (depth || 0) + 1, errors, id);
       if (d.read) return finite(d.read(v), errors, id);
       var args = b.s.map(function (s) { return numOf(M, s, v, (depth || 0) + 1, errors, id); });
       if (b.type === 'div' && args[1] === 0) { fault(errors, id, 'divide-zero', '나누는 값이 0이 되었어요. 0이 아닌 경우만 계산하도록 조건을 넣거나 분모에 양수 하한을 사용해 주세요.'); return 0; }
@@ -68,10 +103,16 @@
     } catch (_) { fault(errors, id, 'calculation-error', '이 계산을 읽을 수 없어요. 입력 칸을 확인해 주세요.'); return 0; }
   }
   function boolOf(M, id, v, depth, errors) {
+    var value = rawBoolOf(M, id, v, depth, errors);
+    event(v, { id: id, kind: 'condition', value: value });
+    return value;
+  }
+  function rawBoolOf(M, id, v, depth, errors) {
     var b = M.B[id];
     if (!b || (depth || 0) > 40) return false;
     var d = PS.DEFS[b.type];
     if (!d) return false;
+    if (!spend(v, errors, id)) return false;
     try {
       if (d.test) return !!d.test(v);
       var args = b.s.map(function (s) { return d.fnb ? boolSlot(M, s, v, (depth || 0) + 1, errors) : numOf(M, s, v, (depth || 0) + 1, errors, id); });
@@ -83,15 +124,42 @@
   }
   function runList(M, list, v, tr, depth, errors) {
     var sum = 0;
+    var ctx = context(v);
     if ((depth || 0) > 40) return 0;
     for (var i = 0; i < list.length; i++) {
       var b = M.B[list[i]];
       if (!b) continue;
+      if (ctx.signal || errors && errors.length || !spend(v, errors, b.id)) break;
       if (b.type === "plus" || b.type === "minus") {
         var x = numOf(M, b.s[0], v, 0, errors, b.id);
         if (b.type === "minus") x = -x;
         sum = finite(sum + x, errors, b.id);
-        if (tr) tr[b.id] = x;
+        if (ctx.events) { ctx.total = (ctx.total || 0) + x; event(v, { id: b.id, kind: 'score', value: x }); }
+        if (tr) tr[b.id] = (tr[b.id] || 0) + x;
+      } else if (b.type === 'set_var' || b.type === 'change_var') {
+        var key = b.f.variable, val = numOf(M, b.s[0], v, 0, errors, b.id);
+        if (!Object.prototype.hasOwnProperty.call(ctx.vars, key)) { fault(errors, b.id, 'unknown-variable', '변수 목록에서 사용할 변수를 골라 주세요.'); break; }
+        ctx.vars[key] = finite((b.type === 'change_var' ? ctx.vars[key] : 0) + val, errors, b.id);
+        event(v, { id: b.id, kind: 'variable', value: ctx.vars[key], variable: key });
+        if (tr) tr[b.id] = ctx.vars[key];
+      } else if (b.type === 'break_loop' || b.type === 'continue_loop') {
+        if (!ctx.loops.length) fault(errors, b.id, 'outside-loop', '반복 중단·건너뛰기는 반복 안에 놓아 주세요.');
+        else ctx.signal = b.type;
+        event(v, { id: b.id, kind: b.type, value: null });
+      } else if (b.type === 'repeat') {
+        var count = numOf(M, b.s[0], v, 0, errors, b.id);
+        if (!Number.isInteger(count) || count < 0 || count > 20) { fault(errors, b.id, 'repeat-range', '반복 횟수는 0~20 사이 정수여야 해요.'); break; }
+        ctx.loops.push(0);
+        event(v, { id: b.id, kind: 'repeat', value: count });
+        for (var k = 1; k <= count; k++) {
+          if (errors && errors.length || !spend(v, errors, b.id)) break;
+          ctx.loops[ctx.loops.length - 1] = k;
+          event(v, { id: b.id, kind: 'iteration', value: k });
+          sum = finite(sum + runList(M, b.bodies[0], v, tr, (depth || 0) + 1, errors), errors, b.id);
+          var stop = ctx.signal === 'break_loop'; ctx.signal = null;
+          if (stop) break;
+        }
+        ctx.loops.pop();
       } else if (b.type === "if" || b.type === "ifelse") {
         var c = boolSlot(M, b.s[0], v, 0, errors);
         if (c) sum = finite(sum + runList(M, b.bodies[0], v, tr, (depth || 0) + 1, errors), errors, b.id);
@@ -118,6 +186,7 @@
       else if (p.dd) {
         var lab = "";
         p.opts.forEach(function (o) { if (String(o[0]) === String(b.f[p.dd])) lab = o[1]; });
+        if (p.dd === 'variable') lab = PS.variableName(M, b.f.variable);
         out.push(lab);
       }
     });
@@ -136,6 +205,7 @@
         return "만일 " + slotText(M, b.s[0], { s: "bool" }) + " 이면 { " + listText(M, b.bodies[0], (depth || 0) + 1) +
           " } 아니면 { " + listText(M, b.bodies[1], (depth || 0) + 1) + " }";
       }
+      if (b.type === 'repeat') return slotText(M, b.s[0], { s: 'num' }) + '번 반복 { ' + listText(M, b.bodies[0], (depth || 0) + 1) + ' }';
       return blockText(M, id);
     }).filter(Boolean).join("  ");
   }
@@ -179,17 +249,26 @@
     function evaluate(phi, ald, thd, u, th) {
       var errors = diagnosis.ok ? [] : diagnosis.issues.filter(function (issue) { return issue.level === 'error'; });
       var value = diagnosis.ok ? runList(M, list, { phi: phi, ald: ald, thd: thd, u: u, th: th || 0 }, null, 0, errors) : 0;
-      return { value: value, issues: errors };
+      return { value: errors.length ? 0 : value, issues: errors };
     }
     function trace(phi, ald, thd, u, th) {
-      var tr = {};
-      runList(M, list, { phi: phi, ald: ald, thd: thd, u: u, th: th || 0 }, tr, 0);
+      var tr = {}, v = { phi: phi, ald: ald, thd: thd, u: u, th: th || 0 }, errors = [];
+      if (!diagnosis.ok) return tr;
+      runList(M, list, v, tr, 0, errors);
+      if (errors.length) return {};
+      tr.variables = context(v).vars;
       return tr;
+    }
+    function debug(phi, ald, thd, u, th) {
+      var v = { phi: phi, ald: ald, thd: thd, u: u, th: th || 0 }, errors = diagnosis.issues.filter(function (i) { return i.level === 'error'; });
+      context(v).events = []; context(v).total = 0;
+      var value = diagnosis.ok ? runList(M, list, v, null, 0, errors) : 0;
+      return { value: errors.length ? 0 : value, issues: errors, events: context(v).events.map(function (e) { e.label = blockText(M, e.id); return e; }) };
     }
     ruleObject = {
       kind: "blocks", ok: n > 0 && diagnosis.ok, issues: diagnosis.issues,
       text: text ? "점수 = " + text : "아직 점수 블록이 없습니다",
-      label: text || "빈 규칙", key: signature(M), fn: fn, trace: trace, evaluate: evaluate, lastError: null
+      label: text || "빈 규칙", key: signature(M), fn: fn, trace: trace, evaluate: evaluate, debug: debug, lastError: null
     };
     return ruleObject;
   }
@@ -248,6 +327,6 @@
 
   PS.reward = {
     basic: basic, blocks: blocks, runOpts: runOpts, check: check, WORD: WORD,
-    blockText: blockText, valOf: valOf, boolOf: boolOf, inspect: inspect, signature: signature
+    blockText: blockText, valOf: valOf, boolOf: boolOf, inspect: inspect, signature: signature, MAX_STEPS: MAX_STEPS
   };
 })(window.PS = window.PS || {});
