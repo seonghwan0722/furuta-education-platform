@@ -138,8 +138,93 @@
     this._runKind = null;
     this.cal = null;
     this.level = null;
+    this.imu = { status: 'disconnected', message: '키트를 연결하면 수평을 확인합니다.' };
+    this._imuTimer = null;
+    this._imuPending = null;
+    this._imuSerial = 0;
+    this._imuLastSeq = -1;
+    this._imuNextAt = 0;
+    this._checking = false;
   }
   KitDevice.prototype = Object.create(Emitter.prototype);
+
+  /* IMU는 대기 중에만 읽습니다. 실행/업로드 경로와 분리하고 오래된 응답은 버립니다. */
+  KitDevice.prototype._imuState = function (status, message, sample) {
+    this.imu = Object.assign({ status: status, message: message || '', fake: !!(this.info && this.info.fake) }, sample || {});
+    this.emit('imu', this.imu);
+  };
+  KitDevice.prototype._pauseImu = function () {
+    this._imuPending = null;
+    if (this.info && this.info.imu1 && this.imu.status !== 'paused')
+      this._imuState('paused', '키트 작업 중입니다. 작업이 끝나면 수평 측정을 다시 시작합니다.');
+  };
+  KitDevice.prototype._stopImu = function () {
+    if (this._imuTimer) clearInterval(this._imuTimer);
+    this._imuTimer = null;
+    this._imuPending = null;
+    this._imuState('disconnected', '연결이 끊어져 현재 기울기를 확인할 수 없습니다.');
+  };
+  KitDevice.prototype._startImu = function () {
+    var self = this;
+    if (this._imuTimer) clearInterval(this._imuTimer);
+    this._imuTimer = null; this._imuPending = null; this._imuLastSeq = -1; this._imuNextAt = 0;
+    if (!this.info || !this.info.imu1) {
+      this._imuState('unsupported', 'Pi 수신기를 업데이트하면 MPU-9250 수평계를 사용할 수 있습니다.');
+      return;
+    }
+    this._imuState('waiting', 'MPU-9250의 기울기를 읽는 중입니다.');
+    this._imuTimer = setInterval(function () { self._imuTick(); }, 200);
+    this._imuTick();
+  };
+  KitDevice.prototype._imuTick = function () {
+    if (!this.connected || this._linkFailed || KitDevice.current !== this || !this.info || !this.info.imu1) return;
+    if (this.running || this._uploading || this._checking) { this._pauseImu(); return; }
+    var now = Date.now();
+    if (this._imuPending) {
+      if (now - this._imuPending.at <= 1200) return;
+      this._imuPending = null; this._imuNextAt = now + 400;
+      this._imuState('stale', '센서 응답이 늦습니다. 마지막 각도로 수평 여부를 판단하지 마세요.');
+      return;
+    }
+    if (now < this._imuNextAt) return;
+    var requestId = now.toString(36) + '-' + (++this._imuSerial).toString(36);
+    this._imuPending = { id: requestId, at: now };
+    this._write('U ' + requestId);
+  };
+  KitDevice.prototype._receiveImu = function (line) {
+    if (!this.connected || !this.info || !this.info.imu1 || !this._imuPending) return;
+    if (this.running || this._uploading || this._checking) { this._pauseImu(); return; }
+    var sample;
+    try { sample = JSON.parse(line.trim().slice(2)); } catch (_) {
+      this._imuPending = null;
+      this._imuState('unavailable', '센서 응답 형식을 확인할 수 없습니다.');
+      return;
+    }
+    if (!sample || sample.request_id !== this._imuPending.id) return;
+    var elapsed = Date.now() - this._imuPending.at;
+    this._imuPending = null;
+    if (elapsed > 1200 || elapsed < 0) { this._imuState('stale', '늦게 도착한 측정값입니다. 새 측정을 기다립니다.'); return; }
+    if (['ok', 'moving', 'unavailable', 'paused'].indexOf(sample.status) < 0) {
+      this._imuState('unavailable', '센서 상태를 확인할 수 없습니다.'); return;
+    }
+    var message = typeof sample.message === 'string' ? sample.message.slice(0,240) : '';
+    if (sample.status === 'unavailable' || sample.status === 'paused') {
+      this._imuState(sample.status, message); return;
+    }
+    var finite = function (n) { return typeof n === 'number' && Number.isFinite(n); };
+    if (![sample.roll_deg, sample.pitch_deg, sample.tilt_deg, sample.accel_g, sample.gyro_dps].every(finite) ||
+        Math.abs(sample.roll_deg) > 180 || Math.abs(sample.pitch_deg) > 90 || sample.tilt_deg < 0 || sample.tilt_deg > 180 ||
+        sample.accel_g < 0 || sample.accel_g > 16 || sample.gyro_dps < 0 || sample.gyro_dps > 4000 ||
+        !Number.isSafeInteger(sample.seq) || sample.seq < 0 || typeof sample.fake !== 'boolean' || sample.fake !== !!this.info.fake) {
+      this._imuState('unavailable', '유효하지 않은 센서 측정값입니다. 배선과 수신기를 확인해 주세요.'); return;
+    }
+    if (sample.seq <= this._imuLastSeq) { this._imuState('stale', '새 센서 측정값을 기다립니다.'); return; }
+    this._imuLastSeq = sample.seq;
+    // 가속·회전 중의 중력 추정값으로 수평 완료를 표시하지 않습니다.
+    var status = sample.status === 'ok' && (Math.abs(sample.accel_g - 1) > 0.08 || sample.gyro_dps > 3) ? 'moving' : sample.status;
+    this._imuState(status, message, { roll_deg: sample.roll_deg, pitch_deg: sample.pitch_deg, tilt_deg: sample.tilt_deg,
+      accel_g: sample.accel_g, gyro_dps: sample.gyro_dps, seq: sample.seq, fake: sample.fake, receivedAt: Date.now() });
+  };
 
   KitDevice.installBridge = function () {
     if (KitDevice._wired || !window.studio) return;
@@ -194,6 +279,7 @@
     if (this._linkFailed) return;
     this._linkFailed = true;
     this.connected = false;
+    this._stopImu();
     this.polCrc = null;
     this.controlCrc = null;
     this.controlMethod = null;
@@ -219,6 +305,7 @@
   KitDevice.prototype._line = function (line) {
     var p = line.trim().split(/\s+/), c = p[0], D = Math.PI / 180, r = this._run;
     if (!c) return;
+    if (c === 'U') { this._receiveImu(line); return; }
     if (c === "T") {
       if (p.length !== 8 || !p.slice(1).every(function (value) { return value !== "" && Number.isFinite(Number(value)); })) {
         this.emit("alert", { code: "telemetry", message: "완전하지 않은 키트 상태 줄을 받았습니다" });
@@ -233,7 +320,7 @@
     }
     if (c === "I") {
       if (p.length < 6 || !Number.isFinite(+p[3]) || +p[3] <= 0 || !Number.isFinite(+p[4]) || +p[4] <= 0) return;
-      this.info = { name: p[1], fw: p[2], hz: +p[3] || 50, tau_mNm: +p[4] || 0, v2: p[5] === "v2", fake: p.slice(6).indexOf("fake") >= 0, control1: p.slice(6).indexOf("control1") >= 0 };
+      this.info = { name: p[1], fw: p[2], hz: +p[3] || 50, tau_mNm: +p[4] || 0, v2: p[5] === "v2", fake: p.slice(6).indexOf("fake") >= 0, control1: p.slice(6).indexOf("control1") >= 0, imu1: p.slice(6).indexOf('imu1') >= 0 };
       this.name = p[1] || this.port;
       this.ctrlDt = 1 / this.info.hz;
     } else if (c === "K") {
@@ -306,10 +393,12 @@
       if (KitDevice.current !== self || self._linkFailed) throw new Error("키트 연결이 바뀌거나 끊어졌습니다");
       self.connected = true;
       self._connecting = false;
+      self._startImu();
       self.emit("status", self);
     }).catch(function (e) {
       self._connecting = false;
       self.connected = false;
+      self._stopImu();
       self._rejectWaiters(e.message);
       if (KitDevice.current !== self) throw e;
       KitDevice.current = null;
@@ -319,6 +408,7 @@
 
   KitDevice.prototype.disconnect = function () {
     var self = this;
+    this._stopImu();
     return Promise.resolve(this.running ? this._write("X") : null).then(function () {
       if (KitDevice.current === self) return window.studio.serial.close();
     }).then(function () {
@@ -341,6 +431,7 @@
     if (this.running) return Promise.reject(new Error("키트가 아직 실행 중입니다"));
     if (this._uploading) return Promise.reject(new Error("정책을 아직 보내고 있습니다. 전송이 끝난 뒤 다시 시작해 주세요"));
     this._uploading = true;
+    this._pauseImu();
     var w = this._expect(function (p) {
       return (p[0] === "P" && p[1] === "OK") || (p[0] === "E" && p[1] === "policy");
     }, 20000, "정책 올리기");
@@ -363,6 +454,7 @@
     var pk;
     try { pk = packController(config); } catch (error) { return Promise.reject(error); }
     this.controlCrc = null; this.controlMethod = null; this._uploading = true;
+    this._pauseImu();
     var wait = this._expect(function (p) { return (p[0] === 'D' && p[1] === 'OK') || (p[0] === 'E' && p[1] === 'control'); }, 20000, '제어기 보내기');
     this._write(pk.lines);
     return wait.then(function (p) {
@@ -380,6 +472,7 @@
       throw new Error('제어기 확인값 또는 실행 시간이 올바르지 않습니다');
     var self = this;
     this._run = h || {}; this._runKind = 'control'; this.running = true; this.last = ZERO;
+    this._pauseImu();
     this._write('B ' + seconds + ' ' + crc);
     this._write('A');
     this._alive = setInterval(function () { self._write('A'); }, 500);
@@ -399,6 +492,7 @@
     this._run = h || {};
     this._runKind = 'policy';
     this.running = true;
+    this._pauseImu();
     this.last = ZERO;
     this._write("R " + secs);
     this._write("A");
@@ -416,13 +510,16 @@
   /* 키트 점검: 모터를 움직이지 않고 CAN·모터 응답·진자 센서만 읽습니다. */
   KitDevice.prototype.check = function () {
     if (!this.connected || this._linkFailed) return Promise.reject(new Error("키트를 먼저 연결해 주세요"));
+    if (this.running || this._uploading || this._checking) return Promise.reject(new Error('키트 작업이 끝난 뒤 점검해 주세요'));
+    var self = this;
+    this._checking = true; this._pauseImu();
     var w = this._expect(function (p) { return p[0] === "C"; }, 8000, "키트 점검");
     this._write("C");
     return w.then(function (p) {
       var out = { ok: p[1] === "OK", text: p.slice(2).join(" ") };
       if (out.ok) p.slice(2).forEach(function (kv) { var m = kv.split("="); out[m[0]] = +m[1]; });
       return out;
-    });
+    }).finally(function () { self._checking = false; });
   };
 
   /* 키트에 남아 있는 마지막 키트 맞추기 값 (모터를 움직이지 않음). */
@@ -442,6 +539,7 @@
     return new Promise(function (resolve, reject) {
       self._cal = { onMsg: (h || {}).onMsg, resolve: resolve, reject: reject };
       self.running = true;
+      self._pauseImu();
       self._write("G");
       self._write("A");
       self._alive = setInterval(function () { self._write("A"); }, 500);

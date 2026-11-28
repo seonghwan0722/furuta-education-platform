@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nanum-gothic@5/700.css">
 <link rel="stylesheet" href="css/app.css?v=20261126usb1">
+<link rel="stylesheet" href="css/imu-level.css?v=20261128imu1">
 </head>
 <body>
 
@@ -305,11 +306,12 @@
   <div class="modal device-modal" role="dialog" aria-modal="true" aria-label="키트 연결하기">
     <header>키트 연결하기<button id="devClose" aria-label="닫기">×</button></header>
     <div class="device-intro"><span class="pill">USB 연결</span><h2>배운 정책을 진자 키트로</h2><p>정책을 Pi에 보내면 Pi 안에서 실행하고, 움직임과 결과를 이 화면으로 받습니다.</p></div>
-    <ol class="device-steps"><li><b>1 · 연결</b><span>아래에서 Pi의 포트를 선택</span></li><li><b>2 · 준비</b><span>키트 점검 + 시뮬레이션 확인</span></li><li><b>3 · 직접 시작</b><span>‘실제 키트’ → ‘시작하기’</span></li></ol>
+    <ol class="device-steps"><li><b>1 · 연결</b><span>아래에서 Pi의 포트를 선택</span></li><li><b>2 · 수평과 준비</b><span>받침 수평 조정 → 키트 점검</span></li><li><b>3 · 직접 시작</b><span>시뮬레이션 확인 → 실제 키트 시작</span></li></ol>
     <p id="devConnected" class="device-connected" role="status" hidden></p>
+    <div id="devLevelPanel" hidden></div>
     <div class="grid" id="devGrid"></div>
     <details class="device-help"><summary>포트가 보이지 않거나 연결이 안 되나요?</summary><ul><li>Pi에서 키트 대기 프로그램이 실행 중이어야 합니다. COM 포트가 있다고 Pi 연결이 확인된 것은 아닙니다.</li><li>Pi 5의 USB-C 직결은 USB 직렬 장치 모드 설정과 PC 포트의 전원 출력 확인이 필요합니다. 일반 USB-A 단자끼리 케이블로 잇는 방식은 지원하지 않습니다.</li><li>같은 케이블로 Pi 전원도 공급한다면 케이블을 빼지 말고 ‘정지하기’를 먼저 누르세요. Pi 전원이 끊기면 앱의 정지 명령도 전달되지 않습니다.</li><li>USB-시리얼 어댑터를 쓰면 Pi의 UART 또는 Pi 쪽 어댑터와 배선을 확인하세요. 충전 전용 케이블과 Bluetooth 포트는 구분해야 합니다.</li><li>115200 bps · 규약 v2. 다른 직렬 터미널을 닫고 ‘다시 찾기’를 누르세요.</li></ul></details>
-    <p class="device-action-note">연결은 통신만 확인합니다. ‘키트 맞추기’와 ‘실제 키트 → 시작하기’를 누르면 팔이 움직이며, 정책 실행 전에도 수평 측정을 위해 회전합니다.</p>
+    <p class="device-action-note">연결 후 IMU 각도 확인은 모터를 움직이지 않습니다. ‘키트 맞추기’와 ‘실제 키트 → 시작하기’를 누르면 팔이 움직이며, 정책 실행 전에도 기존 수평·영점 측정을 위해 회전합니다.</p>
     <footer>
       <span class="note" id="devNote" role="status" aria-live="polite"></span>
       <button class="big alt" id="devDisconnect" hidden>연결 끊기</button>
@@ -374,12 +376,13 @@
 <script src="js/reward.js?v=20261126blocks2"></script>
 <script src="js/policy.js?v=20261125q"></script>
 <script src="js/learn.js?v=20261126blocks2"></script>
-<script src="js/device.js?v=20261126control1"></script>
+<script src="js/device.js?v=20261128imu1"></script>
+<script src="js/imu-level.js?v=20261128imu1"></script>
 <script src="js/charts.js?v=20261125q"></script>
 <script src="js/stage.js?v=20261125q"></script>
 <script src="js/examples.js?v=20261126blocks2"></script>
 <script src="js/project.js?v=20261126project1"></script>
 <script src="js/blocks.js?v=20261126blocks2"></script>
-<script src="js/app.js?v=20261126control1"></script>
+<script src="js/app.js?v=20261128imu1"></script>
 </body>
 </html>

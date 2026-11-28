@@ -38,11 +38,12 @@ import argparse
 import threading
 import collections
 import json
+import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 NAME = "furuta-rev11"
-VERSION = "2.1.0"
+VERSION = "2.2.0"
 HZ = 50
 TAU = 2.52
 IQ_MAX = 120
@@ -346,12 +347,15 @@ def load_host(host_dir):
 
 
 class Server:
-    def __init__(self, link, host, fake, log_dir):
+    def __init__(self, link, host, fake, log_dir, imu=None):
         import numpy as np
+        from mpu9250 import MPU9250, FakeMPU9250
         self.np = np
         self.link = link
         self.rp, self.session, self.canguard = host
         self.fake = fake
+        # Lazy I2C opening: constructing/connecting the server never opens CAN.
+        self.imu = imu if imu is not None else (FakeMPU9250() if fake else MPU9250())
         self.log_dir = log_dir
         self.actor = None
         self.crc = None
@@ -375,7 +379,24 @@ class Server:
         self.send(("M %s %s" % (code, text)).rstrip())
 
     def info(self):
-        self.send("I %s %s %d %d v2%s control1" % (NAME, VERSION, HZ, int(round(TAU * 1000)), " fake" if self.fake else ""))
+        self.send("I %s %s %d %d v2%s control1 imu1" % (NAME, VERSION, HZ, int(round(TAU * 1000)), " fake" if self.fake else ""))
+
+    def read_imu(self, parts, paused=False):
+        request_id = parts[1] if len(parts) == 2 else None
+        if len(parts) > 2 or (request_id is not None and not re.fullmatch(r"[A-Za-z0-9-]{1,63}", request_id)):
+            self.send('U {"status":"unavailable","fake":%s,"message":"Invalid IMU request id"}' % ("true" if self.fake else "false"))
+            return
+        if paused or self.up is not None or self.control_up is not None:
+            self.imu.reset()
+            result = dict(status="paused", fake=self.fake, message="키트 작업 중에는 IMU 수평 안내를 잠시 멈춥니다")
+        else:
+            result = self.imu.read()
+        if request_id is not None:
+            result["request_id"] = request_id
+        self.send("U " + json.dumps(result, ensure_ascii=False, separators=(",", ":"), allow_nan=False))
+
+    def close(self):
+        self.imu.close()
 
     def status(self, state):
         self.send("K %s %s %s" % (state, self.crc or "-", self.last_end))
@@ -390,6 +411,7 @@ class Server:
                 self.control = None
                 self.control_crc = None
                 self.control_session = None
+                self.imu.close()
                 continue
             if connection is not self.link.active_session:
                 continue
@@ -406,6 +428,8 @@ class Server:
             self.info()
         elif c == "Q":
             self.status("idle")
+        elif c == "U":
+            self.read_imu(p)
         elif c == "P":
             self.policy(p, line)
         elif c == "D":
@@ -581,6 +605,10 @@ class Server:
                 self.status("running")
             elif s == "H":
                 self.info()
+            elif s.split()[0] == "U":
+                # An idle request may cross a run/start command. Never read I2C
+                # here or turn it into an E busy that could abort the client run.
+                self.read_imu(s.split(), paused=True)
             else:
                 self.send("E busy %s" % s.split()[0][:20])
 
@@ -1315,12 +1343,25 @@ def main():
     ap.add_argument("--fake-tilt-deg", type=float, default=0.0, help="--fake: 받침 기울기")
     ap.add_argument("--fake-tilt-dir", type=float, default=0.0, help="--fake: 기울기 방향 (팔 0x92 각도 기준)")
     ap.add_argument("--fake-zero-shift", type=float, default=0.0, help="--fake: 진자 자석 영점이 session.py 와 다른 정도 (카운트)")
+    ap.add_argument("--imu-bus", type=int, default=1, help="베이스 MPU-9250 I2C 버스 번호 (기본 1)")
+    ap.add_argument("--imu-address", type=lambda value: int(value, 0), choices=(0x68, 0x69), default=0x68,
+                    help="MPU-9250 주소: 0x68 또는 0x69")
+    ap.add_argument("--imu-axes", default="x,y,z", help="베이스 X/Y/Z로 대응할 센서 축 (예: x,y,z 또는 y,-x,z)")
     ap.add_argument("--host-dir", default=None,
                     help="run_policy.py, session.py, canguard.py 가 있는 폴더 (기본: 이 폴더, 없으면 ../pi_host)")
     ap.add_argument("--log-dir", default=None, help="기본: <host-dir>/logs (가짜 장치는 <host-dir>/logs/fake)")
     a = ap.parse_args()
     if bool(a.serial) == bool(a.tcp):
         ap.error("--serial 과 --tcp 중 하나를 고르세요")
+    from mpu9250 import MPU9250, FakeMPU9250, axis_map
+    try:
+        axis_map(a.imu_axes)
+        if a.imu_bus < 0:
+            raise ValueError("imu bus must be non-negative")
+        imu = (FakeMPU9250(a.fake_tilt_deg, a.fake_tilt_dir) if a.fake else
+               MPU9250(a.imu_bus, a.imu_address, a.imu_axes))
+    except ValueError as error:
+        ap.error(str(error))
     if a.host_dir is None:
         a.host_dir = HERE if os.path.exists(os.path.join(HERE, "run_policy.py")) else os.path.join(HERE, "..", "pi_host")
     a.host_dir = os.path.abspath(a.host_dir)
@@ -1342,11 +1383,13 @@ def main():
     else:
         link = SerialLink(a.serial, a.baud)
     link.start()
+    server = Server(link, host, a.fake, log_dir, imu=imu)
     try:
-        Server(link, host, a.fake, log_dir).loop()
+        server.loop()
     except KeyboardInterrupt:
         print("끝냄")
     finally:
+        server.close()
         del lock
 
 

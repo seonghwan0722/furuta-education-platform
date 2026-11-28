@@ -12,6 +12,11 @@
   let target='sim',kit={connected:false,capable:false,busy:false,checked:false},kitBusy=false,kitRunId=null,stopPending=false;
   let requestSeq=0,runSeq=0,controlMeta=new Map(),hardwarePhase='preparing';
   const requests=new Map(),bridgeAvailable=window.parent!==window;
+  const levelPanel=new PS.ImuLevelPanel($('controlLevelPanel'),{compact:true,onState(info){
+    const short={ready:'목표 충족',settling:'유지 확인 중',adjust:'조정 필요',moving:'움직임 감지',paused:'측정 일시 정지',disconnected:'연결 대기',waiting:'측정 대기',unsupported:'업데이트 필요',unavailable:'센서 확인 필요',stale:'수신 멈춤'};
+    $('controlLevelSummary').textContent=(info.fake?'가상 · ':'')+(info.tilt!==null?info.tilt.toFixed(1)+'° · ':'')+(short[info.state]||'센서 확인 필요');
+    $('controlLevelDisclosure').dataset.state=info.state;
+  }});
   const endLabels={done:'완료',stop:'사용자 정지',link:'연결 끊김',check:'시작 점검 실패',watchdog:'모터 응답 없음',arm_speed:'팔 속도 제한',pend_speed:'진자 속도 제한',spin:'연속 회전 감지',hot:'모터 온도 제한',tilt:'받침 기울기 초과',level:'영점 측정 실패',not_still:'아래 자세 대기 종료',not_upright:'직립 자세 대기 종료',upright:'직립 범위 이탈',angle:'직립 범위 이탈',deadline:'계산 시간 초과',solver:'계산 수렴 실패',error:'실행 오류',cancelled:'시작 취소',nocapture:'전환 조건 미도달',balance_range:'직립 유지 범위 이탈',controller:'제어기 계산 오류',qp:'최적화 계산 실패',sensor:'센서 응답 이상',nocontrol:'전송된 제어기 없음'};
   let notes={pid:{},lqr:{},lmpc:{}};
   try{const v=JSON.parse(localStorage.getItem('ps-control-notes-v1')||'null');if(v&&typeof v==='object')for(const m of Object.keys(notes))for(const k of ['predict','observe','explain'])if(typeof v[m]?.[k]==='string')notes[m][k]=v[m][k].slice(0,1000);}catch(_){ }
@@ -35,6 +40,8 @@
   }
   function paintKit(){
     $('kitControl').hidden=target!=='kit';
+    levelPanel.update(kit.imu,kit.connected,kit.busy||kitBusy);
+    if(kit.busy||kitBusy||running)$('controlLevelDisclosure').open=false;
     $('targetSim').setAttribute('aria-pressed',String(target==='sim'));
     $('targetKit').setAttribute('aria-pressed',String(target==='kit'));
     const label=!bridgeAvailable?'메인 앱에서 열어 주세요':!kit.connected?'키트 연결 필요':!kit.capable?'Pi 프로그램 업데이트 필요':(kit.fake?'가상 키트 · ':'')+(kit.checked?'점검 완료':'연결됨 · 점검 필요');
@@ -117,6 +124,7 @@
     }
     if(m.type!=='control-kit-event')return;
     if(m.event==='status'){kit=Object.assign({},kit,m.data||{});paintKit();outputs();resultContext();return;}
+    if(m.event==='imu'){kit.imu=m.data;levelPanel.update(kit.imu,kit.connected,kit.busy||kitBusy);return;}
     if(!kitRunId||m.runId!==kitRunId)return;
     if(m.event==='message')hardwareMessage(m.data);
     else if(m.event==='control')showHardwareMeta(m.data);

@@ -6,6 +6,7 @@
   <title>Pendulum Studio · 제어 실험실</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
   <link rel="stylesheet" href="css/control.css?v=20261126kit1">
+  <link rel="stylesheet" href="css/imu-level.css?v=20261128imu1">
 </head>
 <body>
 <header class="appHeader">
@@ -47,6 +48,7 @@
         <div class="kitControlHead"><span class="pill state">Pi에서 제어</span><b id="kitConnection">연결 확인 중</b></div>
         <p class="hint" id="kitConnectionNote" role="status" aria-live="polite">메인 앱의 키트 연결을 함께 사용합니다.</p>
         <div class="kitControlActions"><button class="secondary" id="connectKit">키트 연결하기</button><button class="secondary" id="checkKit" disabled>모터·센서 점검</button></div>
+        <details class="imu-control-disclosure" id="controlLevelDisclosure"><summary><span>받침 수평계</span><b id="controlLevelSummary">연결 대기</b></summary><div id="controlLevelPanel"></div></details>
         <details class="kitSteps"><summary>아래 자세에서 시작 → 자동 스윙업 → 직립 유지</summary><ol class="kitProcedure" id="kitProcedure"><li>진자를 아래로 내려 두고 ‘실제 키트 시작’을 누릅니다.</li><li>팔이 회전하며 받침 수평을 측정합니다.</li><li>자동 스윙업으로 진자를 올린 뒤 선택한 제어기로 직립을 유지합니다. 전환 순간의 팔 위치를 기준으로 삼습니다.</li></ol><p class="hint">수평 측정 후 스윙업·직립 유지를 합쳐 10초 동안 실행합니다. 제어 계산은 Pi 안에서 50 Hz로 수행합니다. 전환 조건은 직립 오차 5°·진자 속도 0.2 rad/s·팔 속도 4 rad/s 이내인 시험 전 후보입니다.</p></details>
         <p class="hint">시뮬레이션에서 계산한 게인의 실물 안정성은 아직 확인하지 않았습니다. 정지는 아래 ‘정지하기’로 요청하세요.</p>
       </div>
@@ -151,6 +153,6 @@
     </div>
   </section>
 </main>
-<script src="assets/model.js"></script><script src="js/physics.js"></script><script src="js/charts.js"></script><script src="js/control-core.js?v=20261126kit1"></script><script src="js/control-explainers.js?v=20261126theory1"></script><script src="js/control-lessons.js?v=20261126theory1"></script><script src="js/control-lab.js?v=20261126kit1"></script>
+<script src="assets/model.js"></script><script src="js/physics.js"></script><script src="js/charts.js"></script><script src="js/control-core.js?v=20261126kit1"></script><script src="js/control-explainers.js?v=20261126theory1"></script><script src="js/control-lessons.js?v=20261126theory1"></script><script src="js/imu-level.js?v=20261128imu1"></script><script src="js/control-lab.js?v=20261128imu1"></script>
 </body>
 </html>

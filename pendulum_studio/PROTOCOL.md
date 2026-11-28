@@ -27,6 +27,7 @@ v1(앱이 0.02초마다 모터 힘을 보내는 방식)은 쓰지 않습니다. 
 |---|---|---|
 | `H` | 인사 | `I ...` |
 | `Q` | 상태 묻기 | `K ...` |
+| `U [request_id]` | 베이스 MPU-9250 기울기 1회 읽기 (모터/CAN 사용 안 함, `imu1` 기능 확인 후 대기 중 약 5 Hz) | `U {JSON}` |
 | `P BEGIN <n> <crc> <act> <squash> <sizes>` | 정책 올리기 시작 | (없음, 틀리면 `E policy ...`) |
 | `P <base64>` | 정책 값 조각 (여러 줄) | (없음) |
 | `P END` | 정책 올리기 끝 | `P OK <crc>` 또는 `E policy <까닭>` |
@@ -58,7 +59,7 @@ P END
 ## 키트 → 앱
 
 ```
-I <name> <fw> <hz> <tau_mNm> v2 [fake]        인사 답. 예: I furuta-rev11 2.0.0 50 2520 v2
+I <name> <fw> <hz> <tau_mNm> v2 [fake] [control1] [imu1]  인사 답. 기능 토큰은 순서에 의존하지 않음
 K <state> <policy_crc|-> <last_end|->         state: idle | running
 P OK <crc>
 C OK temp=<°C> raw=<진자 RAW> zero=<영점 RAW> spread=<0.5초 변동> a92=<팔 각도°> brake=<0|1>
@@ -75,6 +76,30 @@ T <t_ms> <theta_mdeg> <alpha_mdeg> <theta_mdps> <alpha_mdps> <u_applied> <flags>
 R END <reason> <steps> [설명]
 E <code> <설명>                               명령을 받아들이지 못함
 ```
+
+### 베이스 수평 안내 `U` (`imu1`, 2026-11-28 추가)
+
+이 조회는 구 규약 v1의 모터 입력 `U <힘>`과 무관합니다. 앱은 **v2 및 `imu1`을 확인한 수신기에만** 보냅니다. 연결 시 자동 조회를 시작하되 모터 실행·키트 맞추기·정책 전송 중에는 쉬며 한 번에 하나만 대기시킵니다. `U`는 모터를 움직이지 않고 베이스 고정 MPU-9250만 읽습니다.
+
+```text
+U level-42
+U {"status":"ok","roll_deg":0.4,"pitch_deg":-0.3,"tilt_deg":0.5,"accel_g":1.001,"gyro_dps":0.12,"seq":42,"fake":false,"message":"받침 기울기 측정 중","request_id":"level-42"}
+```
+
+| 필드 | 뜻 |
+|---|---|
+| `status` | `ok`: 정지 표본 안정 / `moving`: 이동 또는 안정 대기 / `unavailable`: 측정 불가 / `paused`: 다른 키트 작업 중 |
+| `roll_deg`, `pitch_deg` | 좌우 ±180°, 앞뒤 ±90°. 가속도 기반이며 `moving`일 때는 동적 가속도 영향 가능 |
+| `tilt_deg` | Z축과 수직 위쪽 사이 전체 기울기 0~180°. 수평 목표 판정은 이 값을 사용 |
+| `accel_g`, `gyro_dps` | 3축 가속도 크기(g), 자이로 크기(°/s) |
+| `seq` | 유효한 새 표본마다 증가. 이동 표본 포함. 재연결과 필터 초기화로 감소하지 않음 |
+| `fake` | 가상 센서 여부. 실물 측정과 구분 |
+| `request_id` | 요청에 지정한 식별자를 그대로 회신. 영숫자·하이픈 1~63자. 생략한 `U`에는 이 필드도 생략 |
+| `message` | 표시용 설명. 실행 명령으로 해석하지 않음 |
+
+`unavailable`과 `paused`는 각도 필드를 보내지 않습니다. `seq`는 이 상태에서는 생략되거나 이전 값일 수 있습니다. 앱은 현재 대기 요청과 일치하고 제한 시간 안에 온 응답만 받으며, 동일/이전 순번이나 오래된 값으로 수평 완료 상태를 유지하지 않습니다. 센서가 없는 경우에도 `imu1`은 지원 여부로 남고 `unavailable`을 반환합니다. 업로드 중이나 제어 루프에서 들어온 `U`는 I2C를 읽지 않고 `paused`를 회신합니다.
+
+기본 1°는 사용자가 조정할 수 있는 설치 목표이며, 기존 팔 회전 수평 추정의 5° 제한 및 실물 실행 조건을 바꾸지 않습니다. 배선·축 설정·측정 한계는 [IMU_SETUP.md](kit/IMU_SETUP.md)를 참조하세요.
 
 ### 상태 줄 `T` (실행 중 50 Hz)
 

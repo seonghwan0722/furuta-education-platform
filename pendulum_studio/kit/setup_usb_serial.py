@@ -95,7 +95,7 @@ def probe_service_user(account, python, host):
         if os.geteuid() != 0 or not runuser:
             return {'error': 'Run inspection as the service account, or use sudo with --user and runuser available.'}
         command = [runuser, '-u', account, '--', str(python)]
-    files = [HERE / 'kit_server.py', HERE / 'kit_cal.py', HERE / 'classical_control.py'] + [host / name for name in BACKEND]
+    files = [HERE / 'kit_server.py', HERE / 'kit_cal.py', HERE / 'classical_control.py', HERE / 'mpu9250.py'] + [host / name for name in BACKEND]
     request = {
         'uid': uid, 'python': str(python), 'host': str(host),
         'files': [str(path) for path in files],

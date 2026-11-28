@@ -1,0 +1,68 @@
+/* Shared passive setup guide in the RL connection dialog and control laboratory. */
+.imu-level{--imu-accent:#3b6de4;--imu-muted:#51606e;border:1px solid #d7dee3;border-radius:12px;padding:18px;background:#fff;color:#14212b;font-size:13px;line-height:1.6}
+#devLevelPanel{margin:12px 22px}
+.device-modal>header{position:sticky;top:0;z-index:3}
+.device-modal>footer{position:sticky;bottom:0;z-index:2;background:#fff;box-shadow:0 -4px 12px #14212b08}
+.imu-level-heading{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.imu-eyebrow{font-size:11px;color:#2c56c0;font-weight:700;letter-spacing:.03em}
+.imu-level h3{font-size:17px;line-height:1.45;margin:3px 0 0;font-weight:750;color:#14212b}
+.imu-source{border:1px solid #c5d3f6;border-radius:20px;background:#f4f7ff;padding:4px 9px;color:#2c56c0;font-size:11px;white-space:nowrap}
+.imu-level .imu-level-lead{margin:7px 0 12px;color:var(--imu-muted);font-size:12px;line-height:1.7}
+.imu-level-body{display:grid;grid-template-columns:190px minmax(0,1fr);gap:24px;align-items:center;padding:3px 10px 14px}
+.imu-gauge svg{display:block;width:180px;height:180px;overflow:visible;margin:auto}
+.imu-gauge-disc{fill:#f7f9fb;stroke:#d7dee3;stroke-width:1.3}
+.imu-crosshair{fill:none;stroke:#d7dee3;stroke-dasharray:3 4}
+.imu-target-ring{fill:#e9efff;stroke:#9fb6ee;stroke-width:1.3}
+.imu-center{fill:#8ba1b2}
+.imu-bubble{fill:var(--imu-accent);stroke:white;stroke-width:3;transition:cx .16s ease,cy .16s ease}
+.imu-gauge text{font-size:10px;fill:#7b8a99;font-family:inherit}
+.imu-gauge>span{display:block;font-size:10px;text-align:center;color:var(--imu-muted);margin-top:-2px;white-space:nowrap}
+.imu-total{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding-bottom:8px}
+.imu-total>span{font-size:13px;font-weight:700}
+.imu-total strong{font-size:36px;line-height:1.3;font-weight:750;font-variant-numeric:tabular-nums;color:#2c56c0;letter-spacing:-.04em}
+.imu-axis-values{display:grid;grid-template-columns:1fr 1fr;border:1px solid #d7dee3;border-radius:8px;background:#f7f9fb}
+.imu-axis-values>div{padding:9px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.imu-axis-values>div+div{border-left:1px solid #d7dee3}
+.imu-axis-values span{font-size:11px;color:var(--imu-muted)}
+.imu-axis-values b{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.imu-target-label{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:var(--imu-muted);margin-top:12px}
+.imu-target-label select{font:inherit;font-weight:600;color:#14212b;background:#fff;min-height:32px;max-width:150px;border:1px solid #b9c4cc;border-radius:8px;padding:5px 8px;cursor:pointer}
+.imu-target-label select:focus-visible,.imu-mount-help summary:focus-visible{outline:3px solid #c2410c;outline-offset:2px}
+.imu-feedback{background:#f3f6fa;border:1px solid #e4e9ee;border-radius:8px;padding:10px 12px;position:relative;overflow:hidden}
+.imu-level-status{font-size:13px;font-weight:700;display:block}
+.imu-level .imu-level-hint{font-size:12px;line-height:1.6;color:var(--imu-muted);margin:4px 0 0;overflow-wrap:anywhere}
+.imu-hold-track{height:3px;border-radius:3px;margin-top:8px;background:#e4e9ee}
+.imu-hold-fill{display:block;height:100%;width:0;background:#3b6de4;border-radius:3px;transition:width .18s linear}
+.imu-mount-help{font-size:11.5px;color:var(--imu-muted);margin-top:10px}
+.imu-mount-help summary{cursor:pointer;font-weight:600;color:#51606e}
+.imu-level .imu-mount-help p{font-size:11.5px;line-height:1.7;margin:6px 0 0}
+.imu-level[data-state=ready]{border-color:#9ad6ae}
+.imu-level[data-state=ready] .imu-feedback{background:#e9f7ee;border-color:#b5dfc2}
+.imu-level[data-state=ready] .imu-level-status,.imu-level[data-state=ready] .imu-total strong{color:#136b32}
+.imu-level[data-state=ready] .imu-bubble,.imu-level[data-state=ready] .imu-hold-fill{fill:#137b64;background:#137b64}
+.imu-level[data-state=adjust] .imu-feedback,.imu-level[data-state=moving] .imu-feedback{background:#fff8ed;border-color:#f0dbb8}
+.imu-level[data-state=adjust] .imu-level-status,.imu-level[data-state=moving] .imu-level-status{color:#8a4b00}
+.imu-level[data-state=stale] .imu-feedback,.imu-level[data-state=unavailable] .imu-feedback{background:#fff7f5;border-color:#f0d0c9}
+.imu-level[data-state=stale] .imu-level-status,.imu-level[data-state=unavailable] .imu-level-status{color:#9f3325}
+.imu-level-compact{padding:12px;margin-top:12px}
+.imu-level-compact .imu-level-heading{flex-wrap:wrap;gap:6px}
+.imu-level-compact h3{font-size:14px}
+.imu-level-compact .imu-level-body{grid-template-columns:126px minmax(0,1fr);gap:12px;padding:0 0 12px}
+.imu-level-compact .imu-gauge svg{width:126px;height:126px}
+.imu-level-compact .imu-gauge>span{font-size:9px;white-space:normal;line-height:1.4}
+.imu-level-compact .imu-total strong{font-size:29px}
+.imu-level-compact .imu-total>span{font-size:11px}
+.imu-level-compact .imu-axis-values>div{padding:7px}
+.imu-level-compact .imu-axis-values b{font-size:16px}
+.imu-level-compact .imu-axis-values span{font-size:10px}
+.imu-level-compact .imu-target-label{gap:6px;font-size:11px}
+.imu-level-compact .imu-target-label select{font-size:11px;max-width:100px}
+.imu-control-disclosure{margin:10px 0;border:1px solid #c5d3f6;border-radius:8px;background:#fff;font-size:12px}
+.imu-control-disclosure>summary{position:relative;cursor:pointer;padding:9px 10px;color:#2c56c0;font-weight:600;list-style-position:inside}
+.imu-control-disclosure>summary b{float:right;color:#51606e;font-weight:600;font-size:11px;margin-left:8px}
+.imu-control-disclosure[data-state=ready]>summary b{color:#136b32}
+.imu-control-disclosure[data-state=adjust]>summary b,.imu-control-disclosure[data-state=moving]>summary b{color:#8a4b00}
+.imu-control-disclosure .imu-level-compact{border:0;border-top:1px solid #d7dee3;margin-top:0;border-radius:0 0 8px 8px}
+.executionDock .runActions{position:sticky;bottom:0;z-index:2;background:#fff;padding-top:6px;padding-bottom:6px}
+@media(max-width:600px){.imu-level{padding:13px}.imu-level-heading{flex-wrap:wrap;gap:7px}.imu-level-body{grid-template-columns:135px minmax(0,1fr);gap:12px;padding:0 0 12px}.imu-gauge svg{width:135px;height:135px}.imu-gauge>span{white-space:normal;line-height:1.5}.imu-total{flex-wrap:wrap;gap:0}.imu-total strong{font-size:29px}.imu-axis-values>div{padding:7px}.imu-axis-values b{font-size:17px}.imu-axis-values span{font-size:10px}#devLevelPanel{margin:10px 14px}}
+@media(prefers-reduced-motion:reduce){.imu-bubble,.imu-hold-fill{transition:none}}

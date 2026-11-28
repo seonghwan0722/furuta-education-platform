@@ -37,7 +37,8 @@
     return {connected:connected, capable:!!(connected && dev.info && dev.info.control1),
       busy:!!(st.busy || st.fileBusy || devConnecting || kitChecking || (dev && dev.running)),
       checked:!!(connected && classicalChecked === dev), name:connected ? dev.name : '',
-      port:connected ? dev.port : '', fake:!!(connected && dev.info.fake)};
+      port:connected ? dev.port : '', fake:!!(connected && dev.info.fake),
+      imu:connected ? dev.imu : {status:'disconnected'}};
   }
   function finishClassical(run, end) {
     if (classicalRun !== run || run.finished) return;
@@ -54,7 +55,7 @@
   id('mControl').addEventListener('click', function () {
     if (st.busy || st.fileBusy || devConnecting || kitChecking) return;
     controlRequests.clear();
-    id('controlFrame').src = 'control.html?v=20261126control1';
+    id('controlFrame').src = 'control.html?v=20261128imu1';
     id('controlDialog').showModal();
   });
   function closeControlLab() {
@@ -994,6 +995,12 @@
 
   /* ── 키트 연결 ── */
   var devSel = null, devPorts = [], devConnecting = false, devScanning = false, devScanVersion = 0, kitChecking = false;
+  var levelPanel = new PS.ImuLevelPanel(id('devLevelPanel'));
+  function paintBaseLevel() {
+    var dev = st.kit, connected = !!(dev && dev.connected);
+    id('devLevelPanel').hidden = !connected;
+    levelPanel.update(dev && dev.imu, connected, !!(dev && (dev.running || dev._uploading) || kitChecking));
+  }
 
   function openDevices() {
     if (st.busy || st.fileBusy || kitChecking) return;
@@ -1013,6 +1020,7 @@
 
   function paintDeviceControls() {
     var connected = st.kit && st.kit.connected;
+    paintBaseLevel();
     id("devConnect").disabled = devConnecting || devScanning || !devSel || !!(connected && st.kit.port === devSel);
     id("devConnect").textContent = devConnecting ? "확인 중…" : connected && st.kit.port === devSel ? "연결됨" : "연결";
     id("devRefresh").disabled = devConnecting || devScanning;
@@ -1095,13 +1103,19 @@
         (dev.info.tau_mNm / 1000).toFixed(2) + " N·m. 정책은 키트 안에서 실행됩니다.";
       id("kitCheckOut").textContent = "";
       dev.on("alert", function (a) { if (st.kit === dev) id("alertLine").textContent = "키트: " + a.code + " " + a.message; });
+      dev.on('imu', function (sample) {
+        if (st.kit !== dev) return;
+        paintBaseLevel();
+        controlEvent('imu', sample);
+      });
       dev.on("status", function (d) {
         if (st.kit !== dev) return;
+        paintBaseLevel();
         if (!d.connected) { setConn(false, "연결이 끊어졌습니다"); paintDeviceControls(); refresh(); }
         controlEvent('status', controlStatus());
       });
       id("alertLine").textContent = "";
-      id("devNote").textContent = "연결됐습니다. 창을 닫고 키트 점검 → 시뮬레이션 확인 → 실제 키트에서 시작 순서로 진행하세요.";
+      id("devNote").textContent = "연결됐습니다. 위 수평계로 받침을 조정한 뒤, 키트 점검 → 시뮬레이션 확인 → 실제 키트 시작 순서로 진행하세요.";
       if (st.step === 0) setStep(1, true);
       dev.calInfo().then(function () { if (st.kit === dev) paintCalNote(); }).catch(function (e) { if (st.kit === dev) id("kitCalOut").textContent = "저장된 맞추기 값을 읽지 못했습니다: " + (e.message || e); });
     }).catch(function (e) {
@@ -1120,7 +1134,7 @@
     e.stopPropagation();
     if (e.key === "Escape") { e.preventDefault(); closeDevices(); }
     if (e.key === "Tab") {
-      var items = Array.from(id("devModal").querySelectorAll("button:not(:disabled),summary")).filter(function (el) { return el.getClientRects().length; });
+      var items = Array.from(id("devModal").querySelectorAll("button:not(:disabled),select:not(:disabled),summary")).filter(function (el) { return el.getClientRects().length; });
       var first = items[0], last = items[items.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }

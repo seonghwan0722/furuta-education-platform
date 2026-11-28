@@ -20,7 +20,9 @@ const server=http.createServer((req,res)=>{const pathname=decodeURIComponent(new
   await f.locator('#predict').fill('D를 더하면 흔들림이 줄 것 같다.');
   await f.locator('[data-lab-tab=notes]').press('ArrowLeft');
   assert.equal(await f.locator('[data-lab-tab=results]').getAttribute('aria-selected'),'true');
+  await f.locator('[data-lab-tab=settings]').click();
   await f.locator('[data-preset=pd]').click();
+  await f.locator('[data-lab-tab=results]').click();
   await f.locator('#compare').click();
   await f.locator('#status').filter({hasText:'세 방법 비교 완료'}).waitFor();
   assert.equal(await f.locator('#records tr').count(),3);
@@ -32,6 +34,7 @@ const server=http.createServer((req,res)=>{const pathname=decodeURIComponent(new
   assert.ok(dockButton.y>=0 && dockButton.y+dockButton.height<=1000, 'run stays visible while reading results');
   await page.screenshot({path:path.join(out,'compare-1440.png'),fullPage:true});
   await f.locator('[data-method=lmpc]').click();
+  await f.locator('[data-lab-tab=settings]').click();
   await f.locator('#angle').fill('9');
   assert.ok((await f.locator('#setupSummary').innerText()).includes('9°'));
   assert.ok((await f.locator('#resultContext').innerText()).includes('5°'), 'previous results retain their own conditions');
@@ -48,7 +51,7 @@ const server=http.createServer((req,res)=>{const pathname=decodeURIComponent(new
   await f.locator('#quiz button').first().click();assert.ok((await f.locator('#feedback').innerText()).includes('맞아요'));
   await page.screenshot({path:path.join(out,'notes-1440.png'),fullPage:true});
   await f.locator('[data-lab-tab=results]').click();
-  const download=page.waitForEvent('download');await f.locator('#csv').click();const dl=await download;await dl.saveAs(path.join(out,'ui-export.csv'));assert.ok(fs.readFileSync(path.join(out,'ui-export.csv'),'utf8').includes('actual_torque_Nm'));
+  const download=page.waitForEvent('download');await f.locator('#csv').click();const dl=await download;await dl.saveAs(path.join(out,'ui-export.csv'));assert.ok(fs.readFileSync(path.join(out,'ui-export.csv'),'utf8').split(/\r?\n/)[0].split(',').includes('torque_command_Nm'));
   await page.setViewportSize({width:1100,height:720});
   await f.locator('body').evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:path.join(out,'lmpc-1100.png'),fullPage:true});
@@ -59,6 +62,7 @@ const server=http.createServer((req,res)=>{const pathname=decodeURIComponent(new
   await f.locator('[data-lab-tab=notes]').click();
   assert.equal(await f.locator('#predict').inputValue(),'D를 더하면 흔들림이 줄 것 같다.');
   await f.locator('#back').click();
+  await page.locator('.gstep[data-step="1"]').click();
   await page.locator('#runPre').click();await page.waitForTimeout(100);await page.locator('#btnStop').click();
   await page.goto('http://127.0.0.1:'+server.address().port+'/control.html');await page.setViewportSize({width:760,height:900});await page.screenshot({path:path.join(out,'small-760.png'),fullPage:true});
   assert.ok(await page.locator('body').evaluate(e=>e.scrollWidth<=window.innerWidth+1));

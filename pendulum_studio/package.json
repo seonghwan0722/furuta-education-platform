@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder",
-    "test": "node --test tests/control-core.test.cjs"
+    "test": "node --test tests/control-core.test.cjs tests/imu-device.test.cjs"
   },
   "author": "Pendulum Studio",
   "license": "MIT",
