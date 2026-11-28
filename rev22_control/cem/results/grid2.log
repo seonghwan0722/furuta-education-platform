@@ -1,0 +1,12 @@
+== Cout 3000
+hw10 9 16 8.89 hold10 12 sat 0.4 rms 6.28 regen 0.35 arm 10.3 pend 19.6 t 51.4
+lowc20 0 16 nan hold10 14 sat 0.0 rms nan regen 0.75 arm 13.1 pend 17.9 t 39.2
+id08_20 10 16 9.37 hold10 16 sat 0.0 rms 0.6 regen 0.68 arm 12.7 pend 17.5 t 37.5
+== Cout 10000
+hw10 11 16 8.91 hold10 13 sat 0.4 rms 3.89 regen 0.35 arm 10.2 pend 19.6 t 44.6
+lowc20 0 16 nan hold10 15 sat 0.0 rms nan regen 0.75 arm 13.1 pend 17.9 t 37.5
+id08_20 10 16 6.89 hold10 16 sat 0.0 rms 0.56 regen 0.68 arm 12.7 pend 17.4 t 38.1
+== Cout 30000
+hw10 11 16 10.92 hold10 14 sat 0.4 rms 1.86 regen 0.35 arm 10.2 pend 19.5 t 43.1
+lowc20 0 16 nan hold10 12 sat 0.0 rms nan regen 0.75 arm 13.1 pend 18.0 t 37.7
+id08_20 10 16 10.85 hold10 16 sat 0.0 rms 0.63 regen 0.68 arm 12.7 pend 17.4 t 37.7

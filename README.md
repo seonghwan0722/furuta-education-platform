@@ -37,8 +37,10 @@ Pi가 10 ms마다 각도를 읽고 RMD에 전류 지령(0xA1)을 CAN으로 직�
 | `matlab_furuta/` | MATLAB/Simulink: Pi 코드 생성 모델, 디코더·인터록, PPO/SAC/LMPC/PID/LQR |
 | `python_handoff/` | MATLAB 없이 정책 평가·재검증·학습 (numpy 정책 `policies/*.npz`) |
 | `rl_blocklab/` | 교육용 블록 보상 설계 앱 (localhost:8770) |
+| `rev22_control/` | rev22 모델 기준 PID·LQR·LMPC·CEM·PPO·SAC 재설계 (시뮬레이션만, 11/27~28) |
+| `motor_selection/` | rev11 MuJoCo 모터 사이징 스크립트 |
 | `teammate/` | 팀원 MuJoCo SAC(`sac_rev11`)와 실기 보정, Pi 호스트 코드 |
-| `docs/` | 인수인계, 결과 표, 입출력 규약, 하드웨어 기록 |
+| `docs/` | 인수인계, 결과 표, 입출력 규약, 하드웨어 기록, `reports/`(보상 변천·RMD-X6 선정 근거) |
 | `edukit/`, `legacy/` | 이전 버전 |
 
 ## 빠른 실행 (Windows)

@@ -1,0 +1,12 @@
+== "w_du":0
+g12_20 0 16 nan hold10 16 sat 0.0 rms nan regen 0.32 arm 10.2 pend 18.2 t 44.6
+a085_20 1 16 11.72 hold10 16 sat 0.0 rms 0.41 regen 0.3 arm 10.5 pend 17.9 t 42.7
+== "w_du":2
+g12_20 0 16 nan hold10 16 sat 0.1 rms nan regen 0.35 arm 10.1 pend 18.1 t 43.9
+a085_20 4 16 10.38 hold10 16 sat 0.0 rms 0.39 regen 0.32 arm 10.5 pend 18.0 t 44.7
+== "std0Bal":0.05,"stdminBal":0.005
+g12_20 10 16 12.7 hold10 16 sat 0.0 rms 0.38 regen 0.32 arm 10.2 pend 18.2 t 43.9
+a085_20 16 16 4.03 hold10 16 sat 0.0 rms 0.34 regen 0.3 arm 10.5 pend 17.9 t 42.7
+== "K":256,"nelite":24
+g12_20 7 16 7.9 hold10 16 sat 0.0 rms 0.34 regen 0.33 arm 10.1 pend 18.0 t 79.3
+a085_20 16 16 3.65 hold10 16 sat 0.0 rms 0.32 regen 0.3 arm 10.4 pend 17.8 t 79.6

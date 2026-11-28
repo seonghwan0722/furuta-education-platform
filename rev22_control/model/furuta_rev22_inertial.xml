@@ -1,0 +1,19 @@
+<mujoco model="furuta_rev22_inertial">
+  <compiler angle="radian" inertiafromgeom="false" autolimits="true"/>
+  <option timestep="0.002" integrator="RK4" gravity="0 0 -9.81"/>
+  <default><geom contype="0" conaffinity="0" density="0"/></default>
+  <worldbody>
+    <body name="arm" pos="0 0 0">
+      <inertial pos="0.000701905 -0.001414226 -0.024882699" mass="0.122852868" fullinertia="7.685427831e-05 7.693549313e-05 4.375959607e-05 3.025889163e-07 -1.665384989e-06 5.015649478e-07"/>
+      <joint name="arm" type="hinge" axis="0 0 1"/>
+      <geom type="sphere" size="0.005"/>
+      <body name="pendulum" pos="0 0 -0.003000">
+        <!-- angle 0 = hanging (CAD pose) -->
+        <inertial pos="0.044512779 -0.049436450 -0.071579564" mass="0.039236347" fullinertia="1.537612443e-04 1.510456634e-04 2.714926277e-05 1.291851929e-05 2.533262003e-05 -2.813472465e-05"/>
+        <joint name="pendulum" type="hinge" axis="0.669130606 -0.743144825 0.000000000"/>
+        <geom type="sphere" size="0.004"/>
+      </body>
+    </body>
+  </worldbody>
+  <actuator><motor name="arm_torque" joint="arm" gear="1" ctrlrange="-1000 1000"/></actuator>
+</mujoco>

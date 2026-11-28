@@ -1,0 +1,12 @@
+== "w_du":1,"std0Bal":0.1
+lowc20 0 16 nan hold10 16 sat 0.0 rms nan regen 0.75 arm 13.1 pend 17.4 t 37.2
+hw10 16 16 3.57 hold10 16 sat 0.5 rms 0.41 regen 0.34 arm 10.7 pend 19.0 t 43.2
+== "w_du":0,"std0Bal":0.05
+lowc20 0 16 nan hold10 16 sat 0.0 rms nan regen 0.76 arm 13.0 pend 17.8 t 37.4
+hw10 16 16 4.22 hold10 16 sat 0.8 rms 0.44 regen 0.38 arm 11.1 pend 19.3 t 43.2
+== "w_du":1,"std0Bal":0.05
+lowc20 0 16 nan hold10 16 sat 0.0 rms nan regen 0.75 arm 13.1 pend 17.4 t 37.3
+hw10 16 16 4.0 hold10 16 sat 0.7 rms 0.43 regen 0.34 arm 11.3 pend 19.3 t 44.4
+== "w_du":0,"std0Bal":0.1,"smooth":0.5
+lowc20 0 16 nan hold10 16 sat 0.0 rms nan regen 0.76 arm 13.0 pend 17.4 t 38.5
+hw10 16 16 4.44 hold10 16 sat 0.3 rms 0.38 regen 0.33 arm 11.8 pend 19.2 t 46.4
