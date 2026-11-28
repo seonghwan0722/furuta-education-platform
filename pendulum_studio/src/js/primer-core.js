@@ -4,7 +4,7 @@
   else root.RLPrimer = factory();
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  function rng(seed) { let a = seed >>> 0; return function () { a += 0x6D2B79F5; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function rng(seed) { let a = seed >>> 0; const next = function () { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; next.state=()=>a>>>0; next.restore=v=>{a=v>>>0;}; return next; }
   function best(values, random) { const m = Math.max(...values), ties = values.map((v, i) => v === m ? i : -1).filter(i => i >= 0); return ties[Math.floor((random || (() => 0))() * ties.length)]; }
   const maps = {
     maze: ['S.....', '.##.#.', '....#.', '.#X...', '.#.#X.', '.....G'],
@@ -36,13 +36,13 @@
       }
       return { path, total, goal, steps: path.length - 1, last, reason: goal ? '목표 도착' : cells[s] === 'X' ? '함정에 도착' : '80걸음 시간 제한' };
     }
-    return { opts, cells, q, start, transition, episode };
+    return { opts, cells, q, start, transition, episode, snapshot:()=>({opts:Object.assign({},opts),q:q.map(r=>r.slice()),rng:random.state()}), restore:s=>{s.q.forEach((r,i)=>q[i].splice(0,4,...r));random.restore(s.rng);} };
   }
   function bandit(seed) {
     const random = rng(seed || 7), probabilities = [.25, .5, .75], n = [0, 0, 0], q = [0, 0, 0]; let total = 0;
     function pull(a) { const reward = random() < probabilities[a] ? 1 : 0; n[a]++; q[a] += (reward - q[a]) / n[a]; total += reward; return { action: a, reward, total }; }
     function step(epsilon) { return pull(random() < epsilon ? Math.floor(random() * 3) : best(q, random)); }
-    return { n, q, probabilities, pull, step, total: () => total };
+    return { n, q, probabilities, pull, step, total: () => total, snapshot:()=>({n:n.slice(),q:q.slice(),total,rng:random.state()}), restore:s=>{n.splice(0,3,...s.n);q.splice(0,3,...s.q);total=s.total;random.restore(s.rng);} };
   }
   function discounted(rewards, gamma) { return rewards.reduce((sum, r, t) => sum + Math.pow(gamma, t) * r, 0); }
   return { rng, best, grid, bandit, discounted, qUpdate, maps };

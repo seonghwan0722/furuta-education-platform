@@ -1,5 +1,6 @@
 /* Classroom project files: declarative data only. Validation never changes the running app.
- * v3 (.pendulum): rules, policy weights, lesson progress and recorded comparisons.
+ * v4 (.pendulum): rules, policy, immutable experiments, missions and all lesson views.
+ * v3 files are migrated with no invented classroom history.
  * v2 (.json): the earlier rule-only format, migrated without a policy or device state.
  */
 (function (PS) {
@@ -58,6 +59,15 @@
     var source = object(value.B, "블록 목록"), keys = Object.keys(source);
     if (keys.length > 1000) fail("블록은 1,000개까지 저장할 수 있습니다.");
     var model = { B: {}, scripts: { reward: [], run: [] }, pos: { reward: null, run: null }, loose: [], next: 1 };
+    if (value.variables !== undefined) {
+      object(value.variables, '변수 이름'); model.variables = {};
+      var names = [];
+      ['A', 'B', 'C', 'D'].forEach(function (key) {
+        var name = value.variables[key] === undefined ? '변수 ' + key : text(value.variables[key], 16, '변수 이름').trim();
+        if (!name || /[\x00-\x1f\x7f]/.test(name) || names.indexOf(name) >= 0) fail('변수 이름은 서로 다른 1~16자 이름으로 정해 주세요.');
+        model.variables[key] = name; names.push(name);
+      });
+    }
     var defs = PS.DEFS, parents = {}, edges = {}, largest = 0;
     if (!defs) fail("블록 정의를 읽지 못했습니다. 앱을 다시 열어 주세요.");
 
@@ -231,6 +241,9 @@
       secs: number(value.secs, 3, 20, "실험 시간")
     };
     if (result.height.length !== result.t.length || result.force.length !== result.t.length || result.arm.length !== result.t.length) fail("그래프의 시간과 측정값 개수가 다릅니다.");
+    ['error', 'velocity', 'action'].forEach(function (key) {
+      if (value[key] !== undefined) { result[key] = series(value[key], key, false); if (result[key].length !== result.t.length) fail('상세 실험 기록의 길이가 다릅니다.'); }
+    });
     result.t.forEach(function (t, i) {
       if (i && t < result.t[i - 1]) fail("그래프의 시간 순서가 올바르지 않습니다.");
     });
@@ -245,7 +258,7 @@
   function results(value) {
     object(value, "실험 기록");
     var runNo = integer(value.runNo, 0, 1000000000, "실험 횟수"), numbers = {};
-    var rows = array(value.rows, 8, "실험 기록").map(function (row) {
+    var rows = array(value.rows, 100, "실험 기록").map(function (row) {
       object(row, "실험 기록 행");
       var no = integer(row.no, 1, runNo, "실험 번호");
       if (numbers[no]) fail("실험 번호가 중복되었습니다.");
@@ -253,7 +266,9 @@
       return {
         no: no, label: text(row.label, 50000, "규칙 이름"), text: text(row.text, 50000, "규칙 설명"),
         sim: text(row.sim, 500, "시뮬레이션 기록"), kit: text(row.kit, 500, "키트 기록"),
-        m: metrics(row.m), data: row.data === null ? null : runData(row.data)
+        m: metrics(row.m), data: row.data === null ? null : runData(row.data),
+        snapshot: row.snapshot ? experimentSnapshot(row.snapshot) : null,
+        analysis: row.analysis ? analysis(row.analysis) : null
       };
     });
     function selected(no) {
@@ -265,31 +280,41 @@
     return { runNo: runNo, rows: rows, currentNo: selected(value.currentNo), pinnedNo: selected(value.pinnedNo), runData: runData(value.runData) };
   }
 
+  function experimentSnapshot(value) {
+    var s=PS.Classroom.data(value);
+    text(s.rewardKey,50000,'보상 규칙');text(s.modelSignature,65536,'모델');text(s.source,20,'실행 위치');text(s.learningSource,200,'정책 준비 방식');text(s.policyDigest,100,'정책 식별');text(s.createdAt,40,'실험 시각');number(s.seconds,3,20,'시험 시간');object(s.options,'실험 조건');object(s.start,'시작 조건');
+    if(s.blocks)s.blocks=blockModel(s.blocks,false);return s;
+  }
+  function analysis(value) {
+    object(value,'상세 실험 지표');var out={};['duration','uprightSeconds','captureTime','postCaptureMAE','rmsAction'].forEach(function(k){out[k]=optionalNumber(value[k],k);});return out;
+  }
   function normalize(value) {
     object(value, "프로젝트");
     if (value.app !== "pendulum-studio") fail("Pendulum Studio에서 저장한 수업 프로젝트가 아닙니다.");
-    if (value.v !== 2 && value.v !== 3) fail("지원하지 않는 프로젝트 버전입니다. 최신 앱인지 확인해 주세요.");
+    if ([2,3,4].indexOf(value.v) < 0) fail("지원하지 않는 프로젝트 버전입니다. 최신 앱인지 확인해 주세요.");
     var legacy = value.v === 2;
     var out = {
-      app: "pendulum-studio", v: 3, name: text(value.name, 200, "작품 이름"),
+      app: "pendulum-studio", v: 4, name: text(value.name, 200, "작품 이름"),
       savedAt: legacy ? new Date().toISOString() : text(value.savedAt, 40, "저장 시각"),
       mode: choice(value.mode, ["guide", "free"], "수업 방식"),
       smooth: integer(legacy && value.smooth === undefined ? 1 : value.smooth, 0, 2, "빠르기 감점"),
       effort: integer(legacy && value.effort === undefined ? 1 : value.effort, 0, 2, "힘 감점"),
       blocks: blockModel(value.blocks, legacy), view: { step: 2, tab: "blocks" },
       progress: { done1: false, wrote: false }, runtime: null, learning: null,
-      results: { runNo: 0, rows: [], currentNo: null, pinnedNo: null, runData: blankRun() }
+      results: { runNo: 0, rows: [], currentNo: null, pinnedNo: null, runData: blankRun() },
+      classroom: PS.Classroom.normalize(value.v === 4 ? value.classroom : null)
     };
     if (legacy) return { project: out, legacy: true };
     if (!/^\d{4}-\d{2}-\d{2}T/.test(out.savedAt) || !Number.isFinite(Date.parse(out.savedAt))) fail("저장 시각이 올바르지 않습니다.");
     var view = object(value.view, "화면 위치"), progress = object(value.progress, "수업 진행");
-    out.view = { step: integer(view.step, 0, 3, "활동 번호"), tab: choice(view.tab, ["intro", "blocks", "graphs", "examples"], "화면 탭") };
+    out.view = { step: integer(view.step, 0, 3, "활동 번호"), tab: choice(view.tab, ["intro", "blocks", "graphs", "examples", "inquiry"], "화면 탭") };
     out.progress = { done1: bool(progress.done1, "살펴보기 진행"), wrote: bool(progress.wrote, "예상 작성 여부") };
     out.runtime = runtimeData(value.runtime);
     if (value.learning !== null) {
       var learning = object(value.learning, "학습 결과");
       if (!out.runtime) fail("정책을 확인할 환경 정보가 없습니다.");
       out.learning = { policy: policy(learning.policy, out.runtime.observationSize), key: text(learning.key, 50000, "정책의 규칙"), seconds: optionalNumber(learning.seconds, "학습 시간") };
+      out.learning.source = learning.source === undefined ? '불러온 정책' : text(learning.source,200,'정책 준비 방식');
     }
     out.results = results(value.results);
     return { project: out, legacy: false };

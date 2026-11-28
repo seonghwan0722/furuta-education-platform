@@ -24,6 +24,8 @@
     kit: null, kitReady: false, runNo: 0, row: null, rowKey: null, prev: null
   };
 
+  st.classroom = PS.Classroom.empty(); st.learningSource = "정책 준비 전";
+  var inquiry = null, lessonSession = null;
   var simDev = new PS.SimDevice(C);
   var classicalRun = null, classicalChecked = null, controlResume = false;
   var controlRequests = new Set(), controlRunIds = new Set();
@@ -58,9 +60,11 @@
     id('controlFrame').src = 'control.html?v=20261128imu1';
     id('controlDialog').showModal();
   });
-  function closeControlLab() {
+  async function closeControlLab() {
     if (classicalRun) { stopClassical(); return; }
     if (kitChecking || devConnecting || controlResume) return;
+    try { if(lessonSession) await lessonSession.capture('control'); } catch(e) { projectMessage(e.message); return; }
+    if(lessonSession)lessonSession.detach('control');
     id('controlDialog').close(); id('controlFrame').src = 'about:blank'; id('mControl').focus();
   }
   window.addEventListener('message', function (e) { if(e.source === id('controlFrame').contentWindow && e.data && e.data.type === 'control-lab-close') closeControlLab(); });
@@ -154,7 +158,7 @@
     force: new PS.Chart(id("chForce"), { xlabel: "초", ymin: 0, ymax: 100, digits: 0 }),
     arm: new PS.Chart(id("chArm"), { xlabel: "초", ymin: 0, digits: 1 })
   };
-  function newRun() { return { label: "", curve: [], t: [], height: [], force: [], arm: [], secs: 10 }; }
+  function newRun() { return { label: "", curve: [], t: [], height: [], force: [], arm: [], error: [], velocity: [], action: [], secs: 10 }; }
   st.runData = newRun();
   st.rows = [];
   st.curRow = null;
@@ -174,7 +178,8 @@
       return out;
     }
     function idx(a) { return a.map(function (_v, i) { return i + 1; }); }
-    if (!which || which === "learn") charts.learn.set(ser(idx(c.curve), c.curve, p ? idx(p.curve) : [], p ? p.curve : []));
+    var comparableCurve=cr && cr.snapshot && st.curRow && st.curRow.snapshot && cr.snapshot.rewardKey===st.curRow.snapshot.rewardKey && cr.snapshot.learningSource===st.curRow.snapshot.learningSource;
+    if (!which || which === "learn") charts.learn.set(ser(idx(c.curve), c.curve, p && comparableCurve ? idx(p.curve) : [], p && comparableCurve ? p.curve : []));
     if (!which || which === "test") {
       var xm = Math.max(c.secs, p && p.t.length ? p.secs : 0);
       charts.height.set(ser(c.t, c.height, p ? p.t : [], p ? p.height : []), xm);
@@ -184,6 +189,7 @@
     id("gPrev").hidden = !p;
     id("gNote").textContent = cr ? "비교: " + cr.no + "회 · " + cr.label + " (왼쪽 기록 표에서 바꿀 수 있습니다)"
       : "한 번 더 시도하면 앞의 시도와 겹쳐 보입니다";
+    if(cr&&!comparableCurve)id("gNote").textContent+=" · 학습 곡선은 보상·준비 방식이 같을 때만 겹칩니다.";
   }
   window.addEventListener("resize", function () { drawCharts(); });
 
@@ -327,7 +333,7 @@
     stage.label(label);
     stage.busy(true);
     stage.clearResult();
-    var dt = dev.ctrlDt, lastT = 0, n = 0, failed = false, episode = null;
+    var dt = dev.ctrlDt, lastT = 0, n = 0, failed = false, episode = null, latestReward = 0;
     if (dev.kind === "kit") stage.show({ t: 0, th: 0, al: 0, thd: 0, ald: 0, u: 0, flags: 0 }, { reward: 0, value: 0, peak: 0, tend: secs });
     episode = PS.runEpisode(dev, function (o) { return mlp.forward(o); }, {
       seconds: secs,
@@ -336,28 +342,32 @@
         stage.note(kitMsgText(code, args));
         if (code === "start") say("키트 실행 중");
       },
-      onTick: function (s) {
-        if (failed) return;
+      onSample: function (s) {
+        if (failed) return false;
         var phi = PS.wrap(s.al - Math.PI);
-        judge.tick(s, phi, Math.max(dt, s.t - lastT));
+        judge.tick(s, phi, s.t - lastT);
         lastT = s.t;
         var rv = r.fn(phi, s.ald, s.thd, s.u, s.th);
         if (r.lastError || !Number.isFinite(rv)) {
           failed = true; var error = blockCalculationError(r.lastError);
           setTimeout(function () { if (st.run !== episode) return; st.run = null; episode.cancel(); blockFailure(error); }, 0);
-          return;
+          return false;
         }
-        var vi = Math.min(vals.length - 1, Math.max(0, Math.round(s.t / dt)));
-        stage.show(s, { reward: rv, value: vals[vi], peak: judge.peak, tend: secs });
-        n++;
-        if (opts.live && r.trace && n % 3 === 0) blocks.live(r.trace(phi, s.ald, s.thd, s.u, s.th));
+        latestReward = rv;
         if (rec) {
-          rec.t.push(s.t);
+          rec.t.push(s.t); rec.error.push(phi*180/Math.PI); rec.velocity.push(s.ald); rec.action.push(s.u);
           rec.height.push(50 * (1 + Math.cos(phi)));
           rec.force.push(Math.abs(s.u) * 100);
           rec.arm.push(Math.abs(s.th - judge.th0) / (2 * Math.PI));
-          if (n % 6 === 0 && st.tab === "graphs") drawCharts("test");
         }
+      },
+      onTick: function (s) {
+        if (failed) return;
+        var vi = Math.min(vals.length - 1, Math.max(0, Math.round(s.t / dt)));
+        stage.show(s, { reward: latestReward, value: vals[vi], peak: judge.peak, tend: secs });
+        n++;
+        if (opts.live && r.trace && n % 3 === 0) blocks.live(r.trace(PS.wrap(s.al - Math.PI), s.ald, s.thd, s.u, s.th));
+        if (rec && n % 6 === 0 && st.tab === "graphs") drawCharts("test");
       },
       onDone: function (s, end) {
         if (failed) return;
@@ -375,6 +385,7 @@
         if (opts.onDone) opts.onDone(out, judge);
       }
     });
+    if(opts.record){var cancel=episode.cancel;episode.cancel=function(){cancel();if(!failed&&opts.onDone){failed=true;opts.onDone({ok:false,short:'중단',long:'사용자가 중단한 시험'},judge);}};}
     return episode;
   }
 
@@ -403,7 +414,7 @@
     var currentRule = rule(), currentOptions = runOpts();
     if (st.policy && currentRule.ok && st.policyKey === keyOf(currentRule, currentOptions)) { refresh(); return; }
     st.policy = null;
-    st.policyKey = null;
+    st.policyKey = null; st.learningSource = "정책 준비 전";
     st.simOK = false;
     st.gate = null;
     st.fallback = null;
@@ -449,7 +460,7 @@
         st.policy = base;
         st.policyKey = key;
         st.gate = got.spec.gate === undefined ? null : got.spec.gate;
-        st.fallback = null;
+        st.fallback = null; st.learningSource = "SAC 사전 정책";
         id("learnState").textContent = "학습완료";
         id("trainMsg").textContent = "미리 학습해 둔 정책" + (st.gate === null ? "" : " · 안전 시험 " + st.gate + "/" + GT);
         then();
@@ -472,6 +483,7 @@
         st.policyKey = key;
         st.gate = res.gate;
         st.fallback = res.fallback;
+        st.learningSource = res.fallback ? "SAC 사전 정책 (CEM 후보 미채택: "+(res.fallback==="gate"?"고정 시험 미통과":"개선 없음")+")" : "CEM 추가 학습";
         st.learnedSec = (performance.now() - started) / 1000;
         id("learnState").textContent = "학습완료";
         id("trainMsg").textContent = res.fallback === "gate"
@@ -563,15 +575,15 @@
       attachLogRow(row, 0);
       st.rows.unshift(row);
       st.curRow = row;
-      while (st.rows.length > 8) {
-        var old = st.rows.pop();
-        if (st.pin === old) st.pin = null;
-        old.tr.remove();
-      }
+
     }
     st.curRow[kit ? "kit" : "sim"] = out.short;
     st.curRow.m = judge.metrics();
-    st.curRow.data = st.runData;
+    st.curRow.data = PS.Classroom.data(st.runData);
+    st.curRow.snapshot = PS.Classroom.data(st.experimentSnapshot);
+    st.curRow.analysis = PS.Classroom.metrics(st.runData.t.map(function(t,i){return {t:t,error:st.runData.error[i],velocity:st.runData.velocity[i],u:st.runData.action[i]};}));
+    var mission=st.classroom.missions[st.runMission]||(st.classroom.missions[st.runMission]={predict:'',observe:'',explain:'',runs:[],complete:false});
+    mission.runs.push(st.curRow.no);mission.complete=false;
     var gateOK = st.fallback !== "gate" && (st.gate === null || st.gate >= C.gate.pass_min);
     st.lastResult = { m: st.curRow.m, ok: out.ok, kit: kit, gate: st.gate, fallback: st.fallback, pass: kit ? out.ok : out.ok && gateOK };
     paintRows();
@@ -580,6 +592,8 @@
 
   function test(r, secs) {
     var kit = st.env === "kit", dev = kit ? st.kit : simDev;
+    st.runMission=st.classroom.active;
+    st.experimentSnapshot={rewardKey:r.key,options:runOpts(),modelSignature:JSON.stringify(PS.Project.runtime(C,PS.OBS_N)),source:kit?(dev.info?.fake?'fake':'kit'):'sim',start:kit?{kind:'observed'}:{arm:0,pendulum:0,armVelocity:0,pendulumVelocity:0},seconds:secs,learningSource:st.learningSource,policyDigest:PS.Classroom.digest(PS.Project.capturePolicy(st.policy)),createdAt:new Date().toISOString(),blocks:blocks.exportModel()};
     id("learnState").textContent = "학습완료";
     blocks.mark("test");
     try { st.run = runTest(dev, kit ? "실제 키트" : "시뮬레이션", r, st.policy, secs, {
@@ -631,6 +645,7 @@
   }
   function start() {
     if (st.busy || st.fileBusy || devConnecting || kitChecking) return;
+    if(st.rows.length>=100){say("수업 파일에는 시험 100회까지 보관합니다. 저장한 뒤 새 수업을 시작해 주세요.");return;}
     var r = rule(), o = runOpts(), key = keyOf(r, o);
     var checked = PS.reward.check(r);
     if (!r.ok || checked.level === "error") {
@@ -655,9 +670,9 @@
     say("");
     setStep(3, true);
     setBusy(true);
-    /* 새로 배우면 기록 표에 새 줄이 생깁니다. 같은 정책을 다시 시험만 하면 같은 줄을 고쳐 씁니다. */
-    var keep = need ? [] : st.runData.curve;
-    if (need || st.savedResults) st.curRow = null;
+    /* Repeated tests preserve independent, immutable records. */
+    var keep = need ? [] : st.runData.curve.slice();
+    st.curRow = null;
     st.savedResults = false;
     st.lastResult = null;
     id("resBanner").hidden = true;
@@ -728,6 +743,7 @@
     id("mainTabs").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tab === tab)); });
     if (tab === "blocks") blocks.refresh();
     if (tab === "graphs") drawCharts();
+    if (tab === "inquiry" && inquiry) inquiry.refresh();
   }
   id("mainTabs").querySelectorAll("button").forEach(function (b) {
     b.addEventListener("click", function () {
@@ -775,11 +791,23 @@
       c.innerHTML = "<h3></h3><p class='muted'></p><button class='big alt'>이 규칙 불러오기</button>";
       c.querySelector("h3").textContent = ex.name;
       c.querySelector("p").textContent = ex.why;
+      if (ex.formula) {
+        var formula = document.createElement('div'); formula.className = 'reward-formula'; formula.textContent = ex.formula;
+        c.insertBefore(formula, c.querySelector('button'));
+      }
+      if (ex.sources) {
+        var sources = document.createElement('p'); sources.className = 'reward-sources'; sources.appendChild(document.createTextNode('코드 근거: '));
+        ex.sources.forEach(function (source, i) {
+          if (i) sources.appendChild(document.createTextNode(' · '));
+          var link = document.createElement('a'); link.textContent = source.label; link.href = source.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; sources.appendChild(link);
+        });
+        c.insertBefore(sources, c.querySelector('button'));
+      }
       c.querySelector("button").setAttribute("aria-label", ex.name + " 규칙 불러오기");
       c.querySelector("button").addEventListener("click", function () {
         if (st.busy || st.fileBusy) return;
         if (st.mode !== "free") { st.mode = "free"; blocks.setMode("free"); }
-        blocks.loadReward(ex.nodes);
+        blocks.loadReward(ex.nodes, ex.variables);
         setStep(2);
       });
       box.appendChild(c);
@@ -826,16 +854,17 @@
   function projectSnapshot() {
     var r = rule(), o = runOpts(), validPolicy = st.policy && st.policyKey === keyOf(r, o);
     return {
-      app: "pendulum-studio", v: 3, name: id("projName").value || "회전 도립 진자 수업", savedAt: new Date().toISOString(),
+      app: "pendulum-studio", v: 4, name: id("projName").value || "회전 도립 진자 수업", savedAt: new Date().toISOString(),
       mode: st.mode, smooth: st.smooth, effort: st.effort, blocks: blocks.exportModel(),
       view: { step: st.step, tab: st.tab }, progress: { done1: st.done1, wrote: id("wrote").checked },
+      classroom: st.classroom,
       runtime: PS.Project.runtime(C, PS.OBS_N),
-      learning: validPolicy ? { policy: PS.Project.capturePolicy(st.policy), key: st.policyKey, seconds: st.learnedSec } : null,
+      learning: validPolicy ? { policy: PS.Project.capturePolicy(st.policy), key: st.policyKey, seconds: st.learnedSec, source: st.learningSource } : null,
       results: {
         runNo: st.runNo, currentNo: st.curRow ? st.curRow.no : null, pinnedNo: st.pin ? st.pin.no : null,
         runData: st.runData,
         rows: st.rows.map(function (row) {
-          return { no: row.no, label: row.label, text: row.text, sim: row.sim, kit: row.kit, m: row.m, data: row.data };
+          return { no: row.no, label: row.label, text: row.text, sim: row.sim, kit: row.kit, m: row.m, data: row.data, snapshot: row.snapshot || null, analysis: row.analysis || null };
         })
       }
     };
@@ -861,6 +890,8 @@
       id("projName").value = d.name;
       st.policy = policy; st.policyKey = policy ? expectedKey : null;
       st.learnedSec = policy ? d.learning.seconds : null;
+      st.learningSource = policy ? d.learning.source : "정책 준비 전";
+      st.classroom = d.classroom; if(lessonSession)lessonSession.restore(); if(inquiry)inquiry.reset();
       st.simOK = false; st.gate = null; st.fallback = null;
       st.policyNeedsCheck = !!policy;
       st.env = "sim";
@@ -891,6 +922,7 @@
   id("mNew").addEventListener("click", function () {
     if (st.busy || st.fileBusy) return;
     if (!confirm("새 수업을 시작할까요? 현재 블록·정책·실험 기록이 초기화됩니다. 보관하려면 먼저 저장하세요.")) return;
+    st.classroom=PS.Classroom.empty(); st.learningSource="정책 준비 전"; if(lessonSession)lessonSession.restore(); if(inquiry)inquiry.reset();
     st.smooth = 1; st.effort = 1;
     blocks.reset();
     blocks.importModel(blocks.exportModel());
@@ -908,11 +940,12 @@
     st.fileBusy = true; refresh();
     try {
       projectMessage("");
+      if(lessonSession)await lessonSession.flush();
       var text = PS.Project.encode(projectSnapshot()), name = PS.Project.filename(id("projName").value);
       if (window.studio && window.studio.project) {
         var result = await window.studio.project.save({ name: name, text: text });
         if (result.error) throw new Error(result.error);
-        if (!result.canceled) projectMessage(result.name + " · 규칙·학습된 정책·최근 실험 기록을 저장했습니다.");
+        if (!result.canceled) projectMessage(result.name + " · 규칙·정책·미션·활동 0·제어 실험 기록을 저장했습니다.");
       } else {
         var a = document.createElement("a"), url = URL.createObjectURL(new Blob([text], { type: "application/json;charset=utf-8" }));
         a.href = url; a.download = name;
@@ -1298,6 +1331,8 @@
     id("guideHint").textContent = HINT[st.step]();
     id("wroteBox").style.visibility = st.step <= 1 ? "hidden" : "visible";
     controlEvent('status', controlStatus());
+    if(inquiry && st.tab==="inquiry")inquiry.refresh();
+    scheduleAutosave();
   }
 
   /* ── 시작 ── */
@@ -1323,5 +1358,35 @@
     if (q.has("step")) setStep(Math.max(0, Math.min(3, +q.get("step") || 0)));
   }
 
-  boot();
+  var autosaveTimer=null, autosaveReady=false, recovery=null, autosaveFailed=false;
+  var AUTO_KEY='pendulum-classroom-autosave-v4';
+  try{recovery=localStorage.getItem(AUTO_KEY);}catch(_){}
+  function scheduleAutosave(){
+    if(!autosaveReady||recovery||st.projectLoading)return;
+    // A throttle, not a trailing debounce: continuous typing/status updates must
+    // not postpone the only recovery copy forever. Read current data when due.
+    if(autosaveTimer!==null)return;
+    autosaveTimer=setTimeout(function(){
+      autosaveTimer=null;
+      if(recovery||st.projectLoading)return;
+      if(st.busy||st.fileBusy||blocks.inputIssues().length)return;
+      try{localStorage.setItem(AUTO_KEY,PS.Project.encode(projectSnapshot()));autosaveFailed=false;}
+      catch(error){if(!autosaveFailed)projectMessage('자동 저장을 완료하지 못했습니다. 상단 저장하기로 .pendulum 파일을 보관해 주세요. '+error.message);autosaveFailed=true;}
+    },800);
+  }
+  lessonSession=new PS.LessonSession({state:()=>st.classroom,change:scheduleAutosave,error:e=>projectMessage('수업 기록: '+e.message)});
+  inquiry=new PS.ClassroomUI(id('inquiry'),{state:()=>st.classroom,rule:rule,model:()=>blocks.exportModel(),rows:()=>st.rows,busy:()=>st.busy||st.fileBusy,source:()=>st.learningSource,
+    change:scheduleAutosave,focus:blockId=>{setTab('blocks');blocks.focusIssue({id:blockId});},
+    loadExample:name=>{if(st.busy||st.fileBusy)return;var ex=PS.EXAMPLES.find(x=>x.name===name);if(!ex)return;st.mode='free';blocks.setMode('free');blocks.loadReward(ex.nodes,ex.variables);setStep(2);}
+  });
+  ['input','change','click'].forEach(event=>document.addEventListener(event,scheduleAutosave));
+  boot(); autosaveReady=true;
+  if(recovery){
+    const bar=document.createElement('aside');bar.className='recovery-bar';bar.setAttribute('aria-label','자동 저장 복구');
+    const label=document.createElement('span');label.textContent='이 PC에 자동 저장한 수업이 있습니다.';
+    const restore=document.createElement('button');restore.textContent='수업 복구';const discard=document.createElement('button');discard.textContent='자동 저장본 지우기';bar.append(label,restore,discard);document.body.append(bar);
+    restore.onclick=()=>{if(st.busy||st.fileBusy)return;try{loadProjectText(recovery,'자동 저장본');recovery=null;bar.remove();scheduleAutosave();}catch(e){label.textContent='복구하지 못했습니다: '+e.message;}};
+    discard.onclick=()=>{try{localStorage.removeItem(AUTO_KEY);}catch(_){}recovery=null;bar.remove();scheduleAutosave();};
+  }
+
 })(window.PS = window.PS || {});

@@ -8,6 +8,7 @@
     lqr:{title:'LQR · 무엇을 더 중요하게 볼까?',text:'진자를 세우고 팔을 제자리로 돌리면서 모터 힘도 아끼도록 기준을 정합니다. 모델과 기준으로 상태 피드백 게인을 계산합니다.',rule:'Q: 오차를 줄이기 / R: 힘을 아끼기',mission:'힘을 아끼면 어떤 일이 생길까?',steps:['기본값에서 한 번 실행해 기준 기록을 만드세요.','R만 1에서 10으로 바꾸고 결과를 예상하세요.','평균 오차와 모터 힘 RMS를 함께 비교하세요. 어떤 절충이 생겼나요?'],question:'R을 크게 두는 의미는?',answers:['모터 힘 사용에 더 큰 비용을 준다','진자 질량을 늘린다','신경망 학습 횟수를 늘린다'],correct:0,why:'R은 입력에 주는 비용입니다. 오차와 힘 사이의 절충을 바꾸지만 결과가 항상 좋아지는 것은 아닙니다.',formula:'J = Σ(xᵀQx + Ru²), u = −Kx. Q = diag(Qarm, Qangle, 0.3, 1). 이산 Riccati 방정식으로 K를 계산합니다.'},
     lmpc:{title:'LMPC · 앞을 보고 첫 행동만 쓰기',text:'선형 모델로 앞으로의 기울기를 예측합니다. 힘의 상한을 지키는 명령 계획을 찾고, 첫 명령만 실행한 뒤 현재 상태로 다시 계획합니다.',rule:'예측 → 힘 제한 안에서 계획 → 첫 명령 → 다시 예측',mission:'예측 길이와 힘의 한계',steps:['처음 기울기 10°, 힘 상한 40%에서 실행하세요.','앞을 보는 칸 수를 5와 30으로 바꿔 비교하세요.','다음에는 힘 상한만 20%로 줄이세요. 예측을 길게 해도 힘이 부족하면 어떻게 될까요?'],question:'계획한 명령 중 실제로 적용하는 것은?',answers:['첫 명령 한 개, 이후 다시 계산','계획 전체를 마지막까지 고정','입력 상한을 넘는 명령'],correct:0,why:'MPC는 매 주기 현재 상태에서 다시 풉니다. 미래 계획은 예상이며 실제 움직임을 보장하지 않습니다.',formula:'min Σ(xᵀQx + Ru²) + xNᵀPxN, x(k+1)=Ax(k)+Bu(k), |u(k)|≤상한. N칸 QP를 풀고 u(0)만 적용합니다.'}
   };
+  let lessonBridge=null;
   let method='pid',running=false,timer=null,current=null,records=[],selected=new Set(),seq=0;
   let target='sim',kit={connected:false,capable:false,busy:false,checked:false},kitBusy=false,kitRunId=null,stopPending=false;
   let requestSeq=0,runSeq=0,controlMeta=new Map(),hardwarePhase='preparing';
@@ -253,12 +254,13 @@
     if(running&&current.hybrid){setText('runState',s.phase==='balance'?'직립 유지 모의 중':'스윙업 모의 중');setText('status',s.phase==='balance'?'스윙업에서 '+current.o.method.toUpperCase()+'로 전환 · '+format(s.captureTime,2,'초')+'의 팔 위치가 기준입니다.':'자동 스윙업을 모의하고 있습니다. 후보 조건을 만족하면 선택한 제어기로 전환합니다.');}
     resultContext();graphs();detail();
   }
-  function saveRun(status){if(!current||current.saved||(!current.rows.length&&current.o.source!=='kit'))return;const result=current.summary();if(status)result.status=status;current.saved=true;const r={id:++seq,color:colors[(seq-1)%colors.length],result,rows:current.rows.map(x=>Object.assign({},x))};records.push(r);if(records.length>12){selected.delete(records[0].id);records.shift();}selected.add(r.id);while(selected.size>3)selected.delete(selected.values().next().value);renderRecords();graphs();$('csv').disabled=false;}
+  function saveRun(status){if(!current||current.saved||(!current.rows.length&&current.o.source!=='kit'))return;const result=current.summary();if(status)result.status=status;current.saved=true;const r={id:++seq,color:colors[(seq-1)%colors.length],result,rows:current.rows.map(x=>Object.assign({},x))};records.push(r);selected.add(r.id);while(selected.size>3)selected.delete(selected.values().next().value);renderRecords();graphs();$('csv').disabled=false;if(lessonBridge)lessonBridge.publish();}
   function renderRecords(){$('records').replaceChildren(...records.slice().reverse().map(r=>{const tr=document.createElement('tr'),td=document.createElement('td'),cb=document.createElement('input');cb.type='checkbox';cb.checked=selected.has(r.id);cb.setAttribute('aria-label',r.id+'회 '+r.result.method+' 비교');cb.onchange=()=>{if(cb.checked){selected.add(r.id);if(selected.size>3)selected.delete(selected.values().next().value);}else selected.delete(r.id);renderRecords();graphs();};td.append(cb);const swatch=document.createElement('i');swatch.className='legend-swatch';swatch.style.backgroundColor=r.color;swatch.setAttribute('aria-hidden','true');td.append(swatch);tr.classList.toggle('selected',selected.has(r.id));tr.append(td);const s=r.result,p=s.parameters;for(const text of [r.id+' '+s.method.toUpperCase()+' / '+sourceName(s),(s.source==='kit'?format(s.startObservedDeg,1,s.fake?'° (가상)':'° (실측)'):s.hybrid?'아래 자세':p.angle+'°')+' / '+Math.round(p.limit*100)+'%',format(s.meanError,2,'°'),format(s.rmsAction,3),s.status+' ('+s.duration.toFixed(1)+'s)']){const cell=document.createElement('td');if(text===s.status+' ('+s.duration.toFixed(1)+'s)'){const badge=document.createElement('span');badge.className='status-badge '+(s.status==='완료'?'complete':'stopped');badge.textContent=s.status;cell.append(badge,document.createTextNode(' '+s.duration.toFixed(1)+'초'));}else cell.textContent=text;tr.append(cell);}return tr;}));setText('recordCount',records.length+'개 기록 · '+selected.size+'개 비교');if($('recordsEmpty'))$('recordsEmpty').hidden=records.length>0;}
   function finish(status){clearTimeout(timer);saveRun(status);busy(false);const s=current?.summary();$('status').textContent=status||((s?.status||'완료')+' · '+(s?.qpFailures?'QP 허용 오차 미도달 '+s.qpFailures+'주기. 결과 해석 시 참고하세요.':'기록에서 다른 시도와 비교해 보세요.'));}
-  function runSimulation(){try{current=makeExperiment(read());}catch(e){$('status').textContent='설정을 확인해 주세요: '+e.message;return;}noteSave();openTab('results');busy(true);$('status').textContent=method.toUpperCase()+' 실험 중 · 입력 설정은 실험 종료 후 바꿀 수 있습니다.';let prev=performance.now(),acc=0;function frame(){const now=performance.now();acc+=Math.min(1.2,(now-prev)/1000)*+$('speed').value;prev=now;try{while(acc>=.02&&!current.done()){current.tick();acc-=.02;}display();}catch(e){finish('계산 오류: '+e.message);return;}if(current.done())finish();else timer=setTimeout(frame,16);}frame();}
-  function compare(){if(running||kitBusy||target==='kit')return;let o;try{o=read();}catch(e){$('status').textContent=e.message;return;}noteSave();openTab('results');busy(true);const queue=['pid','lqr','lmpc'];let idx=0;function next(){try{current=makeExperiment(Object.assign({},o,{method:queue[idx]}));}catch(e){finish('계산 오류: '+e.message);return;}function batch(){if(!running)return;try{for(let i=0;i<40&&!current.done();i++)current.tick();display();}catch(e){finish('계산 오류: '+e.message);return;}if(!current.done()){timer=setTimeout(batch,0);return;}saveRun();idx++;if(idx<queue.length){timer=setTimeout(next,0);}else{finish('세 방법 비교 완료 · 같은 시작각·환경·상한으로 실행했습니다. 기본 PD와 LQR은 기준 게인이 같아 결과가 같을 수 있습니다.');}}$('status').textContent=queue[idx].toUpperCase()+' 비교 계산 중…';batch();}next();}
-  async function runHardware(){
+  function canRecord(n){if(records.length+n<=12)return true;$('status').textContent='수업 파일에 제어 시험 12회까지 보관합니다. 상단 돌아가기 후 수업을 저장하고 새 수업을 시작하세요.';return false;}
+  function runSimulation(){if(!canRecord(1))return;try{current=makeExperiment(read());}catch(e){$('status').textContent='설정을 확인해 주세요: '+e.message;return;}noteSave();openTab('results');busy(true);$('status').textContent=method.toUpperCase()+' 실험 중 · 입력 설정은 실험 종료 후 바꿀 수 있습니다.';let prev=performance.now(),acc=0;function frame(){const now=performance.now();acc+=Math.min(1.2,(now-prev)/1000)*+$('speed').value;prev=now;try{while(acc>=.02&&!current.done()){current.tick();acc-=.02;}display();}catch(e){finish('계산 오류: '+e.message);return;}if(current.done())finish();else timer=setTimeout(frame,16);}frame();}
+  function compare(){if(running||kitBusy||target==='kit'||!canRecord(3))return;let o;try{o=read();}catch(e){$('status').textContent=e.message;return;}noteSave();openTab('results');busy(true);const queue=['pid','lqr','lmpc'];let idx=0;function next(){try{current=makeExperiment(Object.assign({},o,{method:queue[idx]}));}catch(e){finish('계산 오류: '+e.message);return;}function batch(){if(!running)return;try{for(let i=0;i<40&&!current.done();i++)current.tick();display();}catch(e){finish('계산 오류: '+e.message);return;}if(!current.done()){timer=setTimeout(batch,0);return;}saveRun();idx++;if(idx<queue.length){timer=setTimeout(next,0);}else{finish('세 방법 비교 완료 · 같은 시작각·환경·상한으로 실행했습니다. 기본 PD와 LQR은 기준 게인이 같아 결과가 같을 수 있습니다.');}}$('status').textContent=queue[idx].toUpperCase()+' 비교 계산 중…';batch();}next();}
+  async function runHardware(){if(!canRecord(1))return;
     if(!kit.connected||!kit.capable||!kit.checked||kit.busy)return;
     let config,o;
     try{o=read();config=L.buildHardwareConfig(PS.MODEL,o);}catch(e){setText('status','제어 설정을 확인해 주세요: '+e.message);return;}
@@ -319,4 +321,23 @@
   choose('pid');paint(null);graphs();renderRecords();resultContext();setText('detailText','실험을 실행하면 제어기가 각 순간의 명령을 어떻게 정했는지 볼 수 있습니다.');openTab('overview');
   paintKit();
   if(bridgeAvailable)requestKit('status').then(data=>{kit=Object.assign({},kit,data||{});paintKit();}).catch(e=>setText('kitConnectionNote',e.message));
+  function lessonSnapshot(context){
+    if(context?.requested&&(running||kitBusy)){
+      const message='진행 중인 실험이 있습니다. 정지한 뒤 닫거나 저장해 주세요.';
+      $('status').textContent=message;throw Error(message);
+    }
+    noteSave();const values={};for(const k of fields.concat(['startMode','speed']))values[k]=$(k).type==='checkbox'?$(k).checked:$(k).value;return {v:1,method,fields:values,notes,records,selected:[...selected]};
+  }
+  const initialLesson=JSON.parse(JSON.stringify(lessonSnapshot()));
+  // Embedded lessons belong to the parent project, not another project's legacy
+  // local notes. Standalone control.html keeps its existing notes behavior.
+  initialLesson.notes={pid:{},lqr:{},lmpc:{}};
+  lessonBridge=window.LessonBridge.register('control',lessonSnapshot,value=>{
+    if(running||kitBusy)throw Error('제어 실험을 멈춘 뒤 수업을 불러와 주세요.');
+    const s=PS.Classroom.control(value||initialLesson);clearTimeout(timer);current=null;target='sim';kit.checked=false;kitRunId=null;
+    for(const k of fields.concat(['startMode','speed'])){if($(k).type==='checkbox')$(k).checked=s.fields[k];else $(k).value=s.fields[k];}
+    choose(s.method);for(const m of ['pid','lqr','lmpc'])notes[m]=s.notes[m];for(const k of ['predict','observe','explain'])$(k).value=notes[method][k]||'';
+    records=s.records;selected=new Set(s.selected);seq=Math.max(0,...records.map(r=>r.id));renderRecords();graphs();outputs();paint(null);paintKit();resultContext();$('csv').disabled=!records.length;
+    $('status').textContent='설정과 기록을 불러왔습니다. 시뮬레이션에서 새 실험을 시작할 수 있습니다.';
+  });
 })(window.PS);

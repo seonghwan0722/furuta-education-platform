@@ -31,14 +31,42 @@
     { key: "judge", name: "판단", color: "#4562f5", dark: "#1b3ad8", glyph: "✓", note: "참인지 거짓인지" },
     { key: "calc", name: "계산", color: "#f4af18", dark: "#ff7f00", glyph: "＋", note: "숫자 계산" },
     { key: "score", name: "점수", color: "#dd47d8", dark: "#b819b3", glyph: "★", note: "보상(점수) 규칙" },
+    { key: "data", name: "자료", color: "#e6507d", dark: "#b42b56", glyph: "A", note: "변수에 계산값 담기" },
     { key: "kit", name: "키트", color: "#00b6b1", dark: "#008f8b", glyph: "⚙", note: "키트가 재는 값" },
     { key: "ai", name: "인공지능", color: "#8222ff", dark: "#6100d6", glyph: "AI", note: "가르치고 시험하기" }
   ];
 
   function clamp100(x) { return x < 0 ? 0 : x > 100 ? 100 : x; }
   var LEVELS = [[0, "감점 없음"], [1, "약하게 감점"], [2, "강하게 감점"]];
+  var VARIABLES = [["A", "변수 A"], ["B", "변수 B"], ["C", "변수 C"], ["D", "변수 D"]];
 
   var DEFS = {
+    set_var: { cat: "data", shape: "stk", dom: "reward", tpl: [{ dd: "variable", opts: VARIABLES }, "을(를)", { s: "num", v: 0 }, "(으)로 정하기"],
+      tip: "계산한 숫자를 변수에 담습니다. 아래 블록에서 같은 변수 값을 여러 번 쓸 수 있어요. 변수 A~D는 매 순간 점수 계산을 시작할 때 0으로 돌아갑니다. 먼저 정하기, 다음에 읽기 순서로 놓으세요." },
+    change_var: { cat: "data", shape: "stk", dom: "reward", tpl: [{ dd: "variable", opts: VARIABLES }, "에", { s: "num", v: 1 }, "만큼 더하기"],
+      tip: "변수에 숫자를 더합니다. 음수를 넣으면 줄어듭니다. 반복 안에서 합계를 계산할 수 있어요. 변수만 바꾸면 점수는 변하지 않으므로 마지막에 점수 더하기와 연결하세요." },
+    get_var: { cat: "data", shape: "val", tpl: [{ dd: "variable", opts: VARIABLES }, "값"],
+      tip: "이 순간 위쪽 블록에서 계산한 변수의 숫자를 가져옵니다. 자료 범주에서 이름을 바꿀 수 있어요. 이름만 바꾸어도 모든 연결은 유지됩니다. 초기값은 0이며 다른 순간·에피소드의 값을 기억하지 않습니다." },
+    repeat: { cat: "flow", shape: "c", dom: "reward", bodies: 1, tpl: [{ s: "num", v: 3 }, "번 반복하기"],
+      tip: "안쪽 점수·변수·조건 블록을 입력한 횟수만큼 실행합니다. 0~20 사이 정수이며 0이면 건너뜁니다. 횟수는 반복에 들어갈 때 한 번 읽습니다. 이 순간의 계산을 반복하는 것이며 진자가 움직일 시간을 기다리는 블록은 아닙니다." },
+    break_loop: { cat: "flow", shape: "stk", dom: "reward", tpl: ["반복 중단하기"],
+      tip: "가장 가까운 반복을 끝내고 반복 아래 블록으로 이동합니다. 반복 안의 조건과 함께 쓰세요. 학습이나 모터를 정지시키는 명령은 아닙니다." },
+    continue_loop: { cat: "flow", shape: "stk", dom: "reward", tpl: ["이번 반복 건너뛰기"],
+      tip: "가장 가까운 반복에서 남은 블록을 건너뛰고 다음 반복으로 갑니다. 반복 안에서만 사용할 수 있습니다." },
+    loop_index: { cat: "flow", shape: "val", tpl: ["이번 반복 번호"], unit: "number",
+      tip: "가장 가까운 반복의 번호를 1부터 가져옵니다. 3번 반복이면 1, 2, 3입니다. 반복 밖에서는 사용할 수 없어요." },
+    choose: { cat: "calc", shape: "val", tpl: ["만일", { s: "bool" }, "이면", { s: "num", v: 10 }, "아니면", { s: "num", v: 0 }],
+      fn: function (condition, yes, no) { return condition ? yes : no; },
+      tip: "조건에 따라 두 숫자 중 하나를 돌려줍니다. 선택한 쪽만 계산합니다. 예: 직립이면 30, 아니면 0을 점수에 더하세요." },
+    math: { cat: "calc", shape: "val", tpl: [{ s: "num", v: 0 }, "의", { dd: "op", opts: [["exp", "지수 e^값"], ["sqrt", "제곱근"], ["sin", "sin (라디안)"], ["cos", "cos (라디안)"], ["floor", "내림"], ["ceil", "올림"]] }],
+      fn: function (a, f) { return Math[f.op](a); },
+      tip: "지수·제곱근·삼각함수·정수 올림·내림을 계산합니다. sin/cos 입력은 라디안입니다. 지수 함수는 직립 근처에 부드러운 보너스를 만드는 데 쓰며 e^0=1입니다. 음수의 제곱근은 계산할 수 없어요." },
+    tilt_rad: { cat: "kit", shape: "val", tpl: ["진자 직립 오차 ± (rad)"], group: "고급 · 학습 수식 연결", read: function (v) { return v.phi; },
+      tip: "직립 오차를 라디안으로 읽습니다. 180°=π rad입니다. 우리 앱의 실제 보상식에 들어가는 φ이며 도 단위 값과 섞지 않도록 주의하세요." },
+    action_signed: { cat: "kit", shape: "val", tpl: ["모터 지령 ± (−1~1)"], group: "고급 · 학습 수식 연결", read: function (v) { return v.u; },
+      tip: "정규화된 모터 지령 u입니다. 우리 앱 보상식의 u² 감점에 사용합니다. 실제 측정 전류나 토크가 아니며, 블록을 읽는 것만으로 모터를 구동하지 않습니다." },
+    arm_rad: { cat: "kit", shape: "val", tpl: ["팔 각도 ± (−π~π rad)"], group: "고급 · 학습 수식 연결", read: function (v) { return Math.atan2(Math.sin(v.th), Math.cos(v.th)); },
+      tip: "팔 각도를 −π~π 라디안 안으로 감싼 값입니다. rev22 학습 보상식의 팔 위치 감점에 쓰입니다. 누적 팔 각도와 달리 회전수를 보존하지 않습니다." },
     /* ── 키트: 값 (0~100) ── */
     height: { cat: "kit", shape: "val", tpl: ["진자 높이 (0~100)"], group: "크기로 보기 · 0~100",
       tip: "진자가 아래에 있으면 0, 수평이면 50, 직립이면 100인 숫자입니다. 각도가 아니라 높이 비율입니다. 예: ‘점수에 [진자 높이]만큼 더하기’에 연결하세요.",
@@ -161,6 +189,11 @@
 
   /* UI/diagnostics metadata only. Existing block identifiers and slot structures stay compatible. */
   var INFO = {
+    set_var: ["변수 정하기", "자료 저장 이름 값 변수 set"], change_var: ["변수에 더하기", "자료 누적 합계 변수 change"], get_var: ["변수 값", "자료 읽기 이름 값 variable"],
+    repeat: ["횟수 반복하기", "반복 루프 횟수 for repeat"], break_loop: ["반복 중단하기", "반복 멈추기 break"], continue_loop: ["이번 반복 건너뛰기", "반복 continue"], loop_index: ["이번 반복 번호", "반복 순서 횟수 index"],
+    choose: ["조건에 따라 값 고르기", "만일 아니면 선택 숫자 if select"], math: ["지수 · 제곱근 · 삼각함수", "exp sqrt sin cos 올림 내림 지수 e"],
+    tilt_rad: ["진자 직립 오차 · 라디안", "실제 보상 수식 phi radian", "rad"], action_signed: ["모터 지령 · 방향 포함", "실제 보상 수식 u 행동 action", "normalized", [-1, 1]],
+    arm_rad: ["팔 각도 · 감싼 라디안", "실제 보상 수식 theta wrap radian", "rad"],
     height: ["진자 높이", "높다 낮다 서다 매달리다 비율 height", "0~100", [0, 100]],
     pvel: ["진자 빠르기", "속도 진동 부드럽게 느리게 pendulum speed", "0~100", [0, 100]],
     avel: ["팔 빠르기", "속도 회전 부드럽게 느리게 arm speed", "0~100", [0, 100]],
@@ -212,6 +245,7 @@
   function numericSpec(type, fields, slotIndex) {
     if (slotIndex !== 0) return null;
     if (type === "cond") return RUN_PARAMS[fields && fields.key] || RUN_PARAMS.gens;
+    if (type === "repeat") return { name: "반복 횟수", min: 0, max: 20, integer: true, defaultValue: 3 };
     return type === "test" ? TEST_PARAM : null;
   }
 
@@ -224,16 +258,18 @@
 
   var PALETTE = {
     start: [],
-    flow: ["if", "ifelse"],
+    flow: ["repeat", "if", "ifelse", "break_loop", "continue_loop", "loop_index"],
     judge: ["lt", "le", "gt", "ge", "eq", "neq", "between", "and", "or", "not", "true", "false"],
-    calc: ["add", "sub", "mul", "div", "pow", "min", "max", "clamp"],
+    calc: ["add", "sub", "mul", "div", "pow", "min", "max", "clamp", "choose", "math"],
     score: ["plus", "minus"],
-    kit: ["height", "pvel", "avel", "force", "tilt", "armang", "upright", "home", "tilt_signed", "armang_signed", "pvel_signed", "avel_signed"],
+    data: ["set_var", "change_var", "get_var"],
+    kit: ["height", "pvel", "avel", "force", "tilt", "armang", "upright", "home", "tilt_signed", "armang_signed", "pvel_signed", "avel_signed", "tilt_rad", "action_signed", "arm_rad"],
     ai: ["cond", "learn", "test"]
   };
 
   /* 범주 아이콘 (20x20, 색은 currentColor). 글자 기호는 글꼴에 따라 깨지므로 그림으로 그립니다. */
   var ICONS = {
+    data: '<rect x="3" y="4" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 8h6M7 12h4" stroke="currentColor" stroke-width="2"/>',
     start: '<path d="M7 4.2v11.6l9.4-5.8z" fill="currentColor"/>',
     flow: '<path d="M14.6 6.6A5.6 5.6 0 1 0 15.6 11" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/><path d="M16.4 2.8v4.6h-4.6z" fill="currentColor"/>',
     judge: '<path d="M4.4 10.6l3.6 3.6 7.6-8.2" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -252,6 +288,8 @@
   }
 
   PS.CATS = CATS;
+  PS.VARIABLES = VARIABLES;
+  PS.variableName = function (model, key) { return model && model.variables && model.variables[key] || "변수 " + key; };
   PS.DEFS = DEFS;
   PS.HATS = HATS;
   PS.PALETTE = PALETTE;

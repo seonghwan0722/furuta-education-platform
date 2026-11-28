@@ -124,6 +124,7 @@
     $('updateDetail').textContent = '학습 후 갱신 내역이 표시됩니다.'; updateEpisodeSummaries(); drawGrid(); curve();
   }
   function train(count) {
+    if(history.length+count>5000){$('gridStatus').textContent='수업 파일에 5,000회까지 보관합니다. 저장한 뒤 새 조건으로 초기화하세요.';return;}
     pause(); route = []; current = -1;
     for (let i = 0; i < count; i++) {
       const episode = world.episode(true); history.push(episode);
@@ -176,14 +177,29 @@
     ['같은 각도라도 진자의 다음 움직임이 다를 수 있나요?', ['그렇다. 각속도도 필요하다', '아니다. 각도만 있으면 된다'], 0, '각속도를 알면 어느 방향으로 얼마나 빠르게 움직이는지 구분할 수 있습니다.'],
     ['Q=4, 보상=2, γ=0.5, 다음 최대 Q=6, α=0.5. 종료가 아니라면 새 Q는?', ['4.5', '5', '6'], 0, '목표값은 2 + 0.5×6 = 5. 새 Q는 4 + 0.5×(5−4) = 4.5입니다.']
   ];
-  const answers = new Map();
+  const answers = new Map(), answerChoices=[null,null,null];
   questions.forEach((q, index) => {
     const div = document.createElement('div'); div.className = 'question'; const p = document.createElement('p'); p.textContent = (index + 1) + '. ' + q[0]; div.appendChild(p);
     const feedback = document.createElement('p'); feedback.className = 'answer'; feedback.setAttribute('aria-live', 'polite');
     q[1].forEach((answer, i) => { const b = document.createElement('button'); b.textContent = answer; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => {
-      div.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); answers.set(index, i === q[2]); feedback.textContent = (i === q[2] ? '맞아요. ' : '다시 생각해 보세요. ') + q[3];
+      div.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); answers.set(index, i === q[2]); answerChoices[index]=i; feedback.textContent = (i === q[2] ? '맞아요. ' : '다시 생각해 보세요. ') + q[3];
       $('quizResult').textContent = Array.from(answers.values()).filter(Boolean).length + ' / 3개 이해 확인. 틀린 문제는 다시 선택할 수 있습니다.';
     }); div.appendChild(b); }); div.appendChild(feedback); $('quiz').appendChild(div);
   });
   resetGrid(); machine = C.bandit(7); drawBandit(); future();
+  function lessonSnapshot(){return {v:1,grid:world.snapshot(),history,bestEpisode,selected,topic:document.querySelector('[data-topic][aria-selected="true"]').dataset.topic,futureGamma:+$('futureGamma').value,banditEpsilon:+$('banditEpsilon').value,bandit:machine.snapshot(),answers:answerChoices.slice()};}
+  const initial=JSON.parse(JSON.stringify(lessonSnapshot()));
+  window.LessonBridge.register('primer',lessonSnapshot,value=>{
+    const s=PS.Classroom.primer(value||initial);pause();
+    $('map').value=s.grid.opts.map;$('epsilon').value=s.grid.opts.epsilon;$('gridGamma').value=s.grid.opts.gamma;$('stepReward').value=s.grid.opts.stepReward;
+    resetGrid();world=C.grid(s.grid.opts);world.restore(s.grid);history=s.history;bestEpisode=s.bestEpisode;selected=s.selected;
+    $('episodes').textContent=history.length+'회';const recent=history.slice(-20);
+    $('success').textContent=recent.length?Math.round(recent.filter(x=>x.goal).length/recent.length*100)+'% ('+recent.length+'회)':'—';
+    $('meanReward').textContent=recent.length?(recent.reduce((a,x)=>a+x.total,0)/recent.length).toFixed(1):'—';
+    $('gridStatus').textContent=history.length?'저장한 Q표와 에피소드를 불러왔습니다. 다음 학습부터 이어갑니다.':'학습할 준비가 되었습니다.';
+    machine=C.bandit(7);machine.restore(s.bandit);$('banditEpsilon').value=s.banditEpsilon;$('futureGamma').value=s.futureGamma;
+    answers.clear();answerChoices.fill(null);$('quiz').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));$('quiz').querySelectorAll('.answer').forEach(x=>x.textContent='');$('quizResult').textContent='';
+    s.answers.forEach((a,i)=>{if(a!==null)$('quiz').children[i].querySelectorAll('button')[a].click();});
+    updateEpisodeSummaries();drawGrid();curve();drawBandit();future();topic(s.topic);$('banditStatus').textContent='총 '+machine.n.reduce((a,n)=>a+n,0)+'번 선택 / 별 '+machine.total()+'개';
+  });
 })();

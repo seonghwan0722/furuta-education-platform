@@ -27,6 +27,7 @@
     var M = null, G = null, mode = "free";
     var cat = "score", locked = false, drag = null, pending = null;
     var selected = null, searchText = "", drafts = {}, lastCheck = null, checkKey = "";
+    var liveVariables = null;
     var toolbar = document.createElement("div");
     toolbar.className = "block-tools";
     toolbar.innerHTML = '<div class="block-target" role="status" aria-live="polite">블록을 누르면 설명을 볼 수 있어요.</div><div class="block-tool-actions"><button data-tool="reward">점수 끝 선택</button><button data-tool="run">시작 끝 선택</button><button data-tool="copy">선택 복사</button><button data-tool="delete">선택 삭제</button><button data-tool="tidy">줄 맞추기</button><button data-tool="undo">되돌리기</button></div>';
@@ -271,7 +272,7 @@
       p.opts.forEach(function (o) {
         var e = document.createElement("option");
         e.value = String(o[0]);
-        e.textContent = o[1];
+        e.textContent = p.dd === 'variable' ? PS.variableName(M, o[0]) : o[1];
         sel.appendChild(e);
       });
       sel.value = String(b.f[p.dd]);
@@ -589,6 +590,34 @@
       var how = document.createElement("p"); how.className = "palette-how";
       how.textContent = "블록을 끌거나 ‘추가’를 누르세요. 숫자 칸과 육각 조건 칸은 모양이 달라요.";
       paletteEl.appendChild(how);
+      if (cat === 'data' && !searchText.trim()) {
+        var vars = document.createElement('section'); vars.className = 'variable-panel';
+        var title = document.createElement('h3'); title.textContent = '내 계산 변수'; vars.appendChild(title);
+        var note = document.createElement('p'); note.textContent = '이름을 붙여 계산값을 나눠 담아요. 매 순간 0부터 시작합니다. 시험 중 오른쪽에 현재 값이 표시돼요.'; vars.appendChild(note);
+        PS.VARIABLES.forEach(function (entry) {
+          var key = entry[0], label = document.createElement('label'), name = document.createElement('input'), value = document.createElement('output');
+          var tag = document.createElement('span'); tag.textContent = key; label.appendChild(tag);
+          name.value = PS.variableName(M, key); name.maxLength = 16; name.disabled = locked;
+          name.setAttribute('aria-label', '변수 ' + key + ' 이름'); name.dataset.variableName = key;
+          name.addEventListener('change', function () {
+            var text = name.value.trim();
+            if (!text || /[\x00-\x1f\x7f]/.test(text) || PS.VARIABLES.some(function (item) { return item[0] !== key && PS.variableName(M, item[0]) === text; })) {
+              name.value = PS.variableName(M, key); announce('변수 이름은 서로 다른 1~16자 이름으로 정해 주세요.'); return;
+            }
+            M.variables = M.variables || {}; M.variables[key] = text;
+            render(); paint(); changed(); announce('변수 이름을 바꿨습니다. 연결과 계산은 그대로 유지돼요.');
+          });
+          name.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); name.blur(); } });
+          value.dataset.variableValue = key; value.textContent = liveVariables ? String(Math.round(liveVariables[key] * 1000) / 1000) : '—';
+          label.appendChild(name); label.appendChild(value); vars.appendChild(label);
+        });
+        paletteEl.appendChild(vars);
+      }
+      if (cat === 'flow' && !searchText.trim()) {
+        var flowNote = document.createElement('p'); flowNote.className = 'palnote';
+        flowNote.textContent = '반복은 이번 순간의 점수 계산 안에서 실행돼요. 진자를 여러 번 시험하려는 경우에는 시작하기 아래의 시험하기를 사용하세요.';
+        paletteEl.appendChild(flowNote);
+      }
       var tmp = fresh(), lastGroup = null;
       if (cat === "start" && !searchText.trim()) {
         var note = document.createElement("p");
@@ -1092,7 +1121,7 @@
       var el = canvas.querySelector('.list[data-list="script:run"] > .block[data-type="' + type + '"]');
       if (el) el.classList.add("running");
     };
-    self.loadReward = function (nodes) {
+    self.loadReward = function (nodes, variables) {
       if (locked) return false;
       cancelDrag();
       var remaining = Object.keys(M.B).length, count = 0;
@@ -1106,7 +1135,9 @@
       if (remaining + count > 1000) { announce("예시를 넣으면 1,000개를 넘어요. 따로 놓은 블록을 먼저 정리해 주세요."); return false; }
       M.scripts.reward.slice().forEach(drop);
       M.scripts.reward = nodes.map(function (n) { return build(M, n); });
+      if (variables) M.variables = Object.assign({}, variables);
       render();
+      paint();
       changed();
       announce("예시로 점수 규칙을 바꿨습니다. ‘되돌리기’로 이전 규칙을 복구할 수 있어요.");
       return true;
@@ -1123,6 +1154,7 @@
       // An opened project starts its own undo history; do not mix two students' work.
       hist = []; hpos = -1; commit();
       render();
+      paint();
       changed();
       return true;
     };
@@ -1155,12 +1187,17 @@
       }
     };
     self.live = function (map) {
+      liveVariables = map && map.variables || null;
+      paletteEl.querySelectorAll('[data-variable-value]').forEach(function (el) {
+        el.textContent = liveVariables ? String(Math.round(liveVariables[el.dataset.variableValue] * 1000) / 1000) : '—';
+      });
       var els = canvas.querySelectorAll(".live");
       for (var i = 0; i < els.length; i++) {
         var el = els[i], x = map ? map[+el.parentNode.dataset.id] : undefined;
         if (x === undefined) { el.hidden = true; continue; }
         var a = Math.abs(x);
-        el.textContent = (x < 0 ? "−" : "+") + (a >= 10 ? a.toFixed(0) : a.toFixed(1));
+        var b = M.B[+el.parentNode.dataset.id], isVariable = b && (b.type === 'set_var' || b.type === 'change_var');
+        el.textContent = (isVariable ? '= ' : '') + (x < 0 ? "−" : isVariable ? '' : "+") + (a >= 10 ? a.toFixed(0) : a.toFixed(1));
         el.className = "live" + (x < 0 ? " neg" : "");
         el.hidden = false;
       }

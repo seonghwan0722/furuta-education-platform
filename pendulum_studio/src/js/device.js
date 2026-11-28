@@ -570,12 +570,24 @@
     opt = opt || {};
     var secs = opt.seconds || 10;
     var onTick = opt.onTick || function () { };
+    // Measurement and display have different clocks. Never drop control samples
+    // when a hidden/slow window catches up several steps in one display frame.
+    var onSample = opt.onSample || function () { }, lastSampleT = 0;
     var onDone = opt.onDone || function () { };
     var obs = new Float64Array(PS.OBS_N);
     var stop = false;
+    function sample(st) {
+      if (!Number.isFinite(st.t) || st.t <= lastSampleT) return;
+      lastSampleT = st.t;
+      if (onSample(st) === false) {
+        stop = true;
+        if (dev.kind !== "sim") dev.stop();
+      }
+    }
 
     if (dev.kind === "sim") {
       var prev = performance.now(), acc = 0, speed = opt.speed || 1;
+      var endTime = secs - dev.ctrlDt * 1e-7; // Floating-point time must not add an extra control step.
       dev.reset(opt.th0 || 0, opt.al0 !== undefined ? opt.al0 : 0, 0, 0);
       /* 타이머로 밉니다. requestAnimationFrame 은 창이 가려지면 멈추거나 아주 느려져서 시험이 끝나지 않습니다.
        * 가려진 창은 타이머도 1초에 한 번으로 늦춰지므로, 밀린 시간을 1.2초까지 한 번에 따라잡게 둡니다. */
@@ -583,14 +595,15 @@
         var now = performance.now();
         acc += Math.min(1.2, (now - prev) / 1000) * speed;
         prev = now;
-        while (acc >= dev.ctrlDt && dev.sim.t < secs && !stop && !dev.sim.dead) {
+        while (acc >= dev.ctrlDt && dev.sim.t < endTime && !stop && !dev.sim.dead) {
           dev.obs(obs);
           dev.command(controller(obs, dev.sim));
           acc -= dev.ctrlDt;
+          sample(dev.state());
         }
         var st = dev.state();
         onTick(st);
-        if (!stop && st.t < secs && !dev.sim.dead) timer = setTimeout(frame, 16);
+        if (!stop && st.t < endTime && !dev.sim.dead) timer = setTimeout(frame, 16);
         else if (!stop) onDone(st);
       }, 16);
       return { cancel: function () { stop = true; clearTimeout(timer); } };
@@ -609,7 +622,7 @@
       if (stop) return;
       dev.run(secs, {
         onMsg: function (code, args) { if (!stop) onMsg(code, args); },
-        onState: function (st) { if (!stop) onTick(st); },
+        onState: function (st) { if (!stop) { sample(st); if (!stop) onTick(st); } },
         onEnd: fin
       });
     }).catch(function (e) {
